@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import ListaUsuarios from "./components/ListaUsuarios";
 import { useEffect, useState } from 'react';
 
 import "./App.css";
@@ -20,6 +21,7 @@ function App() {
       <h1>Conexión backend</h1>
       <p>{msg}</p>
       <Header/>
+      <ListaUsuarios/>
     </div>
   );
 }
