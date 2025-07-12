@@ -7,9 +7,6 @@ import Header from "./components/Header";
 import ListaUsuarios from "./components/ListaUsuarios";
 import Container from "./components/Container";
 
-
-
-
 function App() {
   const [msg, setMsg] = useState("Cargando...");
 
@@ -24,8 +21,6 @@ function App() {
       });
   }, []);
 
-
-
   return (
     <>
       <Header />
@@ -35,7 +30,8 @@ function App() {
         </h4>
         <ListaUsuarios />
       </Container>
-  
+
+      <h2>Routing</h2>
     </>
   );
 }
