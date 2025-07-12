@@ -1,4 +1,7 @@
-
+body{
+  justify-content: center;
+  background-color: rgb(120, 201, 183);
+}
 
 #main-container{
   background-color: rgb(37, 141, 167);

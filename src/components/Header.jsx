@@ -1,11 +1,10 @@
-import graficImg from "../assets/grafic.svg"
+import graficImg from "../assets/grafic.svg";
 
 function Header() {
   return (
     <header id="title">
+      <img src={graficImg} height="100px" />
       <h1>Bienvenido a FamilyFund</h1>
-      <p>Prueba desde React</p>
-      <img src={graficImg} alt="20px" />
     </header>
   );
 }
