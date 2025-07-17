@@ -3,35 +3,30 @@ import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 //Components
-import Header from "./components/Header";
-import ListaUsuarios from "./components/ListaUsuarios";
-import Container from "./components/Container";
 
+//Componentes de React-Router
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
+import Error from "./pages/Error";
+import Navbar  from "./components/Navbar";
 function App() {
-  const [msg, setMsg] = useState("Cargando...");
-
-  //Comprobar conexión con servidor
-  useEffect(() => {
-    fetch("http://localhost:8080/api/ping")
-      .then((res) => res.text())
-      .then((data) => setMsg(data))
-      .catch((err) => {
-        console.error("Error al conectar con backend:", err);
-        setMsg("Error de conexión");
-      });
-  }, []);
-
   return (
     <>
-      <Header />
-      <Container>
-        <h4>
-          Conexión backend: <span>{msg}</span>
-        </h4>
-        <ListaUsuarios />
-      </Container>
+      <Navbar/>
 
-      <h2>Routing</h2>
+      <h2>FamilyFund</h2>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/profile/:userId" element={<Profile />} />
+
+        {/* Rutas para gestionar errores */}
+        <Route path="/error" element={<Error />}/>
+        <Route path="*" element={<NotFound />}/>
+      </Routes>
     </>
   );
 }
