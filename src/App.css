@@ -1,6 +1,6 @@
 body {
   justify-content: center;
-  background-color: rgb(120, 201, 183);
+  /* background-color: rgb(120, 201, 183); */
 }
 
 #main-container {
@@ -24,3 +24,29 @@ nav a {
   color: brown;
   font-weight: bold;
 }
+
+/* Botones */
+button {
+  border-radius: 5px;
+}
+
+/* Modo oscuro/claro */
+.theme-dark{
+background-color: rgb(13, 114, 92);
+color: #ffffff;
+/* width: 90vh; */
+}
+
+.theme-light{
+background-color: rgb(179, 218, 209);
+color: #000000;
+}
+.dark-btn {
+  background-color: rgb(5, 68, 68);
+  color: rgb(255, 255, 255)
+} 
+
+.light-btn {
+  background-color: rgb(155, 187, 183);
+  color: rgb(5, 68, 68)
+} 
