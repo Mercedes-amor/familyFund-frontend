@@ -1,3 +1,6 @@
+/* ===============================
+   VARIABLES Y CONFIGURACIÓN GLOBAL
+   =============================== */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -13,6 +16,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ===============================
+   ESTILOS POR DEFECTO
+   =============================== */
+html, body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  display: block; /* Asegura que no hereda display flex */
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -22,19 +40,9 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  /* place-items: center; */
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+/* ===============================
+   BOTONES GENERALES
+   =============================== */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -54,15 +62,44 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* ===============================
+   MEDIA QUERIES - MODO CLARO
+   =============================== */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* ===============================
+   CONTENEDORES PRINCIPALES (ROOT + APP)
+   =============================== */
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+}
+
+.routes-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

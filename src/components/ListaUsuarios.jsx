@@ -20,7 +20,7 @@ const [usuarios, setUsuarios] = useState([]);
       <ul>
         {usuarios.map(u => (
           <li key={u.id}>
-            {u.nombre} {u.apellido1} {u.apellido2} - {u.email}
+            {u.nombre} {u.apellido} {u.edad} - {u.email}
           </li>
         ))}
       </ul>
