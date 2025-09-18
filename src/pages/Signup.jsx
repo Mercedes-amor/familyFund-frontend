@@ -8,7 +8,7 @@ function Signup() {
     edad: "",
     email: "",
     password: "",
-    rol: "USER", // por defecto USER
+    // Rol será por defecto USER
   });
 
   const [mensaje, setMensaje] = useState("");
@@ -81,10 +81,6 @@ function Signup() {
           minLength={3}
           maxLength={40}
         />
-        <select name="rol" value={form.rol} onChange={handleChange}>
-          <option value="USER">Usuario</option>
-          <option value="ADMIN">Administrador</option>
-        </select>
         <button type="submit">Registrarse</button>
         {mensaje && <p>{mensaje}</p>}
       </form>

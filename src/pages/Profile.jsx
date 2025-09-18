@@ -2,19 +2,19 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import FamilyForm from "../components/FamilyForm";
+
 function Profile() {
-  const { userId } = useParams();
+  const { userId } = useParams(); // userId viene de la URL
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) return;
 
-    // Usamos localStorage.getItem("user") directamente
     axios
       .get(`http://localhost:8080/api/user/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         setUserData(response.data);
@@ -35,8 +35,12 @@ function Profile() {
       ) : (
         <p>Cargando datos del usuario...</p>
       )}
+
+      {/* Pasamos userId al formulario */}
+      {userData && <FamilyForm userId={userId} />}
     </div>
   );
 }
 
 export default Profile;
+
