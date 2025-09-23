@@ -12,6 +12,7 @@ import Navbar from "./components/Navbar";
 
 //Pages
 import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard.jsx";
 import Servidor from "./pages/Servidor";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -33,8 +34,9 @@ return (
     <div className="routes-container">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/about" element={<Servidor />} />
-        <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/error" element={<Error />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />

@@ -1,46 +1,42 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
-
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import FamilyForm from "../components/FamilyForm";
+import JoinFamilyForm from "../components/JoinFamilyForm";
 
 function Profile() {
-  const { userId } = useParams(); // userId viene de la URL
-  const [userData, setUserData] = useState(null);
+  const { user, loading, logout } = useContext(UserContext);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  //Para evitar renderizar Profile antes 
+  // de que cargue UserProvider con los datos del usuario
+  if (loading) return <p>Cargando datos del usuario...</p>;
+  if (!user) return <p>No estás logueado.</p>;
 
-    axios
-      .get(`http://localhost:8080/api/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener datos del usuario:", error);
-      });
-  }, [userId]);
+  console.log("Profile render → user:", user);
 
   return (
-    <div>
-      <h3>Perfil del usuario con ID: {userId}</h3>
-      {userData ? (
-        <>
-          <p>Nombre: {userData.nombre}</p>
-          <p>Email: {userData.email}</p>
-        </>
-      ) : (
-        <p>Cargando datos del usuario...</p>
+    <div className="profile-container">
+      <h3>Perfil del usuario</h3>
+      <p><strong>Nombre:</strong> {user.nombre}</p>
+      <p><strong>Email:</strong> {user.email}</p>
+      <p>
+        <strong>Tu familia:</strong>{" "}
+        {user.family ? user.family.name : "Todavía no te has unido a una familia"}
+      </p>
+
+      {!user.family && (
+        <div className="family-forms">
+          <FamilyForm userId={user.id} />
+          <JoinFamilyForm userId={user.id} />
+        </div>
       )}
 
-      {/* Pasamos userId al formulario */}
-      {userData && <FamilyForm userId={userId} />}
+      <button onClick={logout} style={{ marginTop: "20px" }}>
+        Cerrar sesión
+      </button>
     </div>
   );
 }
 
 export default Profile;
+
 

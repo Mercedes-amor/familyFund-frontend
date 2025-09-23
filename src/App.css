@@ -73,8 +73,10 @@ body,
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: center; */
+  justify-content: center;
   height: 100vh;
+
+ 
 }
 
 .login-form {
@@ -110,8 +112,14 @@ body,
   flex-direction: column;
   /* align-items: center; */
   /* justify-content: center; */
-  height: 100vh;
+  /* height: 100vh; */
   padding-top: 20px;
+  border: 2px solid #333333;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)
 }
 
 .divForm {
@@ -138,6 +146,7 @@ body,
   font-size: 1rem;
   cursor: pointer;
 }
+
 /* ===============================
    TEMAS - MODO OSCURO Y CLARO
    =============================== */

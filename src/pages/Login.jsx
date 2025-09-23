@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,25 +15,27 @@ function Login() {
     try {
       const response = await axios.post(
         "http://localhost:8080/api/auth/signin",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
 
-      // Guardar datos del usuario y token en localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: response.data.id,
-          username: response.data.username,
-          email: response.data.email,
-        })
-      );
+      //Comprobar estado antes de guardar
+      console.log("LOGIN RESPONSE:", response.data);
+      console.log("Token:", response.data.accessToken);
+      console.log("UserId:", response.data.id);
 
-      // Redirigimos al profile
-      navigate("/profile/" + response.data.id);
+      // Guardar token y user en localStorage
+      localStorage.setItem("token", String(response.data.accessToken));
+      localStorage.setItem("userId", String(response.data.id));
+      localStorage.setItem("user", JSON.stringify(response.data));
+
+      //Comprobar estado después de guardar
+      console.log("LOCALSTORAGE TOKEN:", localStorage.getItem("token"));
+      console.log("LOCALSTORAGE USERID:", localStorage.getItem("userId"));
+      console.log("LOCALSTORAGE USER:", localStorage.getItem("user"));
+
+      // Actualizamos el contexto para que Profile tenga los datos inmediatamente
+      setUser(response.data);
+      navigate("/profile");
     } catch (error) {
       console.error("Error en login:", error);
       alert("Credenciales inválidas o error del servidor.");
@@ -49,6 +53,7 @@ function Login() {
             value={email}
             required
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
           />
         </label>
 
@@ -59,6 +64,7 @@ function Login() {
             value={password}
             required
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
           />
         </label>
 
