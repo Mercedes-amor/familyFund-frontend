@@ -1,143 +1,149 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 function Dashboard() {
-  // Estados de la página
-  const [family, setFamily] = useState(null); // Datos de la familia del usuario
-  const [categories, setCategories] = useState([]); // Categorías de la familia
-  const [transactions, setTransactions] = useState([]); // Transacciones de cada categoría
-  const [loading, setLoading] = useState(true); // Estado de carga
-  const [activeFormCategory, setActiveFormCategory] = useState(null); // Control del formulario new Transaction
+  //Estados de Dashboard
+  const { user, loading } = useContext(UserContext); //Usuario obtenido del UserContext
+  const [family, setFamily] = useState({});
+  const [members, setMembers] = useState([]); //Usuarios de la familia
+  const [categories, setCategories] = useState([]); //Categorías de la familia
+  const [transactions, setTransactions] = useState([]); //Tansacciones de las categorías de la familia
+  const [activeFormCategory, setActiveFormCategory] = useState(null); //Mostrar/ocultar FormCategory
 
-  const token = localStorage.getItem("token"); // Token JWT almacenado tras login
-  const userId = localStorage.getItem("userId"); // ID del usuario logueado
+  const familyId = user?.family?.id; //Sacamos el familyId del contexto
 
-  //Comienza el useEffect
   useEffect(() => {
-    if (!token || !userId) return; //Validamos si está el usuario logueado con su id y Token
+    if (!familyId) return; // aún no tenemos usuario o familia
 
-    //FUNCIÓN OBTENER USUARIO LOGUEADO, SU FAMILIA Y SUS CATEGORÍAS
-    const fetchUserAndCategories = async () => {
+    //FUNCIÓN OBTENER DATA DE LA FAMILIA
+    const fetchData = async () => {
       try {
-        // Obtenemos datos del usuario
-        const resUser = await axios.get(
-          `http://localhost:8080/api/auth/user/${userId}`,
+        const token = localStorage.getItem("token"); //Obtenemos token JWT
+
+        const familyRes = await fetch(
+          `http://localhost:8080/api/families/${familyId}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
           }
         );
+        if (!familyRes.ok) throw new Error("No autorizado");
+        setFamily(await familyRes.json());
 
-        const userData = resUser.data;
-        setFamily(userData.family); //Actualizamos familia del usuario
-
-        // Si tiene familia, obtener categorías de esa familia
-        if (userData.family) {
-          const resCat = await axios.get(
-            `/api/categories/list/${userData.family.id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
+        const membersRes = await fetch(
+          `http://localhost:8080/api/families/${familyId}/members`,
+          {
+            headers: {
+              'Authorization': 'Bearer ' + token
             }
-          );
+          }
+        );
+        if (!membersRes.ok) throw new Error("No autorizado");
+        setMembers(await membersRes.json());
 
-          // Aseguramos que sea array y reemplazamos todo el estado
-          setCategories(Array.isArray(resCat.data) ? resCat.data : []);
-        } else {
-          setCategories([]);
-        }
+        const categoriesRes = await fetch(
+          `http://localhost:8080/api/families/${familyId}/categories`,
+          {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          }
+        );
+        if (!categoriesRes.ok) throw new Error("No autorizado");
+        setCategories(await categoriesRes.json());
+
+        const transactionsRes = await fetch(
+          `http://localhost:8080/api/families/${familyId}/transactions`,
+          {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          }
+        );
+        if (!transactionsRes.ok) throw new Error("No autorizado");
+        setTransactions(await transactionsRes.json());
+
       } catch (err) {
         console.error("Error cargando datos:", err);
-        setCategories([]);
-      } finally {
-        setLoading(false); //Finalmente cambios el estado setLoading a false
       }
     };
 
-    fetchUserAndCategories(); //Ejecutamos la función
-  }, [token, userId]);
+    fetchData();
+  }, [familyId]);
 
   //HANDLES
 
-  //NEW CATEGORY
+  //FUNCIÓN AÑADIR TRANSACTION
+  const handleTransactionSubmit = async (categoryId, e) => {
+    e.preventDefault(); //Evitamos el submit directo
+    const formData = new FormData(e.target);
+
+    const newTransaction = {
+      name: formData.get("name"),
+      amount: parseFloat(formData.get("amount")),
+      type: "EXPENSE",
+      date: new Date().toISOString().split("T")[0] // yyyy-MM-dd
+    };
+
+    const res = await fetch(`http://localhost:8080/api/transactions/new/${categoryId}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify(newTransaction),
+    });
+
+    if (res.ok) {
+      const saved = await res.json();
+      setTransactions(prev => [...prev, saved]); //Añadimos nueva transaction al array
+      setActiveFormCategory(null); //ocultamos el formulario
+    } else {
+      console.error("Error creating transaction");
+    }
+  };
+
+  //FUNCIÓN AÑADIR CATEGORÍA
   const handleAddCategory = async () => {
-    const name = prompt("Introduce el nombre de la nueva categoría:");
+    const name = prompt("Nombre de la nueva categoría:");
     if (!name) return;
 
-    try {
-      const res = await axios.post(
-        `http://localhost:8080/api/categories/newCategory/${family.id}`,
-        { name },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    const res = await fetch(`http://localhost:8080/api/categories/newCategory/${familyId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify({ name }),
+    });
 
-      // Añadimos solo la nueva categoría al estado
-      setCategories((prev) => [...prev, res.data]);
-    } catch (err) {
-      console.error("Error creando categoría:", err);
-      alert("No se pudo crear la categoría. Revisa la consola.");
+    if (res.ok) {
+      const saved = await res.json();
+      setCategories((prev) => [...prev, saved]);
     }
   };
 
-  //NEW TRANSACTION
-  const handleTransactionSubmit = async (categoryId, e) => {
-    e.preventDefault(); //Evitar que se envíe directamente
-    const form = e.target;
-    const name = form.name.value.trim();
-    const amount = parseFloat(form.amount.value);
-
-    //Clausula de control de datos
-    if (!name || isNaN(amount) || amount <= 0) {
-      alert("Datos inválidos");
-      return;
-    }
-
-    try {
-      const res = await axios.post(
-        `http://localhost:8080/api/transactions/new/${categoryId}`,
-        {
-          name,
-          amount,
-          type: "EXPENSE", //Siempre será gasto desde este formulario
-          date: new Date().toISOString().split("T")[0], //Pasamos fecha actual del sistema
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setTransactions([...transactions, res.data]); //Añadimos la transacton al Array
-      setActiveFormCategory(null); // Ocultamos el formulario tras crear
-    } catch (err) {
-      console.error("Error creando transacción:", err);
-      alert("No se pudo crear la transacción. Revisar consola.");
-    }
-  };
-
-  if (loading) return <p>Cargando...</p>;
-  if (!family) return <p>No perteneces a ninguna familia todavía.</p>;
+  //Clausulas seguridad
+  if (loading) return <p>Cargando usuario...</p>;
+  if (!user) return <p>No hay usuario conectado</p>;
 
   return (
     <div>
       <h2>Familia: {family.name}</h2>
 
-      {/*Listado de usuarios de la Familia*/}
+      {/* Miembros */}
       <h3>Miembros</h3>
       <ul>
-        {family.usuarios?.map((u) => (
+        {members.map((u) => (
           <li key={u.id}>
             {u.nombre} - {u.email}
           </li>
         ))}
       </ul>
 
-      {/*Listado de Categorías de la Familia*/}
+      {/* Categorías */}
       <h3>Categorías</h3>
       {categories.length > 0 ? (
         <ul>
@@ -147,7 +153,6 @@ function Dashboard() {
               <button onClick={() => setActiveFormCategory(c.id)}>
                 ➕ Añadir transacción
               </button>
-              {/* Formulario para añadir transacción */}
               {activeFormCategory === c.id && (
                 <form
                   onSubmit={(e) => handleTransactionSubmit(c.id, e)}
@@ -177,7 +182,7 @@ function Dashboard() {
         <p>No hay categorías todavía.</p>
       )}
 
-      {/* BOTÓN NUEVA CATEGORÍA */}
+      {/* Botón nueva categoría */}
       <button
         onClick={handleAddCategory}
         style={{
@@ -193,6 +198,7 @@ function Dashboard() {
         ➕ Añadir categoría
       </button>
 
+      {/* Transacciones */}
       <h3>Transacciones</h3>
       <ul>
         {transactions.map((t) => (
