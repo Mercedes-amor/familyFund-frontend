@@ -2,7 +2,6 @@ import { useState } from "react";
 
 export default function FamilyForm({ userId, onFamilyCreated }) {
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -18,11 +17,15 @@ export default function FamilyForm({ userId, onFamilyCreated }) {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/families/newfamily?userId=${userId}`,
+        "http://localhost:8080/api/families/newfamily",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, description }),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: JSON.stringify({ name }),
         }
       );
 
@@ -34,7 +37,6 @@ export default function FamilyForm({ userId, onFamilyCreated }) {
       const newFamily = await response.json();
       setSuccess("Familia creada correctamente");
       setName("");
-      setDescription("");
 
       // Explicación de esta parte:
       // onFamilyCreated es una función opcional pasada desde Profile.
@@ -62,15 +64,6 @@ export default function FamilyForm({ userId, onFamilyCreated }) {
             required
           />
         </div>
-
-        <div>
-          <label>Descripción:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-
         <button type="submit">Crear Familia</button>
       </form>
     </div>

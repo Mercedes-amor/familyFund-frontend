@@ -14,7 +14,8 @@ function Navbar() {
         <NavLink className={checkActiveUrl} to="/">Home</NavLink>
         <NavLink className={checkActiveUrl} to="/dashboard">Dashboard</NavLink>
         <NavLink className={checkActiveUrl} to="/about">Servidor</NavLink>
-        <NavLink className={checkActiveUrl} to="/profile/usuarioNoLogueado">Profile</NavLink>
+        <NavLink className={checkActiveUrl} to="/profile">Profile</NavLink>
+        <NavLink className={checkActiveUrl} to="/categories">Categorías</NavLink>
         <NavLink className={checkActiveUrl} to="/error">Error</NavLink>
         <NavLink className={checkActiveUrl} to="/notFound">NotFound</NavLink>
         <NavLink className={checkActiveUrl} to="/login">Login</NavLink>

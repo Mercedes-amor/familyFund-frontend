@@ -37,7 +37,7 @@ function Profile() {
 
       {!user.family && (
         <div className="family-forms">
-          <FamilyForm userId={user.id} />
+          <FamilyForm />
           <JoinFamilyForm userId={user.id} />
         </div>
       )}
