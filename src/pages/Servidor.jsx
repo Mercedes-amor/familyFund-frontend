@@ -56,6 +56,7 @@ function About() {
         <h4>
           Conexión backend: <span>{msg}</span>
         </h4>
+        <ListaUsuarios />
          <InfoAPIWorldBank />
       </Container>
     </>

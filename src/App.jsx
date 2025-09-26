@@ -10,6 +10,7 @@ import "./App.css";
 //Components
 import Navbar from "./components/Navbar";
 
+
 //Pages
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard.jsx";
