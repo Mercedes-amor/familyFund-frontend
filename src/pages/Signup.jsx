@@ -34,7 +34,7 @@ function Signup() {
 
   return (
     <div className="login-container">
-      <h2>Crear Usuario</h2>
+      <h2 className="loginH2">Crear Usuario</h2>
 
       <form onSubmit={handleSubmit} className="login-form">
         <input

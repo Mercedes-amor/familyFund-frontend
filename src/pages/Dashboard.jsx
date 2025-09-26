@@ -25,8 +25,8 @@ function Dashboard() {
           `http://localhost:8080/api/families/${familyId}`,
           {
             headers: {
-              'Authorization': 'Bearer ' + token
-            }
+              Authorization: "Bearer " + token,
+            },
           }
         );
         if (!familyRes.ok) throw new Error("No autorizado");
@@ -36,8 +36,8 @@ function Dashboard() {
           `http://localhost:8080/api/families/${familyId}/members`,
           {
             headers: {
-              'Authorization': 'Bearer ' + token
-            }
+              Authorization: "Bearer " + token,
+            },
           }
         );
         if (!membersRes.ok) throw new Error("No autorizado");
@@ -47,8 +47,8 @@ function Dashboard() {
           `http://localhost:8080/api/families/${familyId}/categories`,
           {
             headers: {
-              'Authorization': 'Bearer ' + token
-            }
+              Authorization: "Bearer " + token,
+            },
           }
         );
         if (!categoriesRes.ok) throw new Error("No autorizado");
@@ -58,13 +58,12 @@ function Dashboard() {
           `http://localhost:8080/api/families/${familyId}/transactions`,
           {
             headers: {
-              'Authorization': 'Bearer ' + token
-            }
+              Authorization: "Bearer " + token,
+            },
           }
         );
         if (!transactionsRes.ok) throw new Error("No autorizado");
         setTransactions(await transactionsRes.json());
-
       } catch (err) {
         console.error("Error cargando datos:", err);
       }
@@ -84,21 +83,24 @@ function Dashboard() {
       name: formData.get("name"),
       amount: parseFloat(formData.get("amount")),
       type: "EXPENSE",
-      date: new Date().toISOString().split("T")[0] // yyyy-MM-dd
+      date: new Date().toISOString().split("T")[0], // yyyy-MM-dd
     };
 
-    const res = await fetch(`http://localhost:8080/api/transactions/new/${categoryId}`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      },
-      body: JSON.stringify(newTransaction),
-    });
+    const res = await fetch(
+      `http://localhost:8080/api/transactions/new/${categoryId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify(newTransaction),
+      }
+    );
 
     if (res.ok) {
       const saved = await res.json();
-      setTransactions(prev => [...prev, saved]); //Añadimos nueva transaction al array
+      setTransactions((prev) => [...prev, saved]); //Añadimos nueva transaction al array
       setActiveFormCategory(null); //ocultamos el formulario
     } else {
       console.error("Error creating transaction");
@@ -110,14 +112,17 @@ function Dashboard() {
     const name = prompt("Nombre de la nueva categoría:");
     if (!name) return;
 
-    const res = await fetch(`http://localhost:8080/api/categories/newCategory/${familyId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      },
-      body: JSON.stringify({ name }),
-    });
+    const res = await fetch(
+      `http://localhost:8080/api/categories/newCategory/${familyId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({ name }),
+      }
+    );
 
     if (res.ok) {
       const saved = await res.json();
@@ -146,17 +151,18 @@ function Dashboard() {
       {/* Categorías */}
       <h3>Categorías</h3>
       {categories.length > 0 ? (
-        <ul>
+        <ul className="categories-list">
           {categories.map((c) => (
-            <li key={c.id}>
-              {c.name}{" "}
-              <button onClick={() => setActiveFormCategory(c.id)}>
-                ➕ Añadir transacción
-              </button>
+            <li key={c.id} className="category-item">
+              <span className="category-name">{c.name}</span>
+              <div className="category-actions">
+                <button onClick={() => setActiveFormCategory(c.id)}>➕Añadir gasto</button>
+              </div>
+
               {activeFormCategory === c.id && (
                 <form
                   onSubmit={(e) => handleTransactionSubmit(c.id, e)}
-                  style={{ marginTop: "5px" }}
+                  style={{ marginTop: "5px", width: "100%" }}
                 >
                   <input name="name" placeholder="Nombre" required />
                   <input
