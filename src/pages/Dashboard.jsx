@@ -1,48 +1,61 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import DashboardChart from "../components/DashboardChart.jsx";
-
 import "../Dashboard.css";
 
 function Dashboard() {
   const { user, loading } = useContext(UserContext);
   const [family, setFamily] = useState({});
+  const [members, setMembers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
   const familyId = user?.family?.id;
 
   useEffect(() => {
-    if (!familyId) return;
+  if (!familyId) return;
 
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const [familyRes, categoriesRes, transactionsRes] = await Promise.all([
+  const fetchData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const [familyRes, categoriesRes, transactionsRes, membersRes] =
+        await Promise.all([
           fetch(`http://localhost:8080/api/families/${familyId}`, {
             headers: { Authorization: "Bearer " + token },
           }),
-          fetch(`http://localhost:8080/api/families/${familyId}/categories`, {
-            headers: { Authorization: "Bearer " + token },
-          }),
-          fetch(`http://localhost:8080/api/families/${familyId}/transactions`, {
-            headers: { Authorization: "Bearer " + token },
-          }),
+          fetch(
+            `http://localhost:8080/api/families/${familyId}/categories`,
+            { headers: { Authorization: "Bearer " + token } }
+          ),
+          fetch(
+            `http://localhost:8080/api/families/${familyId}/transactions`,
+            { headers: { Authorization: "Bearer " + token } }
+          ),
+          fetch(
+            `http://localhost:8080/api/families/${familyId}/members`,
+            { headers: { Authorization: "Bearer " + token } }
+          ),
         ]);
 
-        if (!familyRes.ok || !categoriesRes.ok || !transactionsRes.ok)
-          throw new Error("Error cargando datos");
+      if (
+        !familyRes.ok ||
+        !categoriesRes.ok ||
+        !transactionsRes.ok ||
+        !membersRes.ok
+      )
+        throw new Error("Error cargando datos");
 
-        setFamily(await familyRes.json());
-        setCategories(await categoriesRes.json());
-        setTransactions(await transactionsRes.json());
-      } catch (err) {
-        console.error(err);
-      }
-    };
+      setFamily(await familyRes.json());
+      setCategories(await categoriesRes.json());
+      setTransactions(await transactionsRes.json());
+      setMembers(await membersRes.json()); // <-- aquí guardamos los miembros
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    fetchData();
-  }, [familyId]);
+  fetchData();
+}, [familyId]);
 
   if (loading) return <p>Cargando...</p>;
   if (!user) return <p>No hay usuario conectado</p>;
@@ -73,6 +86,14 @@ function Dashboard() {
     <div className="dashboard-wrapper">
       <h2>Familia: {family.name}</h2>
 
+      <h3>Miembros de la familia</h3>
+      <ul className="members-list">
+        {members.map((m) => (
+          <li key={m.id} className="member-item">
+            <strong>{m.nombre}</strong> - {m.email}
+          </li>
+        ))}
+      </ul>
       <div className="categories-container">
         {/* TARJETA INGRESOS */}
         <div className="category-card">

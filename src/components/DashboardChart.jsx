@@ -32,7 +32,7 @@ export default function DashboardChart({ ingresos, gastos }) {
           <YAxis />
           <Tooltip formatter={(value) => `${value} €`} />
           <Legend />
-          <Bar dataKey="Ingresos" fill="rgba(9, 90, 86, 1)" />
+          <Bar dataKey="Ingresos" fill="rgba(7, 107, 40, 1)" />
           <Bar dataKey="Gastos" fill="rgba(109, 15, 73, 1)" />
         </BarChart>
       </ResponsiveContainer>

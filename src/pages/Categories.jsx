@@ -2,6 +2,9 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import CategoryBar from "../components/CategoryBar.jsx";
 
+import "../CategoriesPage.css";
+
+
 export default function CategoriasPage() {
   const { user, userLoading } = useContext(UserContext);
   const [categories, setCategories] = useState([]);
@@ -239,39 +242,43 @@ export default function CategoriasPage() {
       console.error(err.message);
     }
   };
-  //ACtualizar categoria
-  const handleUpdateCategory = async (categoryId) => {
-    try {
-      const token = localStorage.getItem("token");
+  // Actualizar categoría
+const handleUpdateCategory = async (categoryId) => {
+  try {
+    const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `http://localhost:8080/api/categories/edit/${categoryId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
-          body: JSON.stringify({
-            name: editCategoryName,
-            limit: parseFloat(editCategoryLimit),
-          }),
-        }
-      );
+    const response = await fetch(
+      `http://localhost:8080/api/categories/edit/${categoryId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          name: editCategoryName,
+          limit: parseFloat(editCategoryLimit),
+        }),
+      }
+    );
 
-      if (!response.ok) throw new Error("Error al actualizar categoría");
+    if (!response.ok) throw new Error("Error al actualizar categoría");
 
-      const updatedCat = await response.json();
+    const updatedCat = await response.json();
 
-      setCategories((prev) =>
-        prev.map((c) => (c.id === updatedCat.id ? updatedCat : c))
-      );
+    setCategories((prev) =>
+      prev.map((c) =>
+        c.id === updatedCat.id
+          ? { ...updatedCat, transactions: c.transactions || [] } // preservamos las transacciones
+          : c
+      )
+    );
 
-      setEditingCategoryId(null);
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+    setEditingCategoryId(null);
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   const handleDeleteCategory = async (catId) => {
     if (
@@ -299,7 +306,7 @@ export default function CategoriasPage() {
 
 
   return (
-    <div>
+    <div className="categories-wrapper">
       <h2 className="pageH2">Categorías</h2>
 
       <div className="categories-div">
