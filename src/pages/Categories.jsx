@@ -7,9 +7,10 @@ export default function CategoriasPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Estados mostrar formulario transacción
+  // Estados mostrar formularios categoría y transacción
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
 
   // Estados nueva Transacción
   const [transactionName, setTransactionName] = useState("");
@@ -73,10 +74,20 @@ export default function CategoriasPage() {
     setTransactionAmount("");
   };
 
+  //Crear transacción (Ingreso o gasto)
   const handleSubmitTransaction = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
+
+      // Buscar la categoría seleccionada
+      const category = categories.find((cat) => cat.id === selectedCategoryId);
+      if (!category) throw new Error("Categoría no encontrada");
+
+      // Determinamos ingreso o gasto según el nombre de la categoría
+      const txType =
+        category.name.toUpperCase() === "INGRESOS" ? "INCOME" : "EXPENSE";
+
       const response = await fetch(
         `http://localhost:8080/api/transactions/new/${selectedCategoryId}`,
         {
@@ -88,7 +99,7 @@ export default function CategoriasPage() {
           body: JSON.stringify({
             name: transactionName,
             amount: parseFloat(transactionAmount),
-            type: "EXPENSE",
+            type: txType,
             date: new Date().toISOString().split("T")[0],
           }),
         }
@@ -196,7 +207,38 @@ export default function CategoriasPage() {
     setEditCategoryName(cat.name);
     setEditCategoryLimit(cat.limit ?? "");
   };
+  // Crear nueva categoría
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newCategory = {
+      name: formData.get("name"),
+      limit: parseFloat(formData.get("limit")),
+    };
 
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/categories/newCategory/${familyId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: JSON.stringify(newCategory),
+        }
+      );
+
+      if (!res.ok) throw new Error("Error creando categoría");
+
+      const saved = await res.json();
+      setCategories((prev) => [...prev, saved]);
+      setShowCategoryForm(false);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+  //ACtualizar categoria
   const handleUpdateCategory = async (categoryId) => {
     try {
       const token = localStorage.getItem("token");
@@ -254,137 +296,177 @@ export default function CategoriasPage() {
   if (loading) return <p>Cargando categorías...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-return (
-  <div>
-    <h2 className="pageH2">Categorías</h2>
-  <div className="categories-div">
+  return (
+    <div>
+      <h2 className="pageH2">Categorías</h2>
+      <div className="categories-div">
+        {categories.map((category) => (
+          <div key={category.id} className="category-wrapper">
+            {/* Información de límite, total y porcentaje fuera de la tarjeta */}
+            <div className="category-info">
+              <strong>Límite:</strong> {category.limit ?? "∞"} € |{" "}
+              <strong>Total:</strong> {category.totalSpent ?? 0} € |{" "}
+              <strong>Porcentaje:</strong>{" "}
+              {category.percentage ? category.percentage.toFixed(1) + "%" : "-"}
+            </div>
 
-    {categories.map((category) => (
-      <div key={category.id} className="category-wrapper">
-        {/* Información de límite, total y porcentaje fuera de la tarjeta */}
-        <div className="category-info">
-          <strong>Límite:</strong> {category.limit ?? "∞"} € |{" "}
-          <strong>Total:</strong> {category.totalSpent ?? 0} € |{" "}
-          <strong>Porcentaje:</strong>{" "}
-          {category.percentage ? category.percentage.toFixed(1) + "%" : "-"}
-        </div>
-
-        <div className="category-card">
-          <div className="category-header">
-            {editingCategoryId === category.id ? (
-              <div className="category-edit-form">
-                <input
-                  type="text"
-                  value={editCategoryName}
-                  onChange={(e) => setEditCategoryName(e.target.value)}
-                  required
-                />
-                <input
-                  type="number"
-                  value={editCategoryLimit}
-                  onChange={(e) => setEditCategoryLimit(e.target.value)}
-                  placeholder="Límite"
-                  min="0"
-                />
-                <button onClick={() => handleUpdateCategory(category.id)}>
-                  Guardar
-                </button>
-                <button onClick={() => setEditingCategoryId(null)}>
-                  Cancelar
-                </button>
-              </div>
-            ) : (
-              <>
-                <h3>{category.name}</h3>
-                <div className="category-actions">
-                  <button onClick={() => startEditCategory(category)}>✏️</button>
-                  <button onClick={() => handleDeleteCategory(category.id)}>🗑️</button>
-                </div>
-              </>
-            )}
-          </div>
-
-          <ul className="transactions-list">
-            {category.transactions?.map((tx) => (
-              <li key={tx.id}>
-                {editTransactionId === tx.id ? (
-                  <form
-                    onSubmit={(e) => handleUpdateTransaction(category.id, tx.id, e)}
-                    className="transaction-form"
-                  >
+            <div className="category-card">
+              <div className="category-header">
+                {editingCategoryId === category.id ? (
+                  <div className="category-edit-form">
                     <input
                       type="text"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
+                      value={editCategoryName}
+                      onChange={(e) => setEditCategoryName(e.target.value)}
                       required
                     />
                     <input
                       type="number"
-                      step="0.01"
-                      value={editAmount}
-                      onChange={(e) => setEditAmount(e.target.value)}
-                      required
+                      value={editCategoryLimit}
+                      onChange={(e) => setEditCategoryLimit(e.target.value)}
+                      placeholder="Límite"
+                      min="0"
                     />
-                    <button type="submit">Guardar</button>
-                    <button
-                      type="button"
-                      onClick={() => setEditTransactionId(null)}
-                    >
+                    <button onClick={() => handleUpdateCategory(category.id)}>
+                      Guardar
+                    </button>
+                    <button onClick={() => setEditingCategoryId(null)}>
                       Cancelar
                     </button>
-                  </form>
-                ) : (
-                  <div className="transaction-item">
-                    {tx.name} - {tx.amount} €
-                    <button onClick={() => handleEditClick(tx)}>✏️</button>
-                    <button
-                      onClick={() => handleDeleteTransaction(category.id, tx.id)}
-                    >
-                      🗑️
-                    </button>
                   </div>
+                ) : (
+                  <>
+                    <h3>{category.name}</h3>
+                    <div className="category-actions">
+                      <button onClick={() => startEditCategory(category)}>
+                        ✏️
+                      </button>
+                      <button onClick={() => handleDeleteCategory(category.id)}>
+                        🗑️
+                      </button>
+                    </div>
+                  </>
                 )}
-              </li>
-            ))}
-          </ul>
+              </div>
 
-          <button
-            className="add-transaction-btn"
-            onClick={() => handleAddTransaction(category.id)}
-          >
-            ➕ Añadir
-          </button>
-        </div>
+              <ul className="transactions-list">
+                {category.transactions?.map((tx) => (
+                  <li key={tx.id}>
+                    {editTransactionId === tx.id ? (
+                      <form
+                        onSubmit={(e) =>
+                          handleUpdateTransaction(category.id, tx.id, e)
+                        }
+                        className="transaction-form"
+                      >
+                        <input
+                          type="text"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          required
+                        />
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={editAmount}
+                          onChange={(e) => setEditAmount(e.target.value)}
+                          required
+                        />
+                        <button type="submit">Guardar</button>
+                        <button
+                          type="button"
+                          onClick={() => setEditTransactionId(null)}
+                        >
+                          Cancelar
+                        </button>
+                      </form>
+                    ) : (
+                      <div className="transaction-item">
+                        {tx.name} - {tx.amount} €
+                        <button onClick={() => handleEditClick(tx)}>✏️</button>
+                        <button
+                          onClick={() =>
+                            handleDeleteTransaction(category.id, tx.id)
+                          }
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                className="add-transaction-btn"
+                onClick={() => handleAddTransaction(category.id)}
+              >
+                ➕ Añadir
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-    ))}
-</div>
-    {showTransactionForm && (
-      <div className="new-transaction-form">
-        <h3>Nuevo gasto</h3>
-        <form onSubmit={handleSubmitTransaction}>
+      {/* Formulario nueva categoría */}
+      {showCategoryForm ? (
+        <form
+          onSubmit={handleAddCategory}
+          style={{ marginTop: "10px", display: "flex", gap: "10px" }}
+        >
+          <input name="name" placeholder="Nombre categoría" required />
           <input
-            type="text"
-            placeholder="Nombre"
-            value={transactionName}
-            onChange={(e) => setTransactionName(e.target.value)}
-            required
-          />
-          <input
+            name="limit"
             type="number"
-            placeholder="Importe"
-            value={transactionAmount}
-            onChange={(e) => setTransactionAmount(e.target.value)}
+            placeholder="Límite (€)"
+            step="0.01"
             required
           />
-          <button type="submit">Guardar</button>
-          <button type="button" onClick={() => setShowTransactionForm(false)}>
+          <button type="submit">Crear</button>
+          <button type="button" onClick={() => setShowCategoryForm(false)}>
             Cancelar
           </button>
         </form>
-      </div>
-    )}
-  </div>
-);
-
-
+      ) : (
+        <button
+          onClick={() => setShowCategoryForm(true)}
+          style={{
+            marginTop: "10px",
+            padding: "5px 10px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          ➕ Añadir categoría
+        </button>
+      )}
+      {showTransactionForm && (
+        <div className="new-transaction-form">
+          <h3>Nuevo gasto</h3>
+          <form onSubmit={handleSubmitTransaction}>
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={transactionName}
+              onChange={(e) => setTransactionName(e.target.value)}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Importe"
+              value={transactionAmount}
+              onChange={(e) => setTransactionAmount(e.target.value)}
+              required
+            />
+            <button type="submit">Guardar</button>
+            <button type="button" onClick={() => setShowTransactionForm(false)}>
+              Cancelar
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
 }
