@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import DashboardChart from "../components/DashboardChart.jsx";
+
 import "../Dashboard.css";
 
 function Dashboard() {
@@ -114,6 +116,11 @@ function Dashboard() {
           <strong>Total GASTOS:</strong> {totalGastos} €
         </p>
       </div>
+      <h3>Ingresos vs Gastos</h3>
+      <DashboardChart
+        ingresos={parseFloat(totalIngresos)}
+        gastos={parseFloat(totalGastos)}
+      />
     </div>
   );
 }

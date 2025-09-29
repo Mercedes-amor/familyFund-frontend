@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import CategoryBar from "../components/CategoryBar.jsx";
 
 export default function CategoriasPage() {
   const { user, userLoading } = useContext(UserContext);
@@ -296,20 +297,14 @@ export default function CategoriasPage() {
   if (loading) return <p>Cargando categorías...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
+
   return (
     <div>
       <h2 className="pageH2">Categorías</h2>
+
       <div className="categories-div">
         {categories.map((category) => (
           <div key={category.id} className="category-wrapper">
-            {/* Información de límite, total y porcentaje fuera de la tarjeta */}
-            <div className="category-info">
-              <strong>Límite:</strong> {category.limit ?? "∞"} € |{" "}
-              <strong>Total:</strong> {category.totalSpent ?? 0} € |{" "}
-              <strong>Porcentaje:</strong>{" "}
-              {category.percentage ? category.percentage.toFixed(1) + "%" : "-"}
-            </div>
-
             <div className="category-card">
               <div className="category-header">
                 {editingCategoryId === category.id ? (
@@ -397,16 +392,57 @@ export default function CategoriasPage() {
                 ))}
               </ul>
 
+              {/* Botón ➕ Añadir y formulario dentro de la tarjeta */}
               <button
                 className="add-transaction-btn"
                 onClick={() => handleAddTransaction(category.id)}
               >
                 ➕ Añadir
               </button>
+
+              {showTransactionForm && selectedCategoryId === category.id && (
+                <form
+                  onSubmit={handleSubmitTransaction}
+                  className="new-transaction-form"
+                  style={{ marginTop: "10px" }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Nombre"
+                    value={transactionName}
+                    onChange={(e) => setTransactionName(e.target.value)}
+                    required
+                  />
+                  <input
+                    type="number"
+                    placeholder="Importe"
+                    value={transactionAmount}
+                    onChange={(e) => setTransactionAmount(e.target.value)}
+                    required
+                  />
+                  <button type="submit">Guardar</button>
+                  <button
+                    type="button"
+                    onClick={() => setShowTransactionForm(false)}
+                  >
+                    Cancelar
+                  </button>
+                </form>
+              )}
+
+              {/* Barra de progreso de gastos usando CategoryBar */}
+              <CategoryBar
+                total={category.transactions.reduce(
+                  (sum, t) => sum + t.amount,
+                  0
+                )}
+                limit={category.limit}
+              />
             </div>
           </div>
         ))}
       </div>
+
       {/* Formulario nueva categoría */}
       {showCategoryForm ? (
         <form
@@ -441,31 +477,6 @@ export default function CategoriasPage() {
         >
           ➕ Añadir categoría
         </button>
-      )}
-      {showTransactionForm && (
-        <div className="new-transaction-form">
-          <h3>Nuevo gasto</h3>
-          <form onSubmit={handleSubmitTransaction}>
-            <input
-              type="text"
-              placeholder="Nombre"
-              value={transactionName}
-              onChange={(e) => setTransactionName(e.target.value)}
-              required
-            />
-            <input
-              type="number"
-              placeholder="Importe"
-              value={transactionAmount}
-              onChange={(e) => setTransactionAmount(e.target.value)}
-              required
-            />
-            <button type="submit">Guardar</button>
-            <button type="button" onClick={() => setShowTransactionForm(false)}>
-              Cancelar
-            </button>
-          </form>
-        </div>
       )}
     </div>
   );
