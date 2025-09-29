@@ -4,63 +4,47 @@ import { UserContext } from "../context/UserContext";
 
 function Dashboard() {
   //Estados de Dashboard
-  const { user, loading } = useContext(UserContext); //Usuario obtenido del UserContext
+  const { user, loading } = useContext(UserContext);
   const [family, setFamily] = useState({});
-  const [members, setMembers] = useState([]); //Usuarios de la familia
-  const [categories, setCategories] = useState([]); //Categorías de la familia
-  const [transactions, setTransactions] = useState([]); //Tansacciones de las categorías de la familia
-  const [activeFormCategory, setActiveFormCategory] = useState(null); //Mostrar/ocultar FormCategory
+  const [members, setMembers] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [activeFormCategory, setActiveFormCategory] = useState(null);
+  const [showCategoryForm, setShowCategoryForm] = useState(false); // Mostrar/ocultar form categoría
 
-  const familyId = user?.family?.id; //Sacamos el familyId del contexto
+  const familyId = user?.family?.id;
 
   useEffect(() => {
-    if (!familyId) return; // aún no tenemos usuario o familia
+    if (!familyId) return;
 
-    //FUNCIÓN OBTENER DATA DE LA FAMILIA
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token"); //Obtenemos token JWT
+        const token = localStorage.getItem("token");
 
         const familyRes = await fetch(
           `http://localhost:8080/api/families/${familyId}`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
+          { headers: { Authorization: "Bearer " + token } }
         );
         if (!familyRes.ok) throw new Error("No autorizado");
         setFamily(await familyRes.json());
 
         const membersRes = await fetch(
           `http://localhost:8080/api/families/${familyId}/members`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
+          { headers: { Authorization: "Bearer " + token } }
         );
         if (!membersRes.ok) throw new Error("No autorizado");
         setMembers(await membersRes.json());
 
         const categoriesRes = await fetch(
           `http://localhost:8080/api/families/${familyId}/categories`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
+          { headers: { Authorization: "Bearer " + token } }
         );
         if (!categoriesRes.ok) throw new Error("No autorizado");
         setCategories(await categoriesRes.json());
 
         const transactionsRes = await fetch(
           `http://localhost:8080/api/families/${familyId}/transactions`,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
+          { headers: { Authorization: "Bearer " + token } }
         );
         if (!transactionsRes.ok) throw new Error("No autorizado");
         setTransactions(await transactionsRes.json());
@@ -72,18 +56,16 @@ function Dashboard() {
     fetchData();
   }, [familyId]);
 
-  //HANDLES
-
   //FUNCIÓN AÑADIR TRANSACTION
   const handleTransactionSubmit = async (categoryId, e) => {
-    e.preventDefault(); //Evitamos el submit directo
+    e.preventDefault();
     const formData = new FormData(e.target);
 
     const newTransaction = {
       name: formData.get("name"),
       amount: parseFloat(formData.get("amount")),
       type: "EXPENSE",
-      date: new Date().toISOString().split("T")[0], // yyyy-MM-dd
+      date: new Date().toISOString().split("T")[0],
     };
 
     const res = await fetch(
@@ -100,17 +82,22 @@ function Dashboard() {
 
     if (res.ok) {
       const saved = await res.json();
-      setTransactions((prev) => [...prev, saved]); //Añadimos nueva transaction al array
-      setActiveFormCategory(null); //ocultamos el formulario
+      setTransactions((prev) => [...prev, saved]);
+      setActiveFormCategory(null);
     } else {
       console.error("Error creating transaction");
     }
   };
 
   //FUNCIÓN AÑADIR CATEGORÍA
-  const handleAddCategory = async () => {
-    const name = prompt("Nombre de la nueva categoría:");
-    if (!name) return;
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const newCategory = {
+      name: formData.get("name"),
+      limit: parseFloat(formData.get("limit")),
+    };
 
     const res = await fetch(
       `http://localhost:8080/api/categories/newCategory/${familyId}`,
@@ -120,13 +107,16 @@ function Dashboard() {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify(newCategory),
       }
     );
 
     if (res.ok) {
       const saved = await res.json();
       setCategories((prev) => [...prev, saved]);
+      setShowCategoryForm(false); // ocultamos formulario
+    } else {
+      console.error("Error creando categoría");
     }
   };
 
@@ -154,9 +144,13 @@ function Dashboard() {
         <ul className="categories-list">
           {categories.map((c) => (
             <li key={c.id} className="category-item">
-              <span className="category-name">{c.name}</span>
+              <span className="category-name">
+                {c.name} (límite: {c.limit ?? "sin límite"})
+              </span>
               <div className="category-actions">
-                <button onClick={() => setActiveFormCategory(c.id)}>➕Añadir gasto</button>
+                <button onClick={() => setActiveFormCategory(c.id)}>
+                  ➕Añadir gasto
+                </button>
               </div>
 
               {activeFormCategory === c.id && (
@@ -188,21 +182,41 @@ function Dashboard() {
         <p>No hay categorías todavía.</p>
       )}
 
-      {/* Botón nueva categoría */}
-      <button
-        onClick={handleAddCategory}
-        style={{
-          marginTop: "10px",
-          padding: "5px 10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        ➕ Añadir categoría
-      </button>
+      {/* Formulario nueva categoría */}
+      {showCategoryForm ? (
+        <form
+          onSubmit={handleAddCategory}
+          style={{ marginTop: "10px", display: "flex", gap: "10px" }}
+        >
+          <input name="name" placeholder="Nombre categoría" required />
+          <input
+            name="limit"
+            type="number"
+            placeholder="Límite (€)"
+            step="0.01"
+            required
+          />
+          <button type="submit">Crear</button>
+          <button type="button" onClick={() => setShowCategoryForm(false)}>
+            Cancelar
+          </button>
+        </form>
+      ) : (
+        <button
+          onClick={() => setShowCategoryForm(true)}
+          style={{
+            marginTop: "10px",
+            padding: "5px 10px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          ➕ Añadir categoría
+        </button>
+      )}
 
       {/* Transacciones */}
       <h3>Transacciones</h3>

@@ -86,7 +86,7 @@ function Navbar() {
                 </li>
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/signup">
-                    Signup
+                    Registrarse
                   </NavLink>
                 </li>
               </>
