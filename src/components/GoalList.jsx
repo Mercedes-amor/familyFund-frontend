@@ -87,7 +87,11 @@ export default function GoalList({
             <div className="goal-info">
               <strong>{goal.name}</strong> - Ahorro: {goal.amount} € -
               Categoría: {goal.categoryName} -{" "}
-              {goal.achieved ? "🏆 Conseguido" : "⏳ Activo"}
+              {goal.achieved
+                ? "🏆 Conseguido"
+                : goal.month < new Date().toISOString().slice(0, 7)
+                ? "❌ No conseguido"
+                : "⏳ Activo"}
               {!readOnly && (
                 <span style={{ marginLeft: "10px" }}>
                   <button onClick={() => handleEditClick(goal)}>✏️</button>

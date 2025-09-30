@@ -52,9 +52,23 @@ export default function GoalsPage() {
   if (loading) return <p>Cargando...</p>;
   if (!user) return <p>No hay usuario conectado</p>;
 
-  // Dividimos objetivos en activos y conseguidos
-  const activeGoals = goals.filter((g) => !g.achieved);
+  // Calcular mes actual en formato YYYY-MM
+  const currentMonth = new Date().toISOString().slice(0, 7);
+
+  // Dividimos objetivos en:
+
+  // Objetivos activos: del mes seleccionado o futuros, no conseguidos
+  const activeGoals = goals.filter(
+    (g) => !g.achieved && g.month >= currentMonth
+  );
+
+  // Objetivos conseguidos
   const achievedGoals = goals.filter((g) => g.achieved);
+
+  // Objetivos pasados NO conseguidos
+  const failedGoals = goals.filter(
+    (g) => !g.achieved && g.month < currentMonth
+  );
 
   return (
     <div className="goals-page-wrapper">
@@ -69,15 +83,7 @@ export default function GoalsPage() {
         />
       </div>
 
-      <GoalForm
-        familyId={familyId}
-        categories={categories}
-        onGoalCreated={(newGoal) => setGoals((prev) => [...prev, newGoal])}
-        token={token}
-        selectedMonth={selectedMonth}
-      />
-
-      <h3>Objetivos activos</h3>
+      <h3>Objetivos actuales</h3>
       <GoalList
         goals={activeGoals}
         onGoalUpdated={(updatedGoal) =>
@@ -91,11 +97,11 @@ export default function GoalsPage() {
         token={token}
       />
 
-      <h3>Objetivos conseguidos / históricos</h3>
-      <GoalList
-        goals={achievedGoals}
-        readOnly={true} // en la lista histórica no se puede editar
-      />
+      <h3>HISTÓRICO: Objetivos conseguidos</h3>
+      <GoalList goals={achievedGoals} readOnly={true} />
+
+      <h3>HISTÓRICO: Objetivos NO conseguidos</h3>
+      <GoalList goals={failedGoals} readOnly={true} />
     </div>
   );
 }
