@@ -4,7 +4,6 @@ import CategoryBar from "../components/CategoryBar.jsx";
 
 import "../CategoriesPage.css";
 
-
 export default function CategoriasPage() {
   const { user, userLoading } = useContext(UserContext);
   const [categories, setCategories] = useState([]);
@@ -30,7 +29,18 @@ export default function CategoriasPage() {
   const [editCategoryName, setEditCategoryName] = useState("");
   const [editCategoryLimit, setEditCategoryLimit] = useState("");
 
-  const familyId = user?.family?.id;
+  // Estado para el mes selecionado para visualización
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const today = new Date();
+    // Guardamos mes actual en formato YYYY-MM.
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}`;
+  });
+
+  //Obtenemos el id de la familia del usuario logueado
+  const familyId = user?.family?.id; //!!!!!!!!!!!!!!
 
   // CARGAR DATOS
   useEffect(() => {
@@ -40,6 +50,7 @@ export default function CategoriasPage() {
       try {
         const token = localStorage.getItem("token");
 
+        //Primero obtenemos las categorías de la familia
         const categoriesRes = await fetch(
           `http://localhost:8080/api/families/${familyId}/categories`,
           { headers: { Authorization: "Bearer " + token } }
@@ -47,6 +58,7 @@ export default function CategoriasPage() {
         if (!categoriesRes.ok) throw new Error("Error al cargar categorías");
         const categoriesData = await categoriesRes.json();
 
+        //Ahora con un map obtenemos las transacciones de cada categoría filtradas por mes
         const categoriesWithTx = await Promise.all(
           categoriesData.map(async (cat) => {
             const txRes = await fetch(
@@ -59,6 +71,7 @@ export default function CategoriasPage() {
           })
         );
 
+        //En el estado cargamos las categorías con sus transacciones
         setCategories(categoriesWithTx);
       } catch (err) {
         setError(err.message);
@@ -92,6 +105,7 @@ export default function CategoriasPage() {
       const txType =
         category.name.toUpperCase() === "INGRESOS" ? "INCOME" : "EXPENSE";
 
+      //POST - Crear transacción
       const response = await fetch(
         `http://localhost:8080/api/transactions/new/${selectedCategoryId}`,
         {
@@ -116,6 +130,7 @@ export default function CategoriasPage() {
 
       const newTx = await response.json();
 
+      //Actualizamos el estado de la categoría después de añadirle una transacción nueva
       setCategories((prev) =>
         prev.map((cat) =>
           cat.id === selectedCategoryId
@@ -123,7 +138,7 @@ export default function CategoriasPage() {
             : cat
         )
       );
-
+      //Ocultamos el formulario al finalizar
       setShowTransactionForm(false);
     } catch (err) {
       alert(err.message);
@@ -136,6 +151,7 @@ export default function CategoriasPage() {
     setEditAmount(tx.amount);
   };
 
+  //PUT - Actualizar transacción
   const handleUpdateTransaction = async (categoryId, txId, e) => {
     e.preventDefault();
     try {
@@ -179,7 +195,7 @@ export default function CategoriasPage() {
       alert(err.message);
     }
   };
-
+  //DELETE - Borrar transacción
   const handleDeleteTransaction = async (categoryId, txId) => {
     if (!window.confirm("¿Seguro que quieres borrar esta transacción?")) return;
     try {
@@ -211,7 +227,7 @@ export default function CategoriasPage() {
     setEditCategoryName(cat.name);
     setEditCategoryLimit(cat.limit ?? "");
   };
-  // Crear nueva categoría
+  // POST - Crear nueva categoría
   const handleAddCategory = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -236,50 +252,52 @@ export default function CategoriasPage() {
       if (!res.ok) throw new Error("Error creando categoría");
 
       const saved = await res.json();
+      //Actualizamos el estado añadiendo la nueva categoría
       setCategories((prev) => [...prev, saved]);
       setShowCategoryForm(false);
     } catch (err) {
       console.error(err.message);
     }
   };
-  // Actualizar categoría
-const handleUpdateCategory = async (categoryId) => {
-  try {
-    const token = localStorage.getItem("token");
+  // PUT - Actualizar categoría
+  const handleUpdateCategory = async (categoryId) => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const response = await fetch(
-      `http://localhost:8080/api/categories/edit/${categoryId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify({
-          name: editCategoryName,
-          limit: parseFloat(editCategoryLimit),
-        }),
-      }
-    );
+      const response = await fetch(
+        `http://localhost:8080/api/categories/edit/${categoryId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({
+            name: editCategoryName,
+            limit: parseFloat(editCategoryLimit),
+          }),
+        }
+      );
 
-    if (!response.ok) throw new Error("Error al actualizar categoría");
+      if (!response.ok) throw new Error("Error al actualizar categoría");
 
-    const updatedCat = await response.json();
+      const updatedCat = await response.json();
 
-    setCategories((prev) =>
-      prev.map((c) =>
-        c.id === updatedCat.id
-          ? { ...updatedCat, transactions: c.transactions || [] } // preservamos las transacciones
-          : c
-      )
-    );
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === updatedCat.id
+            ? { ...updatedCat, transactions: c.transactions || [] } // preservamos las transacciones
+            : c
+        )
+      );
 
-    setEditingCategoryId(null);
-  } catch (err) {
-    alert(err.message);
-  }
-};
+      setEditingCategoryId(null);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
+  // DELETE - Borrar categoría
   const handleDeleteCategory = async (catId) => {
     if (
       !window.confirm(
@@ -301,16 +319,35 @@ const handleUpdateCategory = async (categoryId) => {
     }
   };
 
+  //Clausulas seguridad mientras no cargan los datos.
+  //Cambiar por Spinner
   if (loading) return <p>Cargando categorías...</p>;
+
+  //Etiqueta para errores en los fetch
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
+return (
+  <div className="categories-wrapper">
+    <h2 className="pageH2">Categorías</h2>
 
-  return (
-    <div className="categories-wrapper">
-      <h2 className="pageH2">Categorías</h2>
+    {/* Select del mes */}
+    <div style={{ marginBottom: "20px" }}>
+      <label>Mes: </label>
+      <input
+        type="month"
+        value={selectedMonth}
+        onChange={(e) => setSelectedMonth(e.target.value)}
+      />
+    </div>
 
-      <div className="categories-div">
-        {categories.map((category) => (
+    {/* Categories Card */}
+    <div className="categories-div">
+      {categories.map((category) => {
+        const filteredTransactions = category.transactions.filter(
+          (tx) => tx.date && tx.date.slice(0, 7) === selectedMonth
+        );
+
+        return (
           <div key={category.id} className="category-wrapper">
             <div className="category-card">
               <div className="category-header">
@@ -340,63 +377,64 @@ const handleUpdateCategory = async (categoryId) => {
                   <>
                     <h3>{category.name}</h3>
                     <div className="category-actions">
-                      <button onClick={() => startEditCategory(category)}>
-                        ✏️
-                      </button>
-                      <button onClick={() => handleDeleteCategory(category.id)}>
-                        🗑️
-                      </button>
+                      <button onClick={() => startEditCategory(category)}>✏️</button>
+                      <button onClick={() => handleDeleteCategory(category.id)}>🗑️</button>
                     </div>
                   </>
                 )}
               </div>
 
+              {/* Lista de transacciones filtradas por mes */}
               <ul className="transactions-list">
-                {category.transactions?.map((tx) => (
-                  <li key={tx.id}>
-                    {editTransactionId === tx.id ? (
-                      <form
-                        onSubmit={(e) =>
-                          handleUpdateTransaction(category.id, tx.id, e)
-                        }
-                        className="transaction-form"
-                      >
-                        <input
-                          type="text"
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          required
-                        />
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={editAmount}
-                          onChange={(e) => setEditAmount(e.target.value)}
-                          required
-                        />
-                        <button type="submit">Guardar</button>
-                        <button
-                          type="button"
-                          onClick={() => setEditTransactionId(null)}
-                        >
-                          Cancelar
-                        </button>
-                      </form>
-                    ) : (
-                      <div className="transaction-item">
-                        {tx.name} - {tx.amount} €
-                        <button onClick={() => handleEditClick(tx)}>✏️</button>
-                        <button
-                          onClick={() =>
-                            handleDeleteTransaction(category.id, tx.id)
+                {filteredTransactions.length === 0 ? (
+                  <li>No hay transacciones este mes</li>
+                ) : (
+                  filteredTransactions.map((tx) => (
+                    <li key={tx.id}>
+                      {editTransactionId === tx.id ? (
+                        <form
+                          onSubmit={(e) =>
+                            handleUpdateTransaction(category.id, tx.id, e)
                           }
+                          className="transaction-form"
                         >
-                          🗑️
-                        </button>
-                      </div>
-                    )}
-                  </li>
-                ))}
+                          <input
+                            type="text"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            required
+                          />
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={editAmount}
+                            onChange={(e) => setEditAmount(e.target.value)}
+                            required
+                          />
+                          <button type="submit">Guardar</button>
+                          <button
+                            type="button"
+                            onClick={() => setEditTransactionId(null)}
+                          >
+                            Cancelar
+                          </button>
+                        </form>
+                      ) : (
+                        <div className="transaction-item">
+                          {tx.name} - {tx.amount} €
+                          <button onClick={() => handleEditClick(tx)}>✏️</button>
+                          <button
+                            onClick={() =>
+                              handleDeleteTransaction(category.id, tx.id)
+                            }
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  ))
+                )}
               </ul>
 
               {/* Botón ➕ Añadir y formulario dentro de la tarjeta */}
@@ -439,52 +477,51 @@ const handleUpdateCategory = async (categoryId) => {
 
               {/* Barra de progreso de gastos usando CategoryBar */}
               <CategoryBar
-                total={category.transactions.reduce(
-                  (sum, t) => sum + t.amount,
-                  0
-                )}
+                total={filteredTransactions.reduce((sum, t) => sum + t.amount, 0)}
                 limit={category.limit}
               />
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Formulario nueva categoría */}
-      {showCategoryForm ? (
-        <form
-          onSubmit={handleAddCategory}
-          style={{ marginTop: "10px", display: "flex", gap: "10px" }}
-        >
-          <input name="name" placeholder="Nombre categoría" required />
-          <input
-            name="limit"
-            type="number"
-            placeholder="Límite (€)"
-            step="0.01"
-            required
-          />
-          <button type="submit">Crear</button>
-          <button type="button" onClick={() => setShowCategoryForm(false)}>
-            Cancelar
-          </button>
-        </form>
-      ) : (
-        <button
-          onClick={() => setShowCategoryForm(true)}
-          style={{
-            marginTop: "10px",
-            padding: "5px 10px",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          ➕ Añadir categoría
-        </button>
-      )}
+        );
+      })}
     </div>
-  );
+
+    {/* Formulario nueva categoría */}
+    {showCategoryForm ? (
+      <form
+        onSubmit={handleAddCategory}
+        style={{ marginTop: "10px", display: "flex", gap: "10px" }}
+      >
+        <input name="name" placeholder="Nombre categoría" required />
+        <input
+          name="limit"
+          type="number"
+          placeholder="Límite (€)"
+          step="0.01"
+          required
+        />
+        <button type="submit">Crear</button>
+        <button type="button" onClick={() => setShowCategoryForm(false)}>
+          Cancelar
+        </button>
+      </form>
+    ) : (
+      <button
+        onClick={() => setShowCategoryForm(true)}
+        style={{
+          marginTop: "10px",
+          padding: "5px 10px",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        ➕ Añadir categoría
+      </button>
+    )}
+  </div>
+);
+
 }
