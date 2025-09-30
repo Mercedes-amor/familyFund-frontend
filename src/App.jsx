@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Servidor from "./pages/Servidor";
 import Profile from "./pages/Profile";
 import Categories from "./pages/Categories.jsx";
+import Goals from "./pages/Goals.jsx";
 import NotFound from "./pages/NotFound";
 import Error from "./pages/Error";
 import Login from "./pages/Login";
@@ -42,6 +43,7 @@ function App() {
           <Route path="/about" element={<Servidor />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/goals" element={<Goals />} />
 
           <Route path="/error" element={<Error />} />
           <Route path="*" element={<NotFound />} />

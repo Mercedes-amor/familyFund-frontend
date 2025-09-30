@@ -63,6 +63,11 @@ function Navbar() {
                   </NavLink>
                 </li>
                 <li className="nav-item">
+                  <NavLink className={checkActiveUrl} to="/goals">
+                    Objetivos
+                  </NavLink>
+                </li>
+                <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/profile">
                     Perfil
                   </NavLink>

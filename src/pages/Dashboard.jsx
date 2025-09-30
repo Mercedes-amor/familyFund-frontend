@@ -60,27 +60,35 @@ function Dashboard() {
   if (loading) return <p>Cargando...</p>;
   if (!user) return <p>No hay usuario conectado</p>;
 
-  // Obtener categoría INGRESOS
-  const ingresosCategory = categories.find((c) => c.name === "INGRESOS");
-  const ingresosTransactions = transactions.filter(
-    (t) => t.categoryId === ingresosCategory?.id && t.type === "INCOME"
-  );
-  const totalIngresos = ingresosTransactions
+ // Obtener el mes actual en formato YYYY-MM
+const currentMonth = new Date().toISOString().slice(0, 7);
+
+// Filtrar transacciones del mes actual
+const monthlyTransactions = transactions.filter(
+  (t) => t.date && t.date.slice(0, 7) === currentMonth
+);
+
+// Obtener categoría INGRESOS
+const ingresosCategory = categories.find((c) => c.name === "INGRESOS");
+const ingresosTransactions = monthlyTransactions.filter(
+  (t) => t.categoryId === ingresosCategory?.id && t.type === "INCOME"
+);
+const totalIngresos = ingresosTransactions
+  .reduce((sum, t) => sum + t.amount, 0)
+  .toFixed(2);
+
+// Obtener categorías de GASTOS
+const gastosCategories = categories.filter((c) => c.name !== "INGRESOS");
+const gastosTotals = gastosCategories.map((c) => {
+  const total = monthlyTransactions
+    .filter((t) => t.categoryId === c.id && t.type === "EXPENSE")
     .reduce((sum, t) => sum + t.amount, 0)
     .toFixed(2);
-
-  // Obtener categorías de GASTOS
-  const gastosCategories = categories.filter((c) => c.name !== "INGRESOS");
-  const gastosTotals = gastosCategories.map((c) => {
-    const total = transactions
-      .filter((t) => t.categoryId === c.id && t.type === "EXPENSE")
-      .reduce((sum, t) => sum + t.amount, 0)
-      .toFixed(2);
-    return { ...c, total };
-  });
-  const totalGastos = gastosTotals
-    .reduce((sum, c) => sum + parseFloat(c.total), 0)
-    .toFixed(2);
+  return { ...c, total };
+});
+const totalGastos = gastosTotals
+  .reduce((sum, c) => sum + parseFloat(c.total), 0)
+  .toFixed(2);
 
   return (
     <div className="dashboard-wrapper">
