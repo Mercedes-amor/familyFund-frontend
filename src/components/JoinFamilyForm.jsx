@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+import "../ProfilePage.css";
+
 function JoinFamilyForm({ userId }) {
   const [familyId, setFamilyId] = useState("");
 
@@ -12,7 +14,7 @@ function JoinFamilyForm({ userId }) {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/families/join`,
-        { userId, familyId }, 
+        { userId, familyId },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -27,18 +29,19 @@ function JoinFamilyForm({ userId }) {
   };
 
   return (
-        <div className="divForm-container">
-
-    <form onSubmit={handleSubmit} className="divForm">
-      <h4>Unirse a una familia existente</h4>
-      <input
-        type="text"
-        placeholder="Introduce el ID de la familia"
-        value={familyId}
-        onChange={(e) => setFamilyId(e.target.value)}
-      />
-      <button type="submit">Unirse</button>
-    </form>
+    <div className="family-forms-container">
+      <form onSubmit={handleSubmit} className="family-form">
+        <h4>Unirse a una familia existente</h4>
+        <div>
+          <input
+            type="text"
+            placeholder="Introduce el ID de la familia"
+            value={familyId}
+            onChange={(e) => setFamilyId(e.target.value)}
+          />
+        </div>
+        <button type="submit">Unirse</button>
+      </form>
     </div>
   );
 }

@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import Error from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   //Traemos la información del ThemeContext mediante el useContext
@@ -51,6 +52,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }

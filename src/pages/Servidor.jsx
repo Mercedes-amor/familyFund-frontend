@@ -4,7 +4,6 @@ import ListaUsuarios from "../components/ListaUsuarios";
 import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/theme.context";
 import axios from "axios";
-import InfoAPIWorldBank from "../components/InfoAPIWorldBank";
 
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
@@ -57,7 +56,6 @@ function About() {
           Conexión backend: <span>{msg}</span>
         </h4>
         <ListaUsuarios />
-         <InfoAPIWorldBank />
       </Container>
     </>
   );

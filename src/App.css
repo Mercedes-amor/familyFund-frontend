@@ -175,6 +175,7 @@ body {
   margin-top: 1rem;
   padding: 0.75rem;
   font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
 }
 

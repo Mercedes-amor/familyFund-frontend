@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import GoalForm from "../components/GoalForm.jsx";
 import GoalList from "../components/GoalList.jsx";
+import "../GoalPage.css";
 
 export default function GoalsPage() {
   const { user, loading } = useContext(UserContext);
@@ -72,9 +73,9 @@ export default function GoalsPage() {
 
   return (
     <div className="goals-page-wrapper">
-      <h2>Objetivos de ahorro</h2>
+      <h2 className="pageH2">Objetivos de ahorro</h2>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="select_month">
         <label>Mes: </label>
         <input
           type="month"
@@ -83,25 +84,49 @@ export default function GoalsPage() {
         />
       </div>
 
-      <h3>Objetivos actuales</h3>
-      <GoalList
-        goals={activeGoals}
-        onGoalUpdated={(updatedGoal) =>
-          setGoals((prev) =>
-            prev.map((g) => (g.id === updatedGoal.id ? updatedGoal : g))
-          )
-        }
-        onGoalDeleted={(id) =>
-          setGoals((prev) => prev.filter((g) => g.id !== id))
-        }
-        token={token}
-      />
+      <div>
+        {selectedMonth >= currentMonth ? (
+          <div>
+            <h3>Objetivos actuales</h3>
+            <GoalList
+              goals={activeGoals}
+              onGoalUpdated={(updatedGoal) =>
+                setGoals((prev) =>
+                  prev.map((g) => (g.id === updatedGoal.id ? updatedGoal : g))
+                )
+              }
+              onGoalDeleted={(id) =>
+                setGoals((prev) => prev.filter((g) => g.id !== id))
+              }
+              token={token}
+            />
 
-      <h3>HISTÓRICO: Objetivos conseguidos</h3>
-      <GoalList goals={achievedGoals} readOnly={true} />
+            <GoalForm
+              familyId={familyId}
+              categories={categories} // pasamos las categorías
+              onGoalCreated={(newGoal) =>
+                setGoals((prev) => [...prev, newGoal])
+              }
+              token={token}
+              selectedMonth={selectedMonth}
+            />
+          </div>
+        ) : (
+          <div className="historico_goals_container">
+            <div className="goals_card">
+              {" "}
+              <h3>Objetivos conseguidos</h3>
+              <GoalList goals={achievedGoals} readOnly={true} />
+            </div>
 
-      <h3>HISTÓRICO: Objetivos NO conseguidos</h3>
-      <GoalList goals={failedGoals} readOnly={true} />
+            <div className="goals_card" id="goal_no_archieved">
+              {" "}
+              <h3>Objetivos NO alcanzados</h3>
+              <GoalList goals={failedGoals} readOnly={true} />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

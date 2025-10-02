@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import FamilyForm from "../components/FamilyForm";
 import JoinFamilyForm from "../components/JoinFamilyForm";
 
+import "../ProfilePage.css";
+
 function Profile() {
   const { user, loading, logout } = useContext(UserContext);
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <h3>Perfil del usuario</h3>
+      <h2>Perfil del usuario</h2>
       <p>
         <strong>Nombre:</strong> {user.nombre}
       </p>
@@ -41,24 +43,13 @@ function Profile() {
           <JoinFamilyForm userId={user.id} />
         </div>
       )}
-      {/* Botón para ir al Dashboard */}
-      <button
-        onClick={goToDashboard}
-        style={{
-          padding: "5px 10px",
-          backgroundColor: "#2196F3",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-        }}
-      >
-        Ir al Dashboard
-      </button>
-      <button onClick={logout} style={{ marginTop: "20px" }}>
-        Cerrar sesión
-      </button>
+      <div className="profile_button_div">
+        {/* Botón para ir al Dashboard */}
+        <button id="irDashboard-button" onClick={goToDashboard}>Ir al Dashboard</button>
+        <button id="cerrarSesion-button" onClick={logout}>
+          Cerrar sesión
+        </button>
+      </div>
     </div>
   );
 }

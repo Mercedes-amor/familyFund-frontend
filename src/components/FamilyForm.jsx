@@ -1,21 +1,24 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function FamilyForm({ userId, onFamilyCreated }) {
+import "../ProfilePage.css";
+
+export default function FamilyForm({ onFamilyCreated }) {
+  const { user, setUser } = useContext(UserContext);
   const [name, setName] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     if (!name.trim()) {
-      setError("El nombre es obligatorio");
+      toast.error("El nombre es obligatorio");
       return;
     }
 
     try {
+      // Crear la familia en el backend
       const response = await fetch(
         "http://localhost:8080/api/families/newfamily",
         {
@@ -35,30 +38,37 @@ export default function FamilyForm({ userId, onFamilyCreated }) {
       }
 
       const newFamily = await response.json();
-      setSuccess("Familia creada correctamente");
+
+      // Mostramos toast de éxito
+      toast.success("Familia creada correctamente");
       setName("");
 
-      // Explicación de esta parte:
-      // onFamilyCreated es una función opcional pasada desde Profile.
-      // Si existe, se llama con la nueva familia creada para actualizar la lista en el padre.
+      // Retrasamos 2s la actualización del usuario para que se vea el toast
+      setTimeout(() => {
+        setUser((prev) => ({ ...prev, family: newFamily }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...user, family: newFamily })
+        );
+      }, 2000);
+
+      // Si hay callback para actualizar listas en el padre
       if (onFamilyCreated) {
         onFamilyCreated(newFamily);
       }
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message || "Error de conexión");
     }
   };
 
   return (
-    <div className="divForm-container">
-      <h3>Crear Nueva Familia</h3>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-      <form onSubmit={handleSubmit} className="divForm">
+    <div className="family-forms-container">
+      <form onSubmit={handleSubmit} className="family-form">
+        <h4>Crear Nueva Familia</h4>
         <div>
-          <label>Nombre de la familia:</label>
           <input
             type="text"
+            placeholder="Ponle un nombre a tu familia"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -66,6 +76,8 @@ export default function FamilyForm({ userId, onFamilyCreated }) {
         </div>
         <button type="submit">Crear Familia</button>
       </form>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }

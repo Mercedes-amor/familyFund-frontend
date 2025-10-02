@@ -3,22 +3,46 @@
 /* ===============================
    PÁGINA DASHBOARD
    =============================== */
+.dashboard-principal-container {
+  display: flex;
+  width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.dashboard-barra {
+  width: 400px; 
+  margin-right: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.205);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  position: sticky; /* se queda visible al hacer scroll */
+  top: 20px;
+}
+
+.dashboard-wrapper {
+  flex: 1;
+  max-width: 900px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  margin: 0 auto; /* centra wrapper horizontalmente si sobra espacio */
+}
+
 
 .category-card {
   background-color: rgba(245, 249, 251, 0.85);
-  /* fondo claro semitransparente */
   border-radius: 12px;
   padding: 20px;
   width: 400px;
   flex: 1;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  /* sombra ligera */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   color: #242A33;
-  /* texto oscuro */
   transition: transform 0.2s, box-shadow 0.2s;
 }
 

@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 
 function Signup() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
@@ -21,8 +25,16 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/signup", form);
-      setMensaje(response.data.message || "Usuario registrado correctamente");
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/signup",
+        form
+      );
+      setMensaje(response.data.message || "Usuario registrado, loguéate");
+
+      // redirigir al login en 3s para que se vea el Mensaje
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     } catch (error) {
       if (error.response) {
         setMensaje(error.response.data.message || "Error en el registro");
