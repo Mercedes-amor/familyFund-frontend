@@ -3,6 +3,10 @@ import { UserContext } from "../context/UserContext";
 import DashboardChart from "../components/DashboardChart.jsx";
 import InfoAPIWorldBank from "../components/InfoAPIWorldBank";
 
+import DayQuote from "../components/DayQuote.jsx";
+
+//Estilos
+import { ClipLoader, SyncLoader } from "react-spinners";
 import "../Dashboard.css";
 
 function Dashboard() {
@@ -57,7 +61,14 @@ function Dashboard() {
     fetchData();
   }, [familyId]);
 
-  if (loading) return <p>Cargando...</p>;
+  
+    if (loading) {
+    return (
+      <div>
+        <SyncLoader color="#24867d" size={15} />
+      </div>
+    )
+  }
   if (!user) return <p>No hay usuario conectado</p>;
 
   // Obtener el mes actual en formato YYYY-MM
@@ -153,6 +164,7 @@ function Dashboard() {
           ingresos={parseFloat(totalIngresos)}
           gastos={parseFloat(totalGastos)}
         />
+        <DayQuote/>
       </div>
     </div>
   );

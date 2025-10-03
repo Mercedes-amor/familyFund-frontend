@@ -2,6 +2,9 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import GoalForm from "../components/GoalForm.jsx";
 import GoalList from "../components/GoalList.jsx";
+
+//Estilos
+import { ClipLoader, SyncLoader } from "react-spinners";
 import "../GoalPage.css";
 
 export default function GoalsPage() {
@@ -50,7 +53,13 @@ export default function GoalsPage() {
   }, [familyId, selectedMonth, token]);
 
   //Clausulas seguridad
-  if (loading) return <p>Cargando...</p>;
+  if (loading) {
+    return (
+      <div>
+        <SyncLoader color="#24867d" size={15} />
+      </div>
+    );
+  }
   if (!user) return <p>No hay usuario conectado</p>;
 
   // Calcular mes actual en formato YYYY-MM

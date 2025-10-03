@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 import "../ProfilePage.css";
+import "react-toastify/dist/ReactToastify.css";
 
-function JoinFamilyForm({ userId }) {
+export default function JoinFamilyForm({ onFamilyJoined }) {
+  const { user, setUser } = useContext(UserContext);
   const [familyId, setFamilyId] = useState("");
 
   const handleSubmit = async (e) => {
@@ -13,18 +17,34 @@ function JoinFamilyForm({ userId }) {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/families/join`,
-        { userId, familyId },
+        "http://localhost:8080/api/families/join",
+        { userId: user.id, familyId },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      console.log("Unido a familia:", response.data);
-      alert(`Te has unido a la familia con ID ${familyId}`);
+      // Toast de éxito
+      toast.success(`Te has unido a la familia con ID ${familyId}`);
+      setFamilyId(""); // limpiar input
+
+      // Retrasamos 2s la actualización del usuario para que se vea el toast
+      setTimeout(() => {
+        const newFamily = response.data; // MemberResponse del backend
+        setUser((prev) => ({ ...prev, family: newFamily }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...user, family: newFamily })
+        );
+
+        // Callback opcional para actualizar listas en el padre
+        if (onFamilyJoined) onFamilyJoined(newFamily);
+      }, 2000);
     } catch (error) {
       console.error("Error al unirse a familia:", error);
-      alert("Error al unirse a la familia");
+      toast.error(
+        error.response?.data?.message || "Error al unirse a la familia"
+      );
     }
   };
 
@@ -38,12 +58,12 @@ function JoinFamilyForm({ userId }) {
             placeholder="Introduce el ID de la familia"
             value={familyId}
             onChange={(e) => setFamilyId(e.target.value)}
+            required
           />
         </div>
         <button type="submit">Unirse</button>
       </form>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
-
-export default JoinFamilyForm;

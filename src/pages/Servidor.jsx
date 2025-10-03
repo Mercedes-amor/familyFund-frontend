@@ -39,7 +39,7 @@ function About() {
     testBackConexion();
   };
 
-  if (isFetching === true) {
+  if (isFetching) {
     return (
       <div>
         <SyncLoader color="#24867d" size={15} />

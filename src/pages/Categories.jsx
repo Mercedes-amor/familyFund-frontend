@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import CategoryBar from "../components/CategoryBar.jsx";
 
+//Estilos
+import { ClipLoader, SyncLoader } from "react-spinners";
 import "../CategoriesPage.css";
 
 export default function CategoriasPage() {
@@ -320,9 +322,13 @@ export default function CategoriasPage() {
   };
 
   //Clausulas seguridad mientras no cargan los datos.
-  //Cambiar por Spinner
-  if (loading) return <p>Cargando categorías...</p>;
-
+  if (loading) {
+    return (
+      <div>
+        <SyncLoader color="#24867d" size={15} />
+      </div>
+    )
+  }
   //Etiqueta para errores en los fetch
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 

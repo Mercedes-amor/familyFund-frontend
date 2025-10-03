@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import FamilyForm from "../components/FamilyForm";
 import JoinFamilyForm from "../components/JoinFamilyForm";
 
+//Estilos
+import { ClipLoader, SyncLoader } from "react-spinners";
 import "../ProfilePage.css";
 
 function Profile() {
@@ -16,7 +18,13 @@ function Profile() {
   };
   //Para evitar renderizar Profile antes
   // de que cargue UserProvider con los datos del usuario
-  if (loading) return <p>Cargando datos del usuario...</p>;
+    if (loading) {
+    return (
+      <div>
+        <SyncLoader color="#24867d" size={15} />
+      </div>
+    )
+  }
   if (!user) return <p>No estás logueado.</p>;
 
   console.log("Profile render → user:", user);
