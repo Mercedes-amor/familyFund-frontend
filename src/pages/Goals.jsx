@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import GoalForm from "../components/GoalForm.jsx";
 import GoalList from "../components/GoalList.jsx";
+import { fetchWithAuth } from "../utils/fetchWithAuth";
 
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
@@ -26,10 +27,10 @@ export default function GoalsPage() {
     const fetchData = async () => {
       try {
         const [categoriesRes, goalsRes] = await Promise.all([
-          fetch(`http://localhost:8080/api/families/${familyId}/categories`, {
+          fetchWithAuth(`http://localhost:8080/api/families/${familyId}/categories`, {
             headers: { Authorization: "Bearer " + token },
           }),
-          fetch(
+          fetchWithAuth(
             `http://localhost:8080/api/goals/family/${familyId}/month/${selectedMonth}`,
             {
               headers: { Authorization: "Bearer " + token },

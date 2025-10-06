@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
+import { fetchWithAuth } from "../utils/fetchWithAuth";
+
 import axios from "axios";
 
 import "../ProfilePage.css";

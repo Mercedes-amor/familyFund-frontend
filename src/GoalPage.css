@@ -32,25 +32,38 @@
   padding: 20px;
   border-radius: 10px;
 }
-
-.goals_card {
-  background-color: rgba(214, 229, 230, 0.452);
-  /* fondo claro semitransparente */
+.goal-listActual{
+background-color: rgba(214, 229, 230, 0.452);
   border-radius: 12px;
   padding: 20px;
   min-width: 500px;
   flex: 1;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  /* sombra ligera */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   color: #242A33;
-  /* texto oscuro */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.goals_card {
+  background-color: rgba(214, 229, 230, 0.452);
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 500px;
+  flex: 1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  color: #242A33;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.goal-info button {
+  background-color: transparent;
+}
 #goal_no_archieved {
   background-color: rgba(105, 13, 48, 0.5);
   color: #ffffff;

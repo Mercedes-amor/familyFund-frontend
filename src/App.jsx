@@ -9,7 +9,7 @@ import "./App.css";
 
 //Components
 import Navbar from "./components/Navbar";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 
 //Pages
 import Home from "./pages/Home";
@@ -40,11 +40,39 @@ function App() {
       <div className="routes-container">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/about" element={<Servidor />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/goals" element={<Goals />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/categories"
+            element={
+              <ProtectedRoute>
+                <Categories />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/goals"
+            element={
+              <ProtectedRoute>
+                <Goals />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/error" element={<Error />} />
           <Route path="*" element={<NotFound />} />

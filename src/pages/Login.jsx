@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 import "../LoginSignupPage.css";
@@ -10,6 +10,12 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
+
+  //Estado sesión expirada
+  const location = useLocation();
+  const sessionExpired = new URLSearchParams(location.search).get(
+    "sessionExpired"
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,6 +78,13 @@ function Login() {
 
         <button type="submit">Entrar</button>
       </form>
+      <div>
+        {sessionExpired && (
+          <p style={{ color: "red" }}>
+            Tu sesión ha expirado. Inicia sesión nuevamente.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

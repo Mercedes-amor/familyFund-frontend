@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
+import { fetchWithAuth } from "../utils/fetchWithAuth";
+
 import "react-toastify/dist/ReactToastify.css";
 
 import "../ProfilePage.css";
@@ -19,7 +21,7 @@ export default function FamilyForm({ onFamilyCreated }) {
 
     try {
       // Crear la familia en el backend
-      const response = await fetch(
+      const response = await fetchWithAuth(
         "http://localhost:8080/api/families/newfamily",
         {
           method: "POST",

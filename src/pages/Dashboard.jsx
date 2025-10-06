@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import DashboardChart from "../components/DashboardChart.jsx";
 import InfoAPIWorldBank from "../components/InfoAPIWorldBank";
+import { fetchWithAuth } from "../utils/fetchWithAuth";
 
 import DayQuote from "../components/DayQuote.jsx";
 
@@ -26,17 +27,17 @@ function Dashboard() {
       try {
         const [familyRes, categoriesRes, transactionsRes, membersRes] =
           await Promise.all([
-            fetch(`http://localhost:8080/api/families/${familyId}`, {
+            fetchWithAuth(`http://localhost:8080/api/families/${familyId}`, {
               headers: { Authorization: "Bearer " + token },
             }),
-            fetch(`http://localhost:8080/api/families/${familyId}/categories`, {
+            fetchWithAuth(`http://localhost:8080/api/families/${familyId}/categories`, {
               headers: { Authorization: "Bearer " + token },
             }),
-            fetch(
+            fetchWithAuth(
               `http://localhost:8080/api/families/${familyId}/transactions`,
               { headers: { Authorization: "Bearer " + token } }
             ),
-            fetch(`http://localhost:8080/api/families/${familyId}/members`, {
+            fetchWithAuth(`http://localhost:8080/api/families/${familyId}/members`, {
               headers: { Authorization: "Bearer " + token },
             }),
           ]);

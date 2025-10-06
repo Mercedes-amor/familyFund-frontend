@@ -64,44 +64,46 @@ export default function GoalList({
   };
 
   return (
-    <ul className="goal-list">
-      {goals.map((goal) => (
-        <li key={goal.id} className="goal-item">
-          {editingGoalId === goal.id ? (
-            <div className="goal-edit-form">
-              <input
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-              />
-              <input
-                type="number"
-                step="0.01"
-                value={editAmount}
-                onChange={(e) => setEditAmount(e.target.value)}
-              />
-              <button onClick={() => handleUpdate(goal)}>Guardar</button>
-              <button onClick={() => setEditingGoalId(null)}>Cancelar</button>
-            </div>
-          ) : (
-            <div className="goal-info">
-              <strong>{goal.name}</strong> - Ahorro: {goal.amount} € -
-              Categoría: {goal.categoryName} -{" "}
-              {goal.achieved
-                ? "🏆 Conseguido"
-                : goal.month < new Date().toISOString().slice(0, 7)
-                ? "❌ No conseguido"
-                : "⏳ Activo"}
-              {!readOnly && (
-                <span style={{ marginLeft: "10px" }}>
-                  <button onClick={() => handleEditClick(goal)}>✏️</button>
-                  <button onClick={() => handleDelete(goal.id)}>🗑️</button>
-                </span>
-              )}
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
+    <div className="goals_card">
+      <ul className="goal-list">
+        {goals.map((goal) => (
+          <li key={goal.id} className="goal-item">
+            {editingGoalId === goal.id ? (
+              <div className="goal-edit-form">
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                />
+                <input
+                  type="number"
+                  step="0.01"
+                  value={editAmount}
+                  onChange={(e) => setEditAmount(e.target.value)}
+                />
+                <button onClick={() => handleUpdate(goal)}>Guardar</button>
+                <button onClick={() => setEditingGoalId(null)}>Cancelar</button>
+              </div>
+            ) : (
+              <div className="goal-info">
+                <strong>{goal.name}</strong> - Ahorro: {goal.amount} € -
+                Categoría: {goal.categoryName} -{" "}
+                {goal.achieved
+                  ? "🏆 Conseguido"
+                  : goal.month < new Date().toISOString().slice(0, 7)
+                  ? "❌ No conseguido"
+                  : "⏳ Activo"}
+                {!readOnly && (
+                  <span style={{ marginLeft: "10px" }}>
+                    <button onClick={() => handleEditClick(goal)}>✏️</button>
+                    <button onClick={() => handleDelete(goal.id)}>🗑️</button>
+                  </span>
+                )}
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
