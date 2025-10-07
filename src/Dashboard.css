@@ -46,6 +46,12 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.category-card-deleted{
+  background: #860505;
+  color: #860505;
+  opacity: 0.4;
+  box-shadow: 0 0 8px rgba(70, 5, 5, 0.651);
+}
 
 /* Listado miembros */
 .members-list {

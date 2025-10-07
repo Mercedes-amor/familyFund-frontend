@@ -1,3 +1,4 @@
+// CatHistorico.jsx
 import CategoryBar from "./CategoryBar";
 
 export default function CatHistorico({ categories, selectedMonth }) {
@@ -11,10 +12,14 @@ export default function CatHistorico({ categories, selectedMonth }) {
         return (
           <div key={category.id} className="category-wrapper">
             <div
-              className="category-card"
-              style={{ backgroundColor: category.deleted ? "#ffcccc" : "#fff" }}
+              className={`category-card ${
+                category.deleted ? "category-card-deleted" : ""
+              }`}
             >
-              <h3>{category.name}</h3>
+              <div className="category-header">
+                <h3>{category.name}</h3>
+              </div>
+
               <ul className="transactions-list">
                 {filteredTransactions.length === 0 ? (
                   <li>No hay transacciones este mes</li>
@@ -26,8 +31,12 @@ export default function CatHistorico({ categories, selectedMonth }) {
                   ))
                 )}
               </ul>
+
               <CategoryBar
-                total={filteredTransactions.reduce((sum, t) => sum + t.amount, 0)}
+                total={filteredTransactions.reduce(
+                  (sum, t) => sum + t.amount,
+                  0
+                )}
                 limit={category.limit}
               />
             </div>
