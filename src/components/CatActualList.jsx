@@ -1,5 +1,8 @@
 // CatActualList.jsx
 import CategoryBar from "./CategoryBar";
+import { useNavigate } from "react-router-dom";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function CatActualList({
   categories,
@@ -30,7 +33,20 @@ export default function CatActualList({
   setEditingCategoryId,
   setEditCategoryName,
   setEditCategoryLimit,
+  setEditTransactionId,
 }) {
+  //Enlace de redirección a category-compare
+  const navigate = useNavigate();
+  const handleCardClick = (e, categoryId) => {
+    // Evita que los botones internos activen la navegación
+    // if (
+    //   e.target.tagName === "BUTTON" ||
+    //   e.target.tagName === "INPUT" ||
+    //   e.target.closest("form")
+    // )
+    //   return;
+    navigate(`/category-compare/${categoryId}`);
+  };
   return (
     <div className="categories-div">
       {categories.map((category) => {
@@ -44,41 +60,60 @@ export default function CatActualList({
               className={`category-card ${
                 category.deleted ? "category-card-deleted" : ""
               }`}
+              onClick={(e) => handleCardClick(e, category.id)} // Invocamos función para navegar a category-compare
             >
               <div className="category-header">
                 {editingCategoryId === category.id ? (
-                  <div className="category-edit-form">
-                    <input
-                      type="text"
-                      value={editCategoryName}
-                      onChange={(e) => setEditCategoryName(e.target.value)}
-                      required
-                    />
-                    <input
-                      type="number"
-                      value={editCategoryLimit}
-                      onChange={(e) => setEditCategoryLimit(e.target.value)}
-                      placeholder="Límite"
-                      min="0"
-                    />
-                    <button onClick={() => handleUpdateCategory(category.id)}>
-                      Guardar
-                    </button>
-                    <button onClick={() => setEditingCategoryId(null)}>
-                      Cancelar
-                    </button>
+                  <div className="categoryForm-wrapper">
+                    <div className="general-form">
+                      <input
+                        type="text"
+                        value={editCategoryName}
+                        onChange={(e) => setEditCategoryName(e.target.value)}
+                        required
+                      />
+                      <input
+                        type="number"
+                        value={editCategoryLimit}
+                        onChange={(e) => setEditCategoryLimit(e.target.value)}
+                        placeholder="Límite"
+                        min="0"
+                      />
+                      <div className="category-divEdit-buttons">
+                        <button
+                          id="guardarButton"
+                          onClick={() => handleUpdateCategory(category.id)}
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          id="cancelButton"
+                          onClick={() => setEditingCategoryId(null)}
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <>
                     <h3>{category.name}</h3>
-                    <div className="category-actions">
-                      <button onClick={() => startEditCategory(category)}>
-                        ✏️
+                    <span className="category-actions">
+                      <button
+                        type="button"
+                        className="btn btn-outline-primary"
+                        onClick={() => startEditCategory(category)}
+                      >
+                        Editar
                       </button>
-                      <button onClick={() => handleDeleteCategory(category.id)}>
-                        🗑️
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger"
+                        onClick={() => handleDeleteCategory(category.id)}
+                      >
+                        Borrar
                       </button>
-                    </div>
+                    </span>
                   </>
                 )}
               </div>
@@ -94,7 +129,7 @@ export default function CatActualList({
                           onSubmit={(e) =>
                             handleUpdateTransaction(category.id, tx.id, e)
                           }
-                          className="transaction-form"
+                          className="new-transaction-form"
                         >
                           <input
                             type="text"
@@ -109,27 +144,34 @@ export default function CatActualList({
                             onChange={(e) => setEditAmount(e.target.value)}
                             required
                           />
-                          <button type="submit">Guardar</button>
-                          <button
-                            type="button"
-                            onClick={() => setEditTransactionId(null)}
-                          >
-                            Cancelar
-                          </button>
+                          <div className="category-divEdit-buttons">
+                            <button type="submit" id="guardarButton">
+                              Guardar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditTransactionId(null)}
+                              id="cancelButton"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
                         </form>
                       ) : (
                         <div className="transaction-item">
                           {tx.name} - {tx.amount} €
-                          <button onClick={() => handleEditClick(tx)}>
-                            ✏️
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleDeleteTransaction(category.id, tx.id)
-                            }
-                          >
-                            🗑️
-                          </button>
+                          <span className="spanEdit-buttons">
+                            <button onClick={() => handleEditClick(tx)}>
+                              ✏️
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeleteTransaction(category.id, tx.id)
+                              }
+                            >
+                              🗑️
+                            </button>
+                          </span>
                         </div>
                       )}
                     </li>
@@ -164,13 +206,18 @@ export default function CatActualList({
                     onChange={(e) => setTransactionAmount(e.target.value)}
                     required
                   />
-                  <button type="submit">Guardar</button>
-                  <button
-                    type="button"
-                    onClick={() => setShowTransactionForm(false)}
-                  >
-                    Cancelar
-                  </button>
+                  <div className="category-divEdit-buttons">
+                    <button type="submit" id="guardarButton">
+                      Guardar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowTransactionForm(false)}
+                      id="cancelButton"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 </form>
               )}
 

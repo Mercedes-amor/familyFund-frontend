@@ -141,7 +141,7 @@ function Dashboard() {
               <ul>
                 {gastosTotals.map((c) => (
                   <li key={c.id}>
-                    {c.name} - Total: {c.total} €
+                    {c.name} - {c.total} €
                   </li>
                 ))}
               </ul>
@@ -152,19 +152,12 @@ function Dashboard() {
         </div>
 
         {/* Totales */}
-        <div style={{ marginTop: "20px" }}>
-          <p>
-            <strong>Total INGRESOS:</strong> {totalIngresos} €
-          </p>
-          <p>
-            <strong>Total GASTOS:</strong> {totalGastos} €
-          </p>
-        </div>
-        <h3>Ingresos vs Gastos</h3>
+       
         <DashboardChart
           ingresos={parseFloat(totalIngresos)}
           gastos={parseFloat(totalGastos)}
         />
+     
         <DayQuote/>
       </div>
     </div>

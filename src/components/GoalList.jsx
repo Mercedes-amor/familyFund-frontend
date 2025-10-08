@@ -65,9 +65,9 @@ export default function GoalList({
 
   return (
     <div className="goals_card">
-      <ul className="goal-list">
+      <p className="goal-list">
         {goals.map((goal) => (
-          <li key={goal.id} className="goal-item">
+          <p key={goal.id} className="goal-item">
             {editingGoalId === goal.id ? (
               <div className="goal-edit-form">
                 <input
@@ -86,24 +86,25 @@ export default function GoalList({
               </div>
             ) : (
               <div className="goal-info">
-                <strong>{goal.name}</strong> - Ahorro: {goal.amount} € -
-                Categoría: {goal.categoryName} -{" "}
                 {goal.achieved
-                  ? "🏆 Conseguido"
+                  ? "🏆 "
                   : goal.month < new Date().toISOString().slice(0, 7)
-                  ? "❌ No conseguido"
-                  : "⏳ Activo"}
+                  ? "❌ "
+                  : "⏳ "}
+                <strong>{goal.name}</strong>: Ahorra <strong>{goal.amount} € </strong> en {" "}
+                 {goal.categoryName}
+                
                 {!readOnly && (
-                  <span style={{ marginLeft: "10px" }}>
+                  <span className="spanEdit-buttons">
                     <button onClick={() => handleEditClick(goal)}>✏️</button>
                     <button onClick={() => handleDelete(goal.id)}>🗑️</button>
                   </span>
                 )}
               </div>
             )}
-          </li>
+          </p>
         ))}
-      </ul>
+      </p>
     </div>
   );
 }

@@ -2,14 +2,18 @@
    PÁGINA GOALS
    =============================== */
 
-.pageH2 {
-  color: #ffffff;
-  padding: "20px";
-}
 
-.goals-page-wrapper {
+/* .goals-page-wrapper {
   padding: 10%;
-}
+  padding: 4%;
+  position: fixed;      /* fijo en la ventana */
+  /* top: 150px;               
+  left: 20px;             
+  width: 50%;         
+  z-index: 1000;        /* encima del resto del contenido */
+  /* padding: 20px;        
+  overflow: auto;  
+} */
 
 .select_month {
   margin-bottom: "20px";
@@ -19,15 +23,16 @@
 /* Contenedor principal */
 .historico_goals_container {
   display: flex;
-  flex-direction: row;
+  flex-direction:row;
   flex-wrap: wrap;
+  min-width: 600px;
   /* permite que las tarjetas se muevan a la siguiente línea */
   gap: 20px;
   /* separación entre tarjetas */
 }
 
 
-.goal-form-wrapper {
+.goal-form-wrapperNULL {
   /* background-color: rgba(214, 229, 230, 0.452); */
   padding: 20px;
   border-radius: 10px;
@@ -50,7 +55,7 @@ background-color: rgba(214, 229, 230, 0.452);
   background-color: rgba(214, 229, 230, 0.452);
   border-radius: 12px;
   padding: 20px;
-  min-width: 500px;
+  min-width: 450px;
   flex: 1;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   display: flex;
@@ -60,7 +65,12 @@ background-color: rgba(214, 229, 230, 0.452);
   color: #242A33;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
+.goal-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
 .goal-info button {
   background-color: transparent;
 }

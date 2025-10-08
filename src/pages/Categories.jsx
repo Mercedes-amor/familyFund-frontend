@@ -351,10 +351,10 @@ export default function CategoriasPage() {
 
   //RENDERIZACIÓN
   return (
-    <div className="categories-wrapper">
-      <h2 className="pageH2">Categorías</h2>
+    <div className="cat-goal-wrapper">
+      <h2 className="h2-title">Categorías</h2>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="selectMonth-container">
         <label>Mes: </label>
         <input
           type="month"
@@ -394,6 +394,7 @@ CatActualList mandando como props todos los estados y métodos/*} */}
           setEditingCategoryId={setEditingCategoryId}
           setEditCategoryName={setEditCategoryName}
           setEditCategoryLimit={setEditCategoryLimit}
+          setEditTransactionId={setEditTransactionId}
         />
       ) : (
         <CatHistorico categories={categories} selectedMonth={selectedMonth} />
@@ -402,10 +403,7 @@ CatActualList mandando como props todos los estados y métodos/*} */}
       {selectedMonth === currentMonth && (
         <>
           {showCategoryForm ? (
-            <form
-              onSubmit={handleAddCategory}
-              style={{ marginTop: "10px", display: "flex", gap: "10px" }}
-            >
+            <form onSubmit={handleAddCategory} className="categoryAdd-form">
               <input name="name" placeholder="Nombre categoría" required />
               <input
                 name="limit"
@@ -421,16 +419,8 @@ CatActualList mandando como props todos los estados y métodos/*} */}
             </form>
           ) : (
             <button
+              className="general-AddButton"
               onClick={() => setShowCategoryForm(true)}
-              style={{
-                marginTop: "10px",
-                padding: "5px 10px",
-                backgroundColor: "#4CAF50",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
             >
               ➕ Añadir categoría
             </button>

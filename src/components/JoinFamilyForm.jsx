@@ -51,9 +51,9 @@ export default function JoinFamilyForm({ onFamilyJoined }) {
   };
 
   return (
-    <div className="family-forms-container">
-      <form onSubmit={handleSubmit} className="family-form">
-        <h4>Unirse a una familia existente</h4>
+    <div className="general-container">
+      <form onSubmit={handleSubmit} className="general-form">
+        <h4>Unirse a una familia</h4>
         <div>
           <input
             type="text"

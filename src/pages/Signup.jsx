@@ -48,7 +48,7 @@ function Signup() {
     <div className="login-container">
       <h2 className="loginH2">Crear Usuario</h2>
 
-      <form onSubmit={handleSubmit} className="login-form">
+      <form onSubmit={handleSubmit} className="general-form">
         <input
           name="nombre"
           placeholder="Nombre"

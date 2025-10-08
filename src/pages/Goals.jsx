@@ -81,11 +81,12 @@ export default function GoalsPage() {
     (g) => !g.achieved && g.month < currentMonth
   );
 
+  //RENDERIZACIÓN
   return (
-    <div className="goals-page-wrapper">
-      <h2 className="pageH2">Objetivos de ahorro</h2>
+    <div className="cat-goal-wrapper">
+      <h2 className="h2-title">Objetivos de ahorro</h2>
 
-      <div className="select_month">
+      <div className="selectMonth-container">
         <label>Mes: </label>
         <input
           type="month"

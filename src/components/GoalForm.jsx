@@ -55,11 +55,11 @@ export default function GoalForm({ familyId, categories, onGoalCreated, token, s
   };
 
   return (
-    <div className="goal-form-wrapper" style={{ marginBottom: "20px" }}>
+    <div className="general-container" >
       {!showForm ? (
-        <button onClick={() => setShowForm(true)}>➕ Nuevo objetivo</button>
+        <button className="general-AddButton" onClick={() => setShowForm(true)}>➕ Nuevo objetivo</button>
       ) : (
-        <form onSubmit={handleSubmit} className="divForm" style={{ marginTop: "10px" }}>
+        <form onSubmit={handleSubmit} className="general-form">
           <input
             type="text"
             placeholder="Nombre del objetivo"

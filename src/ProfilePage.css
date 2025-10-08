@@ -2,18 +2,13 @@
    PÁGINA PROFILE
    =============================== */
 
-h2 {
-  color: #ffffff;
-  padding: "20px";
-  margin-bottom: 4rem;
-}
 
 .profile-container {
   display: flex;
   flex-direction: column;
   padding: 40px;
   margin: 20px;
-  border-radius: 5px;
+  border-radius: 12px;
   background-color: rgba(214, 229, 230, 0.452);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)
 }
@@ -24,21 +19,21 @@ h2 {
   font-size: 20px;
 }
 
-.family-forms-container {
+/* .family-forms-container {
   padding: 10px;
   margin: 10px;
-}
+} */
 
 
-.family-forms {
-  display: flex;
+/* .family-forms {
+  /* display: flex;
   flex-direction: row;
-  padding: 10px;
-  margin: 10px;
+  padding: 10px; */
+  /* margin: 10px; */
   /* gap: 1rem; */
-  /* width: 300px; */
-}
-
+  /* width: 300px; 
+} */
+/* 
 .family-form {
   padding: 20px;
   width: 400px;
@@ -51,7 +46,7 @@ h2 {
 .family-form input {
   padding: 0.5rem;
   font-size: 1rem;
-}
+} */
 
 
 
@@ -64,32 +59,24 @@ h2 {
 }
 
 /* Botones */
-.family-form button {
+/* .family-form button {
   margin-top: 1rem;
   padding: 0.75rem;
   font-size: 1rem;
   border-radius: 7px;
   cursor: pointer;
-}
+} */
 
-#irDashboard-button {
-  padding: 0.75rem;
-  background-color: rgb(6, 80, 80);
-  color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 7px;
-  cursor: pointer;
-  margin-top: 10px;
 
-}
 
-#cerrarSesion-button {
-  padding: 0.75rem;
+#cerrarSesion-btn {
   background-color: rgb(75, 10, 10);
   color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 7px;
-  cursor: pointer;
-  margin-top: 10px;
+
+}
+
+#cerrarSesion-btn:hover {
+  background-color: #D78CCF;
+  color: rgb(0, 0, 0);
 
 }

@@ -52,8 +52,8 @@ function Login() {
 
   return (
     <div className="login-container">
-      <h2 className="loginH2">Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit} className="login-form">
+      <h2 className="h2-title">Iniciar Sesión</h2>
+      <form onSubmit={handleSubmit} className="general-form">
         <label>
           Email:
           <input

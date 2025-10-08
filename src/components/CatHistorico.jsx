@@ -10,8 +10,10 @@ export default function CatHistorico({ categories, selectedMonth }) {
         );
 
         return (
-          <div key={category.id} className="category-wrapper">
-            <div
+          <>
+            {filteredTransactions.length === 0 ?"" : (
+              <div key={category.id} className="category-wrapper">
+              <div 
               className={`category-card ${
                 category.deleted ? "category-card-deleted" : ""
               }`}
@@ -39,8 +41,11 @@ export default function CatHistorico({ categories, selectedMonth }) {
                 )}
                 limit={category.limit}
               />
+            </div> 
             </div>
-          </div>
+            )}
+           
+          </>
         );
       })}
     </div>

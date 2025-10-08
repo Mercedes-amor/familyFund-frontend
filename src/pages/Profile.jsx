@@ -31,7 +31,7 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <h2>Perfil del usuario</h2>
+      <h2 className="h2-title">Perfil del usuario</h2>
       <p>
         <strong>Nombre:</strong> {user.nombre}
       </p>
@@ -46,15 +46,15 @@ function Profile() {
       </p>
 
       {!user.family && (
-        <div className="family-forms">
+        <div className="general-forms">
           <FamilyForm />
           <JoinFamilyForm userId={user.id} />
         </div>
       )}
       <div className="profile_button_div">
         {/* Botón para ir al Dashboard */}
-        <button id="irDashboard-button" onClick={goToDashboard}>Ir al Dashboard</button>
-        <button id="cerrarSesion-button" onClick={logout}>
+        <button className="general-AddButton" onClick={goToDashboard}>Ir al Dashboard</button>
+        <button className="general-AddButton" id="cerrarSesion-btn" onClick={logout}>
           Cerrar sesión
         </button>
       </div>

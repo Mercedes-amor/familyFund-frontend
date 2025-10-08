@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Servidor from "./pages/Servidor";
 import Profile from "./pages/Profile";
 import Categories from "./pages/Categories.jsx";
+import CategoryCompare from "./pages/CategoryCompare.jsx";
 import Goals from "./pages/Goals.jsx";
 import NotFound from "./pages/NotFound";
 import Error from "./pages/Error";
@@ -62,6 +63,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Categories />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/category-compare/:id"
+            element={
+              <ProtectedRoute>
+                <CategoryCompare />
               </ProtectedRoute>
             }
           />
