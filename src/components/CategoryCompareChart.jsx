@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BarChart,
   Bar,
@@ -30,7 +29,7 @@ export default function CategoryChart({ groupedByMonth }) {
     <div
       style={{
         width: "100%",
-        maxWidth: "600px",
+        maxWidth: "500px",
         margin: "20px auto",
         textAlign: "center",
         background: "#ffffffea",

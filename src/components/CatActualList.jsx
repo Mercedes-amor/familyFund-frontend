@@ -38,15 +38,10 @@ export default function CatActualList({
   //Enlace de redirección a category-compare
   const navigate = useNavigate();
   const handleCardClick = (e, categoryId) => {
-    // Evita que los botones internos activen la navegación
-    // if (
-    //   e.target.tagName === "BUTTON" ||
-    //   e.target.tagName === "INPUT" ||
-    //   e.target.closest("form")
-    // )
-    //   return;
     navigate(`/category-compare/${categoryId}`);
   };
+
+  //RENDERIZACIÓN
   return (
     <div className="categories-div">
       {categories.map((category) => {
@@ -60,7 +55,6 @@ export default function CatActualList({
               className={`category-card ${
                 category.deleted ? "category-card-deleted" : ""
               }`}
-              onClick={(e) => handleCardClick(e, category.id)} // Invocamos función para navegar a category-compare
             >
               <div className="category-header">
                 {editingCategoryId === category.id ? (
@@ -97,7 +91,12 @@ export default function CatActualList({
                   </div>
                 ) : (
                   <>
-                    <h3>{category.name}</h3>
+                    <h3
+                      onClick={() => handleCardClick(null, category.id)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {category.name}
+                    </h3>
                     <span className="category-actions">
                       <button
                         type="button"
