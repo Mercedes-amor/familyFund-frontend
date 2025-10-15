@@ -20,13 +20,12 @@ function Navbar() {
         <NavLink className="navbar-brand" to="/">
           FamilyFund
         </NavLink>
-        {/* Saludo  */}
-        {user ? (
+
+        {/* Saludo */}
+        {user && (
           <li className="nav-item d-flex align-items-center text-white ms-2">
             Hola, {user.nombre}
           </li>
-        ) : (
-          <></>
         )}
 
         <button
@@ -50,7 +49,27 @@ function Navbar() {
               </NavLink>
             </li>
 
-            {user ? (
+            {/* ADMIN */}
+            {user?.rol === "ROLE_ADMIN" && (
+              <>
+                <li className="nav-item">
+                  <NavLink className={checkActiveUrl} to="/adminDashboard">
+                    Admin Dashboard
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <button
+                    onClick={handleLogout}
+                    className="btn btn-link nav-link"
+                  >
+                    Cerrar sesión
+                  </button>
+                </li>
+              </>
+            )}
+
+            {/* USER */}
+            {user?.rol === "USER" && (
               <>
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/dashboard">
@@ -72,7 +91,6 @@ function Navbar() {
                     Perfil
                   </NavLink>
                 </li>
-                {/* logout */}
                 <li className="nav-item">
                   <button
                     onClick={handleLogout}
@@ -82,7 +100,10 @@ function Navbar() {
                   </button>
                 </li>
               </>
-            ) : (
+            )}
+
+            {/* Invitado (no logueado) */}
+            {!user && (
               <>
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/login">

@@ -6,7 +6,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  min-height: 100%;
+  /* min-height: 100%; */
   font-family: Arial, sans-serif;
   background: linear-gradient(to bottom, #00A6C4, #113941);
   background-repeat: no-repeat;
@@ -16,7 +16,7 @@ body {
 #root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   /* siempre al menos una pantalla */
 }
 
@@ -61,8 +61,9 @@ body {
 
 .cat-goal-wrapper {
   /* padding: 4%; */
-  position: fixed;
+  /* position: fixed; */
   margin-left: 30px;
+  margin-bottom: 30px;
   top: 150px;
   z-index: 1000;
   padding: 20px;

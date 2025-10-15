@@ -320,7 +320,7 @@ export default function CategoriasPage() {
   const handleDeleteCategory = async (catId) => {
     if (
       !window.confirm(
-        "¿Seguro que quieres borrar la categoría y todas sus transacciones?"
+        "¿Seguro que quieres borrar la categoría las transacciones de este mes?"
       )
     )
       return;

@@ -84,7 +84,7 @@ button:focus-visible {
    CONTENEDORES PRINCIPALES (ROOT + APP)
    =============================== */
 #root {
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
 }
@@ -93,7 +93,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 
 .routes-container {

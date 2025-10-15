@@ -64,7 +64,7 @@ export default function FamilyForm({ onFamilyCreated }) {
   };
 
   return (
-    <div className="general-container">
+    <div>
       <form onSubmit={handleSubmit} className="general-form">
         <h4>Crear Nueva Familia</h4>
         <div>

@@ -46,7 +46,7 @@ function Profile() {
       </p>
 
       {!user.family && (
-        <div className="general-forms">
+        <div className="generalProfile-forms">
           <FamilyForm />
           <JoinFamilyForm userId={user.id} />
         </div>

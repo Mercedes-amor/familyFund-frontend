@@ -23,7 +23,9 @@ import NotFound from "./pages/NotFound";
 import Error from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import { ToastContainer } from "react-toastify";
+
 
 function App() {
   //Traemos la información del ThemeContext mediante el useContext
@@ -41,6 +43,14 @@ function App() {
       <div className="routes-container">
         <Routes>
           <Route path="/" element={<Home />} />
+                    <Route
+            path="/adminDashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={
