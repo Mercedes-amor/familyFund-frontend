@@ -1,23 +1,28 @@
-import { useContext } from "react";
-import { UserContext } from "../context/UserContext";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import SyncLoader from "react-spinners/SyncLoader";
+import UploadImage from "../components/UploadImage";
 import FamilyForm from "../components/FamilyForm";
 import JoinFamilyForm from "../components/JoinFamilyForm";
 
+import { UserContext } from "../context/UserContext";
+
 //Estilos
-import { ClipLoader, SyncLoader } from "react-spinners";
 import "../ProfilePage.css";
 
 function Profile() {
   const { user, loading, logout } = useContext(UserContext);
   const navigate = useNavigate();
+  const [photoUrl, setPhotoUrl] = useState("");
+
+  useEffect(() => {
+    if (user?.photoUrl) setPhotoUrl(user.photoUrl);
+  }, [user]);
 
   const goToDashboard = () => {
-    navigate("/dashboard"); // Redirige usando React Router
+    navigate("/dashboard");
   };
-  //Para evitar renderizar Profile antes
-  // de que cargue UserProvider con los datos del usuario
+
   if (loading) {
     return (
       <div className="spinner-div">
@@ -26,17 +31,18 @@ function Profile() {
     );
   }
 
-  // Variables para simplificar condicionales
-  const isAdmin = user?.rol === "ROLE_ADMIN";
-  const isUser = user?.rol === "ROLE_USER";
-
   if (!user) return <p>No estás logueado.</p>;
 
-  console.log("Profile render → user:", user);
+  const isAdmin = user.rol === "ROLE_ADMIN";
+  const isUser = user.rol === "ROLE_USER";
 
   return (
     <div className="profile-container">
       <h2 className="h2-title">Perfil del usuario</h2>
+
+      {/* FOTO DE PERFIL */}
+      <UploadImage currentUrl={photoUrl} onUpload={setPhotoUrl} />
+
       <p>
         <strong>Nombre:</strong> {user.nombre}
       </p>
@@ -46,9 +52,10 @@ function Profile() {
 
       {isAdmin && (
         <p>
-          <strong>Administrador</strong>{" "}
+          <strong>Administrador</strong>
         </p>
       )}
+
       {isUser && (
         <>
           <p>
@@ -58,8 +65,15 @@ function Profile() {
               : "Todavía no te has unido a una familia"}
           </p>
 
+          {/* Mostrar botón si no tiene familia */}
+          {!user.family && (
+            <div>
+              <FamilyForm />
+              <JoinFamilyForm />
+            </div>
+          )}
+
           <div className="profile_button_div">
-            {/* Botón para ir al Dashboard */}
             <button className="general-AddButton" onClick={goToDashboard}>
               Ir al Dashboard
             </button>
