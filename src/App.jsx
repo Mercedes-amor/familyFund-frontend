@@ -1,19 +1,20 @@
 //Componentes de React
 import { useEffect, useState, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
-import { ThemeContext } from "./context/theme.context.jsx";
+import { ThemeContext } from "./context/themeContext.jsx";
 
 //Estilos
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-//Components
+import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 //Pages
 import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard";
+import Dashboard from "./pages/Dashboard";
 import Servidor from "./pages/Servidor";
 import Profile from "./pages/Profile";
 import Categories from "./pages/Categories.jsx";
@@ -23,12 +24,9 @@ import NotFound from "./pages/NotFound";
 import Error from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
-import { ToastContainer } from "react-toastify";
-
+// import { ThemeContext } from "./context/ThemeContext";
 
 function App() {
-  //Traemos la información del ThemeContext mediante el useContext
   const { isThemeDark, handleSwitchTheme, btnThemeClassName } =
     useContext(ThemeContext);
 
@@ -43,7 +41,10 @@ function App() {
       <div className="routes-container">
         <Routes>
           <Route path="/" element={<Home />} />
-                    <Route
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/about" element={<Servidor />} />
+          <Route
             path="/adminDashboard"
             element={
               <ProtectedRoute>
@@ -59,7 +60,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/about" element={<Servidor />} />
+
           <Route
             path="/profile"
             element={
@@ -92,14 +93,11 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route path="/error" element={<Error />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
-      <ToastContainer></ToastContainer>
+      <ToastContainer />
     </div>
   );
 }

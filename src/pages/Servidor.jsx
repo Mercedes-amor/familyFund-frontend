@@ -1,8 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import Container from "../components/Container";
-import ListaUsuarios from "../components/ListaUsuarios";
 import { useNavigate } from "react-router-dom";
-import { ThemeContext } from "../context/theme.context";
+import { ThemeContext } from "../context/themeContext";
 import axios from "axios";
 
 //Estilos
@@ -41,8 +40,8 @@ function About() {
 
   if (isFetching) {
     return (
-      <div>
-        <SyncLoader color="#24867d" size={15} />
+      <div className="spinner-div">
+        <SyncLoader color="#d4e2e1ff" size={15} />
       </div>
     )
   }
@@ -55,7 +54,6 @@ function About() {
         <h4>
           Conexión backend: <span>{msg}</span>
         </h4>
-        <ListaUsuarios />
       </Container>
     </>
   );

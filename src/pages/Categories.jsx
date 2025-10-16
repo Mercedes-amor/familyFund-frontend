@@ -82,7 +82,7 @@ export default function CategoriasPage() {
               { headers: { Authorization: "Bearer " + token } }
             );
 
-            console.log(categoriesData);
+            // console.log(categoriesData);
 
             if (!txRes.ok) throw new Error("Error al cargar transacciones");
             const transactions = await txRes.json();
@@ -341,14 +341,18 @@ export default function CategoriasPage() {
   //Clausulas seguridad mientras no cargan los datos.
   if (loading) {
     return (
-      <div>
-        <SyncLoader color="#24867d" size={15} />
+      <div className="spinner-div">
+        <SyncLoader color="#d4e2e1ff" size={15} />
       </div>
     );
   }
   //Etiqueta para errores en los fetch
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
+
+
+
+  
   //RENDERIZACIÓN
   return (
     <div className="cat-goal-wrapper">

@@ -14,6 +14,11 @@ function Navbar() {
     navigate("/login");
   };
 
+  // Variables para simplificar condicionales
+  const isLoggedIn = !!user;
+  const isAdmin = user?.rol === "ROLE_ADMIN";
+  const isUser = user?.rol === "ROLE_USER";
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -22,7 +27,7 @@ function Navbar() {
         </NavLink>
 
         {/* Saludo */}
-        {user && (
+        {isLoggedIn && user.nombre && (
           <li className="nav-item d-flex align-items-center text-white ms-2">
             Hola, {user.nombre}
           </li>
@@ -50,7 +55,7 @@ function Navbar() {
             </li>
 
             {/* ADMIN */}
-            {user?.rol === "ROLE_ADMIN" && (
+            {isAdmin && (
               <>
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/adminDashboard">
@@ -69,7 +74,7 @@ function Navbar() {
             )}
 
             {/* USER */}
-            {user?.rol === "USER" && (
+            {isUser && (
               <>
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/dashboard">
@@ -102,8 +107,8 @@ function Navbar() {
               </>
             )}
 
-            {/* Invitado (no logueado) */}
-            {!user && (
+            {/* Invitado */}
+            {!isLoggedIn && (
               <>
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/login">
@@ -125,3 +130,4 @@ function Navbar() {
 }
 
 export default Navbar;
+

@@ -93,8 +93,8 @@ export default function CategoryCompare({ token }) {
 
   if (loading)
     return (
-      <div>
-        <SyncLoader color="#24867d" size={15} />
+      <div className="spinner-div">
+        <SyncLoader color="#d4e2e1ff" size={15} />
       </div>
     );
 
@@ -111,7 +111,7 @@ export default function CategoryCompare({ token }) {
       <h2 className="h2-title">{category?.name || "Categoría"}</h2>
 
       <div className="selectMonth-container">
-        <label htmlFor="categorySelect">Categorías: </label>
+        <label id="categorySelect-label" htmlFor="categorySelect">Categorías: </label>
         <select
           id="categorySelect"
           value={selectedCategoryId || id}

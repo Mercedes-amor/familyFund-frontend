@@ -1,53 +1,186 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { fetchWithAuth } from "../utils/fetchWithAuth";
 import axios from "axios";
 
 export default function FamiliasList() {
   const [familias, setFamilias] = useState([]);
+  const [miembros, setMiembros] = useState({});
+  const [editandoId, setEditandoId] = useState(null);
+  const [nuevoNombre, setNuevoNombre] = useState("");
+  const { user, userLoading } = useContext(UserContext);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const cargarFamilias = async () => {
-    const res = await axios.get("/api/admin/familias");
-    setFamilias(res.data);
-  };
+  // ---------- FUNCION PARA CARGAR FAMILIAS ----------
+  const fetchFamilias = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-  const borrarFamilia = async (id) => {
-    if (window.confirm("¿Seguro que deseas borrar esta familia?")) {
-      await axios.delete(`/api/admin/familias/${id}`);
-      cargarFamilias();
+      const familiasRes = await fetchWithAuth(
+        "http://localhost:8080/api/admin/familias",
+        { headers: { Authorization: "Bearer " + token } }
+      );
+      if (!familiasRes.ok) throw new Error("Error al cargar familias");
+
+      const familiasData = await familiasRes.json();
+      setFamilias(familiasData);
+
+      // Cargar miembros
+      const miembrosPorFamilia = {};
+      for (const f of familiasData) {
+        const miembrosRes = await fetchWithAuth(
+          `http://localhost:8080/api/families/${f.id}/members`,
+          { headers: { Authorization: "Bearer " + token } }
+        );
+        miembrosPorFamilia[f.id] = miembrosRes.ok
+          ? await miembrosRes.json()
+          : [];
+      }
+      setMiembros(miembrosPorFamilia);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // ---------- USE EFFECT PARA CARGAR AL INICIO ----------
   useEffect(() => {
-    cargarFamilias();
-  }, []);
+    if (!userLoading) {
+      fetchFamilias();
+    }
+  }, [user, userLoading]);
+
+  // ---------- BORRAR FAMILIA ----------
+  const borrarFamilia = async (id) => {
+    if (!window.confirm("¿Seguro que deseas borrar esta familia?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.delete(
+        `http://localhost:8080/api/admin/familias/${id}`,
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      );
+      if (res.status === 204) {
+        setFamilias((prev) => prev.filter((f) => f.id !== id));
+        alert("Familia eliminada correctamente.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al borrar la familia.");
+    }
+  };
+
+  // ---------- GUARDAR EDICIÓN ----------
+  const guardarEdicion = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetchWithAuth(
+        `http://localhost:8080/api/admin/familias/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({ name: nuevoNombre }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Error al editar familia");
+
+      setEditandoId(null);
+      fetchFamilias();
+    } catch (error) {
+      console.error("Error al editar familia:", error);
+    }
+  };
+
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="p-6 w-full">
-      <h2 className="text-2xl font-bold mb-4">Familias</h2>
-      <table className="w-full border border-gray-300">
-        <thead className="bg-gray-200">
+    <div>
+      <h2>Familias</h2>
+      <table className="table">
+        <thead>
           <tr>
-            <th className="p-2">ID</th>
-            <th className="p-2">Nombre</th>
-            <th className="p-2">Código</th>
-            <th className="p-2">Acciones</th>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Código</th>
+            <th>Miembros</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {familias.map((f) => (
-            <tr key={f.id} className="text-center border-t">
-              <td className="p-2">{f.id}</td>
-              <td className="p-2">{f.name}</td>
-              <td className="p-2">{f.code}</td>
-              <td className="p-2 space-x-2">
-                <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
-                  Editar
-                </button>
-                <button
-                  onClick={() => borrarFamilia(f.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                >
-                  Borrar
-                </button>
+            <tr key={f.id}>
+              <td>{f.id}</td>
+
+              {/* --- Celda de nombre --- */}
+              <td>
+                {editandoId === f.id ? (
+                  <input
+                    type="text"
+                    value={nuevoNombre}
+                    onChange={(e) => setNuevoNombre(e.target.value)}
+                    autoFocus
+                  />
+                ) : (
+                  f.name
+                )}
+              </td>
+
+              <td>{f.code}</td>
+
+              <td>
+                {miembros[f.id] && miembros[f.id].length > 0 ? (
+                  <ul>
+                    {miembros[f.id].map((m) => (
+                      <li key={m.id}>
+                        {m.nombre} ({m.email})
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span>Sin miembros</span>
+                )}
+              </td>
+
+              {/* --- Acciones --- */}
+              <td>
+                {editandoId === f.id ? (
+                  <>
+                    <button onClick={() => guardarEdicion(f.id)}>
+                      Guardar
+                    </button>
+
+                    <button onClick={() => setEditandoId(null)}>
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditandoId(f.id);
+                        setNuevoNombre(f.name);
+                      }}
+                      className="button-edit"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => borrarFamilia(f.id)}
+                      className="button-delete"
+                    >
+                      Borrar
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}

@@ -56,8 +56,8 @@ export default function GoalsPage() {
   //Clausulas seguridad
   if (loading) {
     return (
-      <div>
-        <SyncLoader color="#24867d" size={15} />
+      <div className="spinner-div">
+        <SyncLoader color="#d4e2e1ff" size={15} />
       </div>
     );
   }

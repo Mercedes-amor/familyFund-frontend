@@ -1,54 +1,81 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState, useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { fetchWithAuth } from "../utils/fetchWithAuth";
+import "../AdminDashboard.css";
 
 export default function UsuariosList() {
   const [usuarios, setUsuarios] = useState([]);
-
-  const cargarUsuarios = async () => {
-    const res = await axios.get("/api/admin/usuarios");
-    setUsuarios(res.data);
-  };
-
-  const borrarUsuario = async (id) => {
-    if (window.confirm("¿Seguro que deseas borrar este usuario?")) {
-      await axios.delete(`/api/admin/usuarios/${id}`);
-      cargarUsuarios();
-    }
-  };
-
+  const { user, userLoading } = useContext(UserContext);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  // CARGAR DATOS
   useEffect(() => {
-    cargarUsuarios();
-  }, []);
+    if (userLoading) return;
+
+    const fetchUsuarios = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        // console.log(token);
+
+        //Obtenemos usuarios
+        const usuariosRes = await fetchWithAuth(
+          "http://localhost:8080/api/admin/usuarios",
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        );
+
+        if (!usuariosRes.ok) throw new Error("Error al cargar usuarios");
+        const usuariosData = await usuariosRes.json();
+
+        //En el estado cargamos las categorías con sus transacciones
+        setUsuarios(usuariosData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsuarios();
+
+    const borrarUsuario = async (id) => {
+      if (window.confirm("¿Seguro que deseas borrar este usuario?")) {
+        await axios.delete(`/api/admin/usuarios/${id}`);
+        fetchUsuarios();
+      }
+    };
+  }, [user, userLoading]);
 
   return (
-    <div className="p-6 w-full">
-      <h2 className="text-2xl font-bold mb-4">Usuarios</h2>
-      <table className="w-full border border-gray-300">
-        <thead className="bg-gray-200">
+    <div>
+      <h2>Usuarios</h2>
+      <table className="table">
+        <thead>
           <tr>
-            <th className="p-2">ID</th>
-            <th className="p-2">Nombre</th>
-            <th className="p-2">Apellido</th>
-            <th className="p-2">Email</th>
-            <th className="p-2">Rol</th>
-            <th className="p-2">Acciones</th>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {usuarios.map((u) => (
             <tr key={u.id} className="text-center border-t">
-              <td className="p-2">{u.id}</td>
-              <td className="p-2">{u.nombre}</td>
-              <td className="p-2">{u.apellido}</td>
-              <td className="p-2">{u.email}</td>
-              <td className="p-2">{u.rol}</td>
-              <td className="p-2 space-x-2">
-                <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+              <td>{u.id}</td>
+              <td>{u.nombre}</td>
+              <td>{u.apellido}</td>
+              <td>{u.email}</td>
+              <td>{u.rol}</td>
+              <td>
+                <button className="button-edit">
                   Editar
                 </button>
                 <button
                   onClick={() => borrarUsuario(u.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                  className="button-delete"
                 >
                   Borrar
                 </button>

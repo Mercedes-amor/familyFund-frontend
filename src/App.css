@@ -16,7 +16,7 @@ body {
 #root {
   display: flex;
   flex-direction: column;
-  /* min-height: 100vh; */
+  min-height: 80vh;
   /* siempre al menos una pantalla */
 }
 
@@ -72,7 +72,6 @@ body {
 
 .h2-title {
   color: #ffffff;
-  padding: "20px";
   margin-bottom: 4rem;
     font-size: 40px;
 
@@ -83,7 +82,11 @@ body {
    =============================== */
 .navbar {
   background-color: #242A33;
-  /* fondo oscuro */
+  position: sticky;
+  top: 0;
+  width: 100%;
+  /* height: 64px; */
+  z-index: 1000;
 }
 
 .navbar-brand {
@@ -341,6 +344,16 @@ body {
   outline: none;
   background-color: #fff;
 }
+
+/*===============================
+   SPINNER
+   =============================== */
+.spinner-div {
+  display: flex;
+  justify-content: center;
+  padding: 100px;
+}
+
 
 /*===============================
    TEMAS - MODO OSCURO Y CLARO

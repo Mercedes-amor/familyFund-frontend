@@ -1,34 +1,48 @@
-
-
 /* ===============================
    PÁGINA DASHBOARD
    =============================== */
 .dashboard-principal-container {
   display: flex;
-  width: 100vw;
-  height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100vh;
 }
 
-.dashboard-barra {
-  width: 400px; 
-  margin-right: 20px;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.205);
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  position: sticky; /* se queda visible al hacer scroll */
-  top: 20px;
+/* Sidebar */
+.sidebar {
+  width: 22rem;
+  background-color: #242A33;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
 }
+
+.sidebar h2 {
+  margin: 10px 10px 20px 10px;
+  color: #00A6C4 !important;
+}
+
+.sidebar h2 span {
+  margin: 10px 10px 20px 10px;
+  color: white;
+}
+
+.sidebar h3 {
+  margin: 0px 10px;
+  color: #00A6C4 !important;
+
+}
+
 
 .dashboard-wrapper {
   flex: 1;
-  max-width: 900px; 
+  max-width: 900px;
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  margin: 0 auto; /* centra wrapper horizontalmente si sobra espacio */
+  align-items: center;
+  margin: 0 auto;
+  /* centra wrapper horizontalmente si sobra espacio */
 }
 
 
@@ -47,26 +61,28 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.category-card-deleted{
+.category-card-deleted {
   background: #860505;
   color: #860505;
   opacity: 0.4;
   box-shadow: 0 0 8px rgba(70, 5, 5, 0.651);
+  margin: 20px;
 }
 
 /* Listado miembros */
 .members-list {
   list-style: none;
   padding: 0;
-  margin: 10px 0;
+  margin: 10px 20px;
 }
 
 .member-item {
   background-color: rgba(245, 249, 251, 0.85);
+  color: #1a0b42b9;
   padding: 10px;
   margin-bottom: 8px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 

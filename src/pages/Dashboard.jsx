@@ -65,8 +65,8 @@ function Dashboard() {
   
     if (loading) {
     return (
-      <div>
-        <SyncLoader color="#24867d" size={15} />
+      <div className="spinner-div">
+        <SyncLoader color="#d4e2e1ff" size={15} />
       </div>
     )
   }
@@ -104,9 +104,9 @@ function Dashboard() {
 
   return (
     <div className="dashboard-principal-container">
-      <div className="dashboard-barra">
-        <h2>Familia: {family.name}</h2>
-        <h3>Miembros de la familia</h3>
+      <div className="sidebar">
+        <h2>Familia <span>{family.name}</span></h2>
+        <h3>Miembros:</h3>
         <ul className="members-list">
           {members.map((m) => (
             <li key={m.id} className="member-item">

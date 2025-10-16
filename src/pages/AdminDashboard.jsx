@@ -1,17 +1,38 @@
 import React, { useState } from "react";
+import { UserContext } from "../context/UserContext";
+import "../AdminDashboard.css";
+
 import AdminSidebar from "../components/AdminSidebar";
 import UsuariosList from "../components/UsuariosList";
 import FamiliasList from "../components/FamiliasList";
 
 export default function AdminDashboard() {
-  const [selected, setSelected] = useState("usuarios");
+  const [selected, setSelected] = useState("");
+  const [vista, setVista] = useState("familias");
 
   return (
-    <div className="flex">
-      <AdminSidebar selected={selected} onSelect={setSelected} />
-      <div className="flex-1 bg-gray-50 min-h-screen">
-        {selected === "usuarios" && <UsuariosList />}
-        {selected === "familias" && <FamiliasList />}
+    <div className="admin-dashboard-container">
+      {/* Sidebar */}
+      <div className="sidebar">
+        <h1>Admin Dashboard</h1>
+        <button
+          className={`${vista === "usuarios" ? "active" : ""}`}
+          onClick={() => setVista("usuarios")}
+        >
+          Usuarios
+        </button>
+        <button
+          className={`${vista === "familias" ? "active" : ""}`}
+          onClick={() => setVista("familias")}
+        >
+          Familias
+        </button>
+      </div>
+
+      {/* Contenido principal */}
+      <div className="main-content">
+        {vista === "usuarios" && <UsuariosList />}
+        {vista === "familias" && <FamiliasList />}
       </div>
     </div>
   );

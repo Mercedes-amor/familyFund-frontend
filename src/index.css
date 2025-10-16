@@ -96,10 +96,19 @@ button:focus-visible {
   /* min-height: 100vh; */
 }
 
+
+/* Contenedor neutro: ocupa pantalla completa */
 .routes-container {
-  flex: 1;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column; 
+  box-sizing: border-box; /* para que el padding no aumente el tamaño total */
+  flex: 1;                    /* permite que crezca */
+  margin-top: 20px;            /* espacio para el navbar */
+  /* overflow-y: auto;  */
+  z-index: 0;           /* scroll si excede la altura */
 }
+
+
+

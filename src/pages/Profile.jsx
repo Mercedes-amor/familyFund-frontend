@@ -18,13 +18,18 @@ function Profile() {
   };
   //Para evitar renderizar Profile antes
   // de que cargue UserProvider con los datos del usuario
-    if (loading) {
+  if (loading) {
     return (
-      <div>
-        <SyncLoader color="#24867d" size={15} />
+      <div className="spinner-div">
+        <SyncLoader color="#d4e2e1ff" size={15} />
       </div>
-    )
+    );
   }
+
+  // Variables para simplificar condicionales
+  const isAdmin = user?.rol === "ROLE_ADMIN";
+  const isUser = user?.rol === "ROLE_USER";
+
   if (!user) return <p>No estás logueado.</p>;
 
   console.log("Profile render → user:", user);
@@ -38,26 +43,36 @@ function Profile() {
       <p>
         <strong>Email:</strong> {user.email}
       </p>
-      <p>
-        <strong>Tu familia:</strong>{" "}
-        {user.family
-          ? user.family.name
-          : "Todavía no te has unido a una familia"}
-      </p>
 
-      {!user.family && (
-        <div className="generalProfile-forms">
-          <FamilyForm />
-          <JoinFamilyForm userId={user.id} />
-        </div>
+      {isAdmin && (
+        <p>
+          <strong>Administrador</strong>{" "}
+        </p>
       )}
-      <div className="profile_button_div">
-        {/* Botón para ir al Dashboard */}
-        <button className="general-AddButton" onClick={goToDashboard}>Ir al Dashboard</button>
-        <button className="general-AddButton" id="cerrarSesion-btn" onClick={logout}>
-          Cerrar sesión
-        </button>
-      </div>
+      {isUser && (
+        <>
+          <p>
+            <strong>Tu familia:</strong>{" "}
+            {user.family
+              ? user.family.name
+              : "Todavía no te has unido a una familia"}
+          </p>
+
+          <div className="profile_button_div">
+            {/* Botón para ir al Dashboard */}
+            <button className="general-AddButton" onClick={goToDashboard}>
+              Ir al Dashboard
+            </button>
+            <button
+              className="general-AddButton"
+              id="cerrarSesion-btn"
+              onClick={logout}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

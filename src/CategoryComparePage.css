@@ -5,7 +5,7 @@
 
 .compare-wrapper {
   /* padding: 4%; */
-  position: fixed;
+  /* position: fixed; */
   margin-left: 30px;
   top: 150px;
   /* z-index: 1000; */
@@ -31,4 +31,17 @@
   /* permite que las tarjetas se muevan a la siguiente línea */
   gap: 20px;
   /* separación entre tarjetas */
+}
+
+#categorySelect{
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+}
+
+#categorySelect-label{
+font-size: 30px;
 }

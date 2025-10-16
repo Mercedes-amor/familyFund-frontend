@@ -48,20 +48,21 @@ export default function InfoAPIWorldBank() {
     borderRadius: "8px",
     padding: "0",
     boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-    margin: "20px 0px"
+    margin: "20px 0px",
+    width:"100%"
   };
 
   return (
     <div className="flex flex-col gap-10 p-4">
   <div style={chartStyle}>
 
-    <h5 className="text-xl font-bold mb-4 text-center">Inflación anual en España (%)</h5>
+    <h5 className="text-xl font-bold mb-4 text-center" style={{ color: "#1a0b42b9", paddingTop:"10px"}}>Inflación anual en España (%)</h5>
     <ResponsiveContainer width="100%" height={150}>
       <LineChart data={inflacion}>
         <XAxis dataKey="year" tick={{ fontSize: 12 }} />
         <YAxis domain={['auto', 'auto']} tick={{ fontSize: 12 }} />
         <Tooltip formatter={tooltipFormatter} />
-        <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#1a0b42b9" />
         <Line type="monotone" dataKey="value" stroke="#FF5733" strokeWidth={2} dot={{ r: 3 }} animationDuration={1500} />
       </LineChart>
     </ResponsiveContainer>
@@ -69,13 +70,13 @@ export default function InfoAPIWorldBank() {
 
 
 <div style={chartStyle}>
-      <h5 className="text-xl font-bold mb-4 text-center">Tasa de ahorro (% del PIB)</h5>
-    <ResponsiveContainer width="100%" height={150}>
+      <h5 className="text-xl font-bold mb-4 text-center " style={{ color: "#1a0b42b9", paddingTop:"10px" }}>Tasa de ahorro (% del PIB)</h5>
+    <ResponsiveContainer width="100%" height={150} padding={20}>
       <LineChart data={ahorro}>
         <XAxis dataKey="year" tick={{ fontSize: 12 }} />
         <YAxis domain={['auto', 'auto']} tick={{ fontSize: 12 }} />
         <Tooltip formatter={tooltipFormatter} />
-        <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#1a0b42b9" />
         <Line type="monotone" dataKey="value" stroke="#1F77B4" strokeWidth={2} dot={{ r: 3 }} animationDuration={1500} />
       </LineChart>
     </ResponsiveContainer>
