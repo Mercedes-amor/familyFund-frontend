@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { UserContext } from "../context/UserContext";
+import Swal from "sweetalert2";
+
 import "../AdminDashboard.css";
 
-import AdminSidebar from "../components/AdminSidebar";
+// import AdminSidebar from "../components/AdminSidebar.bak";
 import UsuariosList from "../components/UsuariosList";
 import FamiliasList from "../components/FamiliasList";
 
 export default function AdminDashboard() {
   const [selected, setSelected] = useState("");
-  const [vista, setVista] = useState("familias");
+  const [vista, setVista] = useState("");
 
   return (
     <div className="admin-dashboard-container">

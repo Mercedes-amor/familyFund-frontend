@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function GoalForm({
   familyId,
@@ -32,39 +33,43 @@ export default function GoalForm({
       achieved: false,
     };
 
-    try {
-      const res = await fetch("http://localhost:8080/api/goals", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify(newGoal),
-      });
+try {
+  const res = await fetch("http://localhost:8080/api/goals", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(newGoal),
+  });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Error creating goal:", errorData);
-        // alert("Error al crear el objetivo");
-        toast.error("Error al crear el objetivo");
+  if (!res.ok) {
+    const errorData = await res.json();
+    console.error("Error creating goal:", errorData);
+    toast.error("Error al crear el objetivo");
+    return;
+  }
 
-        return;
-      }
+  const createdGoal = await res.json();
+  onGoalCreated(createdGoal);
 
-      const createdGoal = await res.json();
-      onGoalCreated(createdGoal);
+  // Reset del formulario
+  setName("");
+  setCategoryId("");
+  setAmount("");
+  setShowForm(false);
 
-      // Reset del formulario
-      setName("");
-      setCategoryId("");
-      setAmount("");
-      setShowForm(false);
-    } catch (err) {
-      console.error("Network error:", err);
-      // alert("Error de red al crear el objetivo");
-              toast.error("Error de red al crear el objetivo");
-
-    }
+  // SweetAlert2 moderno
+  Swal.fire({
+    title: "¡Nuevo objetivo!",
+    text: "Mucho ánimo para consiguir tus metas",
+    icon: "success",
+    confirmButtonText: "Aceptar",
+  });
+} catch (err) {
+  console.error("Network error:", err);
+  toast.error("Error de red al crear el objetivo");
+}
   };
 
   return (

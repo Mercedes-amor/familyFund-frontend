@@ -4,6 +4,7 @@ import { fetchWithAuth } from "../utils/fetchWithAuth";
 import CatActualList from "../components/CatActualList";
 import CatHistorico from "../components/CatHistorico";
 import { ToastContainer, toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
@@ -219,7 +220,19 @@ export default function CategoriasPage() {
   };
   //DELETE - Borrar transacción
   const handleDeleteTransaction = async (categoryId, txId) => {
-    if (!window.confirm("¿Seguro que quieres borrar esta transacción?")) return;
+    
+      const result = await Swal.fire({
+          title: "¿Estás seguro?",
+          text: "Esta acción no se puede deshacer",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, borrar",
+          cancelButtonText: "Cancelar",
+          reverseButtons: true,
+        });
+    
+        if (!result.isConfirmed) return;
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -323,13 +336,19 @@ export default function CategoriasPage() {
 
   // DELETE - Borrar categoría
   const handleDeleteCategory = async (catId) => {
-    if (
-      !window.confirm(
-        "¿Seguro que quieres borrar la categoría las transacciones de este mes?"
-      )
-    )
-      return;
 
+     const result = await Swal.fire({
+          title: "¿Estás seguro?",
+          text: "Borrarás la categoría y todos los gastos de este mes",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, borrar",
+          cancelButtonText: "Cancelar",
+          reverseButtons: true,
+        });
+    
+        if (!result.isConfirmed) return;
+   
     try {
       const token = localStorage.getItem("token");
       const res = await fetchWithAuth(

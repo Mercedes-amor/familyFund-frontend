@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function GoalList({
   goals,
@@ -48,7 +49,20 @@ export default function GoalList({
 
   //DELETE - Borrar goal
   const handleDelete = async (goalId) => {
-    if (!window.confirm("¿Eliminar este objetivo?")) return;
+    //Confirmación mediante Swal
+        const result = await Swal.fire({
+          title: "¿Estás seguro?",
+          text: "Esta acción no se puede deshacer",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, borrar",
+          cancelButtonText: "Cancelar",
+          reverseButtons: true,
+        });
+
+
+
+     if (!result.isConfirmed) return;
 
     try {
       const token = localStorage.getItem("token");

@@ -59,9 +59,8 @@ export default function FamiliasList() {
 
   // ---------- BORRAR FAMILIA ----------
   const borrarFamilia = async (id) => {
-    //Cambiamos el típico windows.confirm por la librería Swal
     const result = await Swal.fire({
-      title: "¿Estás segura?",
+      title: "¿Estás seguro?",
       text: "Esta acción no se puede deshacer",
       icon: "warning",
       showCancelButton: true,
