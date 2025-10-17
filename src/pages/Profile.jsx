@@ -4,6 +4,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 import UploadImage from "../components/UploadImage";
 import FamilyForm from "../components/FamilyForm";
 import JoinFamilyForm from "../components/JoinFamilyForm";
+import { ToastContainer, toast } from "react-toastify";
 
 import { UserContext } from "../context/UserContext";
 
@@ -38,10 +39,15 @@ function Profile() {
 
   return (
     <div className="profile-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        style={{ marginTop: "70px", zIndex: 9999 }}
+      />
       <h2 className="h2-title">Perfil del usuario</h2>
 
       {/* FOTO DE PERFIL */}
-      <UploadImage currentUrl={photoUrl} onUpload={setPhotoUrl} />
+      <UploadImage currentUrl={user.photoUrl} onUpload={setPhotoUrl} />
 
       <p>
         <strong>Nombre:</strong> {user.nombre}

@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -42,6 +42,7 @@ export default function FamilyForm({ onFamilyCreated }) {
       const newFamily = await response.json();
 
       // Mostramos toast de éxito
+      console.log("Llegamos al toast de éxito", newFamily);
       toast.success("Familia creada correctamente");
       setName("");
 
@@ -78,10 +79,6 @@ export default function FamilyForm({ onFamilyCreated }) {
         </div>
         <button type="submit">Crear Familia</button>
       </form>
-
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
-
-

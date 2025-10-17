@@ -43,6 +43,8 @@ export const UserProvider = ({ children }) => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUser(res.data);
+        console.log("Usuario desde backend:", res.data);
+
         localStorage.setItem("user", JSON.stringify(res.data)); // actualizar cache
       } catch (err) {
         console.error("Error reconstruyendo usuario:", err);

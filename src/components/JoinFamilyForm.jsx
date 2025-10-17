@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { ToastContainer, toast } from "react-toastify";
-import { fetchWithAuth } from "../utils/fetchWithAuth";
+import { toast } from "react-toastify";
 
 import axios from "axios";
 
@@ -65,7 +64,6 @@ export default function JoinFamilyForm({ onFamilyJoined }) {
         </div>
         <button type="submit">Unirse</button>
       </form>
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }

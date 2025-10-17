@@ -2,6 +2,11 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
 import axios from "axios";
+import Swal from "sweetalert2";
+
+//Estilos
+import { ToastContainer, toast } from "react-toastify";
+import { ClipLoader, SyncLoader } from "react-spinners";
 
 export default function FamiliasList() {
   const [familias, setFamilias] = useState([]);
@@ -54,22 +59,33 @@ export default function FamiliasList() {
 
   // ---------- BORRAR FAMILIA ----------
   const borrarFamilia = async (id) => {
-    if (!window.confirm("¿Seguro que deseas borrar esta familia?")) return;
+    //Cambiamos el típico windows.confirm por la librería Swal
+    const result = await Swal.fire({
+      title: "¿Estás segura?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       const token = localStorage.getItem("token");
       const res = await axios.delete(
         `http://localhost:8080/api/admin/familias/${id}`,
-        {
-          headers: { Authorization: "Bearer " + token },
-        }
+        { headers: { Authorization: "Bearer " + token } }
       );
+
       if (res.status === 204) {
         setFamilias((prev) => prev.filter((f) => f.id !== id));
-        alert("Familia eliminada correctamente.");
+        toast.success("Familia eliminada correctamente");
       }
     } catch (err) {
       console.error(err);
-      alert("Error al borrar la familia.");
+      toast.error("Error al borrar la familia");
     }
   };
 
@@ -99,11 +115,20 @@ export default function FamiliasList() {
     }
   };
 
-  if (loading) return <p>Cargando...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading)
+    return (
+      <div className="spinner-div">
+        <SyncLoader color="#113941" size={15} />
+      </div>
+    );
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        style={{ marginTop: "70px", zIndex: 9999 }}
+      />
       <h2>Familias</h2>
       <table className="table">
         <thead>

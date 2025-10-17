@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
+
+//Estilos
 import "../AdminDashboard.css";
+import { ClipLoader, SyncLoader } from "react-spinners";
 
 export default function UsuariosList() {
   const [usuarios, setUsuarios] = useState([]);
@@ -47,6 +50,13 @@ export default function UsuariosList() {
     };
   }, [user, userLoading]);
 
+   if (loading)
+    return (
+      <div className="spinner-div">
+        <SyncLoader color="#113941" size={15} />
+      </div>
+    );
+
   return (
     <div>
       <h2>Usuarios</h2>
@@ -57,6 +67,7 @@ export default function UsuariosList() {
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Email</th>
+            <th>Familia Id</th>
             <th>Rol</th>
             <th>Acciones</th>
           </tr>
@@ -68,6 +79,7 @@ export default function UsuariosList() {
               <td>{u.nombre}</td>
               <td>{u.apellido}</td>
               <td>{u.email}</td>
+              <td>{u.familyId}</td>
               <td>{u.rol}</td>
               <td>
                 <button className="button-edit">

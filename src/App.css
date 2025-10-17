@@ -77,6 +77,11 @@ body {
 
 }
 
+/* toast */
+.custom-toast {
+  z-index: 9999 !important; /* sobre navbar y contenedores */
+}
+
 /* ===============================
    NAVBAR
    =============================== */

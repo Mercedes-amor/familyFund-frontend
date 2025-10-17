@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import axios from "axios";
 
@@ -29,15 +30,23 @@ function Signup() {
         "http://localhost:8080/api/auth/signup",
         form
       );
-      setMensaje(response.data.message || "Usuario registrado, loguéate");
 
-      // redirigir al login en 3s para que se vea el Mensaje
+    // Mostrar toast de éxito
+    toast.success(response.data.message || "!Ya estás registrado! Ahora inicia sesión");
+
+    // Limpiar formulario
+    // setForm({ ... }); 
+
+
+      setMensaje(response.data.message || "Usuario registrado correctamente");
+
+      // redirigir al login en 3s para que se vea el toast
       setTimeout(() => {
         navigate("/login");
-      }, 3000);
+      }, 2000);
     } catch (error) {
       if (error.response) {
-        setMensaje(error.response.data.message || "Error en el registro");
+    toast.error(err.response?.data?.message || "Error al registrarse");
       } else {
         setMensaje("Error de conexión");
       }

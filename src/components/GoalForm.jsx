@@ -1,6 +1,13 @@
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
-export default function GoalForm({ familyId, categories, onGoalCreated, token, selectedMonth }) {
+export default function GoalForm({
+  familyId,
+  categories,
+  onGoalCreated,
+  token,
+  selectedMonth,
+}) {
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -10,7 +17,9 @@ export default function GoalForm({ familyId, categories, onGoalCreated, token, s
     e.preventDefault();
 
     if (!name || !categoryId || !amount) {
-      alert("Rellena todos los campos");
+      // alert("Rellena todos los campos");
+      toast.warning("Rellena todos los campos");
+
       return;
     }
 
@@ -20,7 +29,7 @@ export default function GoalForm({ familyId, categories, onGoalCreated, token, s
       categoryId: parseInt(categoryId),
       familyId: familyId,
       month: selectedMonth,
-      achieved: false
+      achieved: false,
     };
 
     try {
@@ -36,7 +45,9 @@ export default function GoalForm({ familyId, categories, onGoalCreated, token, s
       if (!res.ok) {
         const errorData = await res.json();
         console.error("Error creating goal:", errorData);
-        alert("Error al crear el objetivo");
+        // alert("Error al crear el objetivo");
+        toast.error("Error al crear el objetivo");
+
         return;
       }
 
@@ -50,14 +61,18 @@ export default function GoalForm({ familyId, categories, onGoalCreated, token, s
       setShowForm(false);
     } catch (err) {
       console.error("Network error:", err);
-      alert("Error de red al crear el objetivo");
+      // alert("Error de red al crear el objetivo");
+              toast.error("Error de red al crear el objetivo");
+
     }
   };
 
   return (
-    <div className="general-container" >
+    <div className="general-container">
       {!showForm ? (
-        <button className="general-AddButton" onClick={() => setShowForm(true)}>➕ Nuevo objetivo</button>
+        <button className="general-AddButton" onClick={() => setShowForm(true)}>
+          ➕ Nuevo objetivo
+        </button>
       ) : (
         <form onSubmit={handleSubmit} className="general-form">
           <input
@@ -94,7 +109,9 @@ export default function GoalForm({ familyId, categories, onGoalCreated, token, s
           />
 
           <button type="submit">Guardar</button>
-          <button type="button" onClick={() => setShowForm(false)}>Cancelar</button>
+          <button type="button" onClick={() => setShowForm(false)}>
+            Cancelar
+          </button>
         </form>
       )}
     </div>

@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
 import CatActualList from "../components/CatActualList";
 import CatHistorico from "../components/CatHistorico";
+import { ToastContainer, toast } from "react-toastify";
 
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
@@ -161,6 +162,7 @@ export default function CategoriasPage() {
       setShowTransactionForm(false);
     } catch (err) {
       alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -211,7 +213,8 @@ export default function CategoriasPage() {
 
       setEditTransactionId(null);
     } catch (err) {
-      alert(err.message);
+      // alert(err.message);
+      toast.error(err.message);
     }
   };
   //DELETE - Borrar transacción
@@ -236,7 +239,8 @@ export default function CategoriasPage() {
         )
       );
     } catch (err) {
-      alert(err.message);
+      // alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -312,7 +316,8 @@ export default function CategoriasPage() {
 
       setEditingCategoryId(null);
     } catch (err) {
-      alert(err.message);
+      // alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -334,7 +339,8 @@ export default function CategoriasPage() {
       if (!res.ok) throw new Error("Error al borrar categoría");
       setCategories((prev) => prev.filter((c) => c.id !== catId));
     } catch (err) {
-      alert(err.message);
+      // alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -349,13 +355,14 @@ export default function CategoriasPage() {
   //Etiqueta para errores en los fetch
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-
-
-
-  
   //RENDERIZACIÓN
   return (
     <div className="cat-goal-wrapper">
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        style={{ marginTop: "70px", zIndex: 9999 }}
+      />
       <h2 className="h2-title">Categorías</h2>
 
       <div className="selectMonth-container">

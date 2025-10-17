@@ -97,7 +97,20 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      <ToastContainer />
+      {/* Espacio para el Toast */}
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        style={{ marginTop: "200px" }}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        draggable
+        containerId="global-toast" // identificador
+        toastClassName="custom-toast" // para personalizar CSS
+        bodyClassName="custom-toast-body"
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
 
 import "../LoginSignupPage.css";
 
@@ -46,12 +47,20 @@ function Login() {
       navigate("/profile");
     } catch (error) {
       console.error("Error en login:", error);
-      alert("Credenciales inválidas o error del servidor.");
+      // alert("Credenciales inválidas o error del servidor.");
+      if (error.response?.status === 401) {
+        toast.error("Credenciales inválidas");
+      }
     }
   };
 
   return (
     <div className="login-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        style={{ marginTop: "70px", zIndex: 9999 }}
+      />
       <h2 className="h2-title">Iniciar Sesión</h2>
       <form onSubmit={handleSubmit} className="general-form">
         <label>
@@ -80,7 +89,7 @@ function Login() {
       </form>
       <div>
         {sessionExpired && (
-          <p style={{ color: "red", margin:"30px"}}>
+          <p style={{ color: "red", margin: "30px" }}>
             Tu sesión ha expirado. Inicia sesión nuevamente.
           </p>
         )}
