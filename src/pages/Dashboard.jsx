@@ -30,16 +30,22 @@ function Dashboard() {
             fetchWithAuth(`http://localhost:8080/api/families/${familyId}`, {
               headers: { Authorization: "Bearer " + token },
             }),
-            fetchWithAuth(`http://localhost:8080/api/families/${familyId}/categories`, {
-              headers: { Authorization: "Bearer " + token },
-            }),
+            fetchWithAuth(
+              `http://localhost:8080/api/families/${familyId}/categories`,
+              {
+                headers: { Authorization: "Bearer " + token },
+              }
+            ),
             fetchWithAuth(
               `http://localhost:8080/api/families/${familyId}/transactions`,
               { headers: { Authorization: "Bearer " + token } }
             ),
-            fetchWithAuth(`http://localhost:8080/api/families/${familyId}/members`, {
-              headers: { Authorization: "Bearer " + token },
-            }),
+            fetchWithAuth(
+              `http://localhost:8080/api/families/${familyId}/members`,
+              {
+                headers: { Authorization: "Bearer " + token },
+              }
+            ),
           ]);
 
         if (
@@ -62,13 +68,12 @@ function Dashboard() {
     fetchData();
   }, [familyId]);
 
-  
-    if (loading) {
+  if (loading) {
     return (
       <div className="spinner-div">
         <SyncLoader color="#d4e2e1ff" size={15} />
       </div>
-    )
+    );
   }
   if (!user) return <p>No hay usuario conectado</p>;
 
@@ -105,11 +110,21 @@ function Dashboard() {
   return (
     <div className="dashboard-principal-container">
       <div className="sidebar">
-        <h2>Familia <span>{family.name}</span></h2>
+        <h2>
+          Familia <span>{family.name}</span>
+        </h2>
         <h3>Miembros:</h3>
         <ul className="members-list">
           {members.map((m) => (
             <li key={m.id} className="member-item">
+              <img
+                src={
+                  m.photoUrl ||
+                  "https://res.cloudinary.com/dz2owkkwa/image/upload/v1760687036/Familyfund/Dise%C3%B1o_sin_t%C3%ADtulo-removebg-preview_vqqzhb.png"
+                }
+                alt={m.nombre}
+                className="member-photo"
+              />
               <strong>{m.nombre}</strong> - {m.email}
             </li>
           ))}
@@ -152,13 +167,13 @@ function Dashboard() {
         </div>
 
         {/* Totales */}
-       
+
         <DashboardChart
           ingresos={parseFloat(totalIngresos)}
           gastos={parseFloat(totalGastos)}
         />
-     
-        <DayQuote/>
+
+        <DayQuote />
       </div>
     </div>
   );

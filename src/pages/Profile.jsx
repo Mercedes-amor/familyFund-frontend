@@ -12,7 +12,7 @@ import { UserContext } from "../context/UserContext";
 import "../ProfilePage.css";
 
 function Profile() {
-  const { user, loading, logout } = useContext(UserContext);
+  const { user, setUser, loading, logout } = useContext(UserContext);
   const navigate = useNavigate();
   const [photoUrl, setPhotoUrl] = useState("");
 
@@ -47,7 +47,13 @@ function Profile() {
       <h2 className="h2-title">Perfil del usuario</h2>
 
       {/* FOTO DE PERFIL */}
-      <UploadImage currentUrl={user.photoUrl} onUpload={setPhotoUrl} />
+      <UploadImage
+        currentUrl={user.photoUrl} //Mostramos foto actual guardada en BD
+        onUpload={(newUrl) => {
+          setPhotoUrl(newUrl); // Actualizamos estado
+          setUser({ ...user, photoUrl: newUrl }); // Actualizamos contexto y localStorage
+        }}
+      />
 
       <p>
         <strong>Nombre:</strong> {user.nombre}

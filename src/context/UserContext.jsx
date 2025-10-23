@@ -68,8 +68,15 @@ export const UserProvider = ({ children }) => {
     navigate("/login");
   };
 
+  //Para cuando actualizamos la foto de perfil(y actualizaciones posteriores)
+  const updateUser = (newUser) => {
+  setUser(newUser);
+  localStorage.setItem("user", JSON.stringify(newUser));
+};
+
+
   return (
-    <UserContext.Provider value={{ user, setUser, loading, logout }}>
+    <UserContext.Provider value={{ user, setUser: updateUser, loading, logout }}>
       {children}
     </UserContext.Provider>
   );

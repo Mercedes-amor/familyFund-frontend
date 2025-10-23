@@ -28,7 +28,7 @@ export default function CategoryCompare({ token }) {
       try {
         const token = localStorage.getItem("token");
         const res = await fetchWithAuth(
-          `http://localhost:8080/api/families/${familyId}/categories`,
+          `http://localhost:8080/api/families/${familyId}/categories/history`,
           { headers: { Authorization: "Bearer " + token } }
         );
         const data = await res.json();
@@ -111,14 +111,20 @@ export default function CategoryCompare({ token }) {
       <h2 className="h2-title">{category?.name || "Categoría"}</h2>
 
       <div className="selectMonth-container">
-        <label id="categorySelect-label" htmlFor="categorySelect">Categorías: </label>
+        <label id="categorySelect-label" htmlFor="categorySelect">
+          Categorías:{" "}
+        </label>
         <select
           id="categorySelect"
           value={selectedCategoryId || id}
           onChange={handleCategoryChange}
         >
           {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
+            <option
+              key={cat.id}
+              value={cat.id}
+              style={{ color: cat.deleted ? "red" : "black" }}
+            >
               {cat.name}
             </option>
           ))}
