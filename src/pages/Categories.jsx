@@ -112,11 +112,23 @@ export default function CategoriasPage() {
     setTransactionAmount("");
   };
 
-  //Crear transacción (Ingreso o gasto)
+  //POST: Crear transacción (Ingreso o gasto)
   const handleSubmitTransaction = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
+
+      //Parseamos el valor importe
+      let amount = parseFloat(transactionAmount);
+
+      //Validación importe amount
+      if (isNaN(amount) || amount < 0) {
+        toast.error("El importe debe introducirse en positivo");
+        return;
+      }
+
+      //Redondeo a 2 decimales
+      amount = parseFloat(amount.toFixed(2));
 
       // Buscar la categoría seleccionada
       const category = categories.find((cat) => cat.id === selectedCategoryId);
@@ -137,7 +149,7 @@ export default function CategoriasPage() {
           },
           body: JSON.stringify({
             name: transactionName,
-            amount: parseFloat(transactionAmount),
+            amount,
             type: txType,
             date: new Date().toISOString().split("T")[0],
           }),
@@ -162,7 +174,7 @@ export default function CategoriasPage() {
       //Ocultamos el formulario al finalizar
       setShowTransactionForm(false);
     } catch (err) {
-      alert(err.message);
+      // alert(err.message);
       toast.error(err.message);
     }
   };
@@ -178,6 +190,19 @@ export default function CategoriasPage() {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
+
+      //Parseamos el valor importe
+      let amount = parseFloat(editAmount);
+
+      // Validación del límite
+      if (isNaN(amount) || amount < 0) {
+        toast.error("El importe debe introducirse en positivo.");
+        return;
+      }
+
+      //Redondeo a 2 decimales
+      amount = parseFloat(amount.toFixed(2));
+
       const response = await fetchWithAuth(
         `http://localhost:8080/api/transactions/${txId}`,
         {
@@ -188,7 +213,7 @@ export default function CategoriasPage() {
           },
           body: JSON.stringify({
             name: editName,
-            amount: parseFloat(editAmount),
+            amount,
             type: "EXPENSE",
             date: new Date().toISOString().split("T")[0],
           }),
@@ -220,18 +245,17 @@ export default function CategoriasPage() {
   };
   //DELETE - Borrar transacción
   const handleDeleteTransaction = async (categoryId, txId) => {
-    
-      const result = await Swal.fire({
-          title: "¿Estás seguro?",
-          text: "Esta acción no se puede deshacer",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Sí, borrar",
-          cancelButtonText: "Cancelar",
-          reverseButtons: true,
-        });
-    
-        if (!result.isConfirmed) return;
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -267,9 +291,22 @@ export default function CategoriasPage() {
   const handleAddCategory = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+
+    //Parseamos el valor del límite
+    let limit = parseFloat(formData.get("limit"));
+
+    //Validación límite
+    if (isNaN(limit) || limit < 0) {
+      toast.error("El límite debe ser positivo");
+      return;
+    }
+
+    //Redondeo a 2 decimales
+    limit = parseFloat(limit.toFixed(2));
+
     const newCategory = {
       name: formData.get("name"),
-      limit: parseFloat(formData.get("limit")),
+      limit,
     };
 
     try {
@@ -300,6 +337,17 @@ export default function CategoriasPage() {
     try {
       const token = localStorage.getItem("token");
 
+      let limit = parseFloat(editCategoryLimit);
+
+      // Validación del límite
+      if (isNaN(limit) || limit < 0) {
+        toast.error("El límite debe ser un número positivo.");
+        return;
+      }
+
+      // Redondeo a 2 decimales
+      limit = parseFloat(limit.toFixed(2));
+
       const response = await fetchWithAuth(
         `http://localhost:8080/api/categories/edit/${categoryId}`,
         {
@@ -310,7 +358,7 @@ export default function CategoriasPage() {
           },
           body: JSON.stringify({
             name: editCategoryName,
-            limit: parseFloat(editCategoryLimit),
+            limit,
           }),
         }
       );
@@ -336,19 +384,18 @@ export default function CategoriasPage() {
 
   // DELETE - Borrar categoría
   const handleDeleteCategory = async (catId) => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Borrarás la categoría y todos los gastos de este mes",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+    });
 
-     const result = await Swal.fire({
-          title: "¿Estás seguro?",
-          text: "Borrarás la categoría y todos los gastos de este mes",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Sí, borrar",
-          cancelButtonText: "Cancelar",
-          reverseButtons: true,
-        });
-    
-        if (!result.isConfirmed) return;
-   
+    if (!result.isConfirmed) return;
+
     try {
       const token = localStorage.getItem("token");
       const res = await fetchWithAuth(
