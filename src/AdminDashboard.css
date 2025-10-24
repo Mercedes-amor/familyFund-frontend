@@ -118,15 +118,7 @@
   transition: background-color 0.3s;
 }
 
-.table tbody tr:nth-child(even) {
-  background-color: #f3f4f6;
-  /* gris claro */
-}
 
-.table tbody tr:hover {
-  background-color: #e5e7eb;
-  /* resaltar al pasar el mouse */
-}
 
 .table td {
   padding: 0.5rem 1rem;
@@ -148,14 +140,23 @@
 .table td ul li {
   display: inline-block;
   margin-right: 0.5rem;
-  background-color: #e5e7eb;
+  background-color: #3938463b;
   padding: 0.2rem 0.5rem;
   border-radius: 0.25rem;
   margin-bottom: 0.25rem;
 
 }
 
-
+.user-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  /* círculo */
+  border-bottom: 1px solid #094d49;
+  object-fit: cover;
+  padding: 0;
+  /* margin-right: 8px; */
+}
 
 /* Botones dentro de la tabla */
 .button-edit {

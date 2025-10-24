@@ -94,9 +94,12 @@ export default function GoalList({
                   step="0.01"
                   value={editAmount}
                   onChange={(e) => setEditAmount(e.target.value)}
-                />
-                <button onClick={() => handleUpdate(goal)}>Guardar</button>
-                <button onClick={() => setEditingGoalId(null)}>Cancelar</button>
+                />                          
+                <div className="goal-divEdit-buttons">
+
+                <button id="guardarButton" onClick={() => handleUpdate(goal)}>Guardar</button>
+                <button id="cancelButton" onClick={() => setEditingGoalId(null)}>Cancelar</button>
+              </div>
               </div>
             ) : (
               <div className="goal-info">

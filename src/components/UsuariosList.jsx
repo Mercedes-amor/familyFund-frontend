@@ -162,9 +162,10 @@ export default function UsuariosList() {
   return (
     <div>
       <h2>Usuarios</h2>
-      <table className="table">
+      <table className="table table-striped">
         <thead>
           <tr>
+            <th>IMG</th>
             <th>ID</th>
             <th>Nombre</th>
             <th>Apellido</th>
@@ -177,6 +178,17 @@ export default function UsuariosList() {
         <tbody>
           {usuarios.map((u) => (
             <tr key={u.id} className="text-center border-t">
+              <td>
+                <img
+                src={
+                  u.photoUrl ||
+                  "https://res.cloudinary.com/dz2owkkwa/image/upload/v1760687036/Familyfund/Dise%C3%B1o_sin_t%C3%ADtulo-removebg-preview_vqqzhb.png"
+                }
+                alt={u.nombre}
+                className="user-photo"
+              /> 
+              </td>
+             
               <td>{u.id}</td>
               <td>{u.nombre}</td>
               <td>{u.apellido}</td>
@@ -190,12 +202,15 @@ export default function UsuariosList() {
                 >
                   Editar
                 </button>
-                <button
-                  className="button-delete"
-                  onClick={() => borrarUsuario(u.id)}
-                >
-                  Borrar
-                </button>
+                {/* No se muestra botón borrar para el usuario actual */}
+                {user && user.id !== u.id && (
+                  <button
+                    className="button-delete"
+                    onClick={() => borrarUsuario(u.id)}
+                  >
+                    Borrar
+                  </button>
+                )}
               </td>
             </tr>
           ))}

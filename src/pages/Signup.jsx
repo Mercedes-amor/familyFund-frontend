@@ -10,7 +10,7 @@ function Signup() {
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
-    edad: "",
+    fechaNac: "",
     email: "",
     password: "",
     // Rol será por defecto USER
@@ -26,17 +26,31 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      //Calculamos la edad a partir de la fecha de nacimiento
+      const today= new Date();
+      const birth = new Date(form.fechaNac);
+      let edad = today.getFullYear() - birth.getFullYear();
+      const mes = today.getMonth() - birth.getMonth();
+      //Comprobación si este año ya ha cumplido o no.
+      if(mes <0 || (mes === 0 && today.getDate() < birth.getDate())){
+        edad--;
+      }
+
+
+      //payLoad cambiar la fechaNac por edad
+      const payLoad = {...form, edad};
+      delete payLoad.fechaNac //Para no enviarla
+
+      console.log(payLoad);
+
       const response = await axios.post(
         "http://localhost:8080/api/auth/signup",
-        form
+        payLoad
       );
 
     // Mostrar toast de éxito
     toast.success(response.data.message || "!Ya estás registrado! Ahora inicia sesión");
-
-    // Limpiar formulario
-    // setForm({ ... }); 
-
 
       setMensaje(response.data.message || "Usuario registrado correctamente");
 
@@ -76,11 +90,12 @@ function Signup() {
           minLength={3}
           maxLength={20}
         />
+        <label>Fecha nacimiento</label>
         <input
-          type="number"
-          name="edad"
-          placeholder="Edad"
-          value={form.edad}
+          type="date"
+          name="fechaNac"
+          placeholder="Fecha de nacimiento"
+          value={form.fechaNac}
           onChange={handleChange}
         />
         <input

@@ -129,7 +129,7 @@ export default function FamiliasList() {
         style={{ marginTop: "70px", zIndex: 9999 }}
       />
       <h2>Familias</h2>
-      <table className="table">
+      <table className="table table-striped">
         <thead>
           <tr>
             <th>ID</th>
