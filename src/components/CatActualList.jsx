@@ -48,7 +48,7 @@ export default function CatActualList({
         const filteredTransactions = category.transactions.filter(
           (tx) => tx.date && tx.date.slice(0, 7) === selectedMonth
         );
-
+        console.log("filteredTransactions: ", filteredTransactions);
         return (
           <div key={category.id} className="category-wrapper">
             <div
@@ -123,6 +123,14 @@ export default function CatActualList({
                 ) : (
                   filteredTransactions.map((tx) => (
                     <li key={tx.id}>
+                      <img
+                        src={
+                          tx.user.photoUrl ||
+                          "https://res.cloudinary.com/dz2owkkwa/image/upload/v1760687036/Familyfund/Dise%C3%B1o_sin_t%C3%ADtulo-removebg-preview_vqqzhb.png"
+                        }
+                        alt={tx.nombre}
+                        className="member-photo"
+                      />
                       {editTransactionId === tx.id ? (
                         <form
                           onSubmit={(e) =>

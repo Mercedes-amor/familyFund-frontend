@@ -89,7 +89,15 @@ function Login() {
       </form>
       <div>
         {sessionExpired && (
-          <p style={{ color: "red", margin: "30px" }}>
+          <p
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              color: "red",
+              margin: "30px",
+              padding: "10px",
+              borderRadius: "10px",
+            }}
+          >
             Tu sesión ha expirado. Inicia sesión nuevamente.
           </p>
         )}

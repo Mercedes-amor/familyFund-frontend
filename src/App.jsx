@@ -24,6 +24,8 @@ import NotFound from "./pages/NotFound";
 import Error from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Footer from "./components/Footer";
+
 // import { ThemeContext } from "./context/ThemeContext";
 
 function App() {
@@ -111,6 +113,7 @@ function App() {
         toastClassName="custom-toast" // para personalizar CSS
         bodyClassName="custom-toast-body"
       />
+      <Footer/>
     </div>
   );
 }

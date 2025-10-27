@@ -359,7 +359,31 @@ body {
   padding: 100px;
 }
 
+/*===============================
+   SALUDO HOME
+   =============================== */
 
+.saludoHome{
+  margin: 100px;
+  color: #f1f7f8;
+  font-style: oblique;
+  font-size: 40px !important;
+}
+
+
+/*===============================
+   SALUDO HOME
+   =============================== */
+
+   .footer{
+    background-color: #042329e3 !important;;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%
+   }
 /*===============================
    TEMAS - MODO OSCURO Y CLARO
    =============================== */

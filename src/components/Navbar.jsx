@@ -29,6 +29,14 @@ function Navbar() {
         {/* Saludo */}
         {isLoggedIn && user.nombre && (
           <li className="nav-item d-flex align-items-center text-white ms-2">
+            <img
+              src={
+                user.photoUrl ||
+                "https://res.cloudinary.com/dz2owkkwa/image/upload/v1760687036/Familyfund/Dise%C3%B1o_sin_t%C3%ADtulo-removebg-preview_vqqzhb.png"
+              }
+              alt={user.nombre}
+              className="member-photo"
+            />
             Hola, {user.nombre}
           </li>
         )}
@@ -112,7 +120,7 @@ function Navbar() {
               <>
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/login">
-                    Login
+                    Iniciar Sesión
                   </NavLink>
                 </li>
                 <li className="nav-item">
@@ -130,4 +138,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
