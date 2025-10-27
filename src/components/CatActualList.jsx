@@ -3,6 +3,7 @@ import CategoryBar from "./CategoryBar";
 import { useNavigate } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import IngresosBar from "./IngresosBar";
 
 export default function CatActualList({
   categories,
@@ -45,10 +46,38 @@ export default function CatActualList({
   return (
     <div className="categories-div">
       {categories.map((category) => {
+        // Filtramos transacciones de este mes
         const filteredTransactions = category.transactions.filter(
           (tx) => tx.date && tx.date.slice(0, 7) === selectedMonth
         );
-        console.log("filteredTransactions: ", filteredTransactions);
+
+        const showIngresosBar = category.name === "INGRESOS";
+
+        let totalGastosMes = 0;
+        let limiteMes = 0;
+
+        if (showIngresosBar) {
+          // Límite = suma de ingresos de la categoría INGRESOS
+          limiteMes = filteredTransactions
+            .filter((tx) => tx.type === "INCOME")
+            .reduce((sum, tx) => sum + tx.amount, 0);
+
+          // Gastos del mes = suma de EXPENSE de todas las categorías
+          totalGastosMes = categories
+            .flatMap((cat) => cat.transactions)
+            .filter(
+              (tx) =>
+                tx.date &&
+                tx.date.slice(0, 7) === selectedMonth &&
+                tx.type === "EXPENSE"
+            )
+            .reduce((sum, tx) => sum + tx.amount, 0);
+
+          // Redondeo a 2 decimales
+          limiteMes = parseFloat(limiteMes.toFixed(2));
+          totalGastosMes = parseFloat(totalGastosMes.toFixed(2));
+        }
+
         return (
           <div key={category.id} className="category-wrapper">
             <div
@@ -228,13 +257,21 @@ export default function CatActualList({
                 </form>
               )}
 
-              <CategoryBar
-                total={filteredTransactions.reduce(
-                  (sum, t) => sum + t.amount,
-                  0
-                )}
-                limit={category.limit}
-              />
+              {/* Mostrar IngresosBar solo para la categoría "INGRESOS" */}
+              {showIngresosBar && (
+                <IngresosBar gastos={totalGastosMes} limite={limiteMes} />
+              )}
+
+              {/* CategoryBar normal para otras categorías */}
+              {category.name !== "INGRESOS" && (
+                <CategoryBar
+                  total={filteredTransactions.reduce(
+                    (sum, t) => sum + t.amount,
+                    0
+                  )}
+                  limit={category.limit}
+                />
+              )}
             </div>
           </div>
         );
