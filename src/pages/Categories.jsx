@@ -237,7 +237,7 @@ export default function CategoriasPage() {
         throw new Error(errorMessage);
       }
 
-      const result = await response.json();
+      // const result = await response.json();
 
       const updatedTx = await response.json();
 
@@ -280,7 +280,24 @@ export default function CategoriasPage() {
         `http://localhost:8080/api/transactions/${txId}`,
         { method: "DELETE", headers: { Authorization: "Bearer " + token } }
       );
-      if (!response.ok) throw new Error("Error al borrar transacción");
+
+
+            //Mostrar mensaje de error
+      let errorMessage = "Error desconocido";
+
+      if (!response.ok) {
+        // Intentar leer el cuerpo
+        const text = await response.text();
+        try {
+          const data = JSON.parse(text);
+          // Si el backend envía { error: "mensaje" } o { message: "mensaje" }
+          errorMessage = data.error || data.message || errorMessage;
+        } catch {
+          // Si no es JSON, usamos el texto directamente
+          errorMessage = text;
+        }
+        throw new Error(errorMessage);
+      }
 
       setCategories((prev) =>
         prev.map((cat) =>
