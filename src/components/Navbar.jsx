@@ -71,6 +71,11 @@ function Navbar() {
                   </NavLink>
                 </li>
                 <li className="nav-item">
+                  <NavLink className={checkActiveUrl} to="/profile">
+                    Perfil
+                  </NavLink>
+                </li>
+                <li className="nav-item">
                   <button
                     onClick={handleLogout}
                     className="btn btn-link nav-link"

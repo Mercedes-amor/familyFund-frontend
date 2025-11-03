@@ -98,7 +98,7 @@ export default function GoalsPage() {
       <div>
         {selectedMonth >= currentMonth ? (
           <div>
-            <h3>Objetivos actuales</h3>
+            <h2 style={{ textAlign: "center", color:"white" }}>Objetivos actuales</h2>
             <GoalList
               goals={activeGoals}
               onGoalUpdated={(updatedGoal) =>
@@ -126,13 +126,13 @@ export default function GoalsPage() {
           <div className="historico_goals_container">
             <div className="goals_card">
               {" "}
-              <h3>Objetivos conseguidos</h3>
+              <h2 style={{ textAlign: "center", color:"white" }}>Objetivos conseguidos</h2>
               <GoalList goals={achievedGoals} readOnly={true} />
             </div>
 
             <div className="goals_card" id="goal_no_archieved">
               {" "}
-              <h3>Objetivos NO alcanzados</h3>
+              <h2 style={{ textAlign: "center", color:"white" }}>Objetivos NO alcanzados</h2>
               <GoalList goals={failedGoals} readOnly={true} />
             </div>
           </div>

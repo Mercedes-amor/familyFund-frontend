@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import "../Home.css";
 
 function Home() {
   const { user, logout } = useContext(UserContext);
@@ -12,18 +13,17 @@ function Home() {
   const isLoggedIn = !!user;
 
   return (
-    <div className="container">
+    <div className="homeContainer">
       <div className="left-panel">
-        <h1>FamilyFund</h1>
-        <p>EL AHORRO EMPIEZA CON EL CONTROL</p>
+        <img id="homeLogo" src="public/logo.png" alt="Logo"></img>
         {/* Saludo */}
         {isLoggedIn && user.nombre && (
-          <p className="saludoHome">
-            Bienvenido{" "}
-            
-              <b>{user.nombre}</b>
-            
+          <div>
+               <p className="saludoHome">
+            Bienvenido <b>{user.nombre}</b>
           </p>
+          </div>
+       
         )}
       </div>
 

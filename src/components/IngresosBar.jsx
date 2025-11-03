@@ -41,14 +41,14 @@ export default function IngresosBar({ gastos, limite }) {
           <Bar
             dataKey="Restante"
             stackId="a"
-            fill="rgba(23, 90, 9, 0.85)"
+            fill="#041047"
             isAnimationActive={true}
           />
           {/* Parte gastada */}
           <Bar
             dataKey="Gastado"
             stackId="a"
-            fill="rgba(126, 11, 30, 0.85)"
+            fill="#610226"
             isAnimationActive={true}
           />
         </BarChart>

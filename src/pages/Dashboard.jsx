@@ -8,12 +8,15 @@ import DayQuote from "../components/DayQuote.jsx";
 
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 import "../Dashboard.css";
 
 function Dashboard() {
   const { user, loading } = useContext(UserContext);
   const [family, setFamily] = useState({});
   const [members, setMembers] = useState([]);
+  const [selectedMember, setSelectedMember] = useState(null);
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
@@ -32,9 +35,7 @@ function Dashboard() {
             }),
             fetchWithAuth(
               `http://localhost:8080/api/families/${familyId}/categories`,
-              {
-                headers: { Authorization: "Bearer " + token },
-              }
+              { headers: { Authorization: "Bearer " + token } }
             ),
             fetchWithAuth(
               `http://localhost:8080/api/families/${familyId}/transactions`,
@@ -42,9 +43,7 @@ function Dashboard() {
             ),
             fetchWithAuth(
               `http://localhost:8080/api/families/${familyId}/members`,
-              {
-                headers: { Authorization: "Bearer " + token },
-              }
+              { headers: { Authorization: "Bearer " + token } }
             ),
           ]);
 
@@ -56,10 +55,18 @@ function Dashboard() {
         )
           throw new Error("Error cargando datos");
 
-        setFamily(await familyRes.json());
-        setCategories(await categoriesRes.json());
-        setTransactions(await transactionsRes.json());
-        setMembers(await membersRes.json()); // <-- aquí guardamos los miembros
+        const fetchedFamily = await familyRes.json();
+        const fetchedCategories = await categoriesRes.json();
+        const fetchedTransactions = await transactionsRes.json();
+        const fetchedMembers = await membersRes.json();
+
+        setFamily(fetchedFamily);
+        setCategories(fetchedCategories);
+        setTransactions(fetchedTransactions);
+        setMembers(fetchedMembers);
+
+        // por defecto: toda la familia
+        setSelectedMember(null);
       } catch (err) {
         console.error(err);
       }
@@ -75,48 +82,72 @@ function Dashboard() {
       </div>
     );
   }
+
   if (!user) return <p>No hay usuario conectado</p>;
 
   // Obtener el mes actual en formato YYYY-MM
   const currentMonth = new Date().toISOString().slice(0, 7);
 
-  // Filtrar transacciones del mes actual
-  const monthlyTransactions = transactions.filter(
-    (t) => t.date && t.date.slice(0, 7) === currentMonth
+  // Filtrar transacciones según usuario y mes
+  const filteredTransactions = transactions.filter(
+    (t) =>
+      t.date?.slice(0, 7) === currentMonth &&
+      (selectedMember === null || t.user?.id === selectedMember)
   );
 
-  // Obtener categoría INGRESOS
+  // ---- INGRESOS ----
   const ingresosCategory = categories.find((c) => c.name === "INGRESOS");
-  const ingresosTransactions = monthlyTransactions.filter(
+  const ingresosTransactions = filteredTransactions.filter(
     (t) => t.categoryId === ingresosCategory?.id && t.type === "INCOME"
   );
   const totalIngresos = ingresosTransactions
     .reduce((sum, t) => sum + t.amount, 0)
     .toFixed(2);
 
-  // Obtener categorías de GASTOS
+  // ---- GASTOS ----
   const gastosCategories = categories.filter((c) => c.name !== "INGRESOS");
   const gastosTotals = gastosCategories.map((c) => {
-    const total = monthlyTransactions
+    const total = filteredTransactions
       .filter((t) => t.categoryId === c.id && t.type === "EXPENSE")
       .reduce((sum, t) => sum + t.amount, 0)
       .toFixed(2);
     return { ...c, total };
   });
+
   const totalGastos = gastosTotals
     .reduce((sum, c) => sum + parseFloat(c.total), 0)
     .toFixed(2);
 
+  console.log(transactions[0]);
   return (
     <div className="dashboard-principal-container">
       <div className="sidebar">
         <h2>
           Familia <span>{family.name}</span>
         </h2>
-        <h3>Miembros:</h3>
+        {/* <h3>Miembros:</h3> */}
+
         <ul className="members-list">
+          {/* Opción para ver toda la familia */}
+          <li
+            className={`family-item ${
+              selectedMember === null ? "active-member" : ""
+            }`}
+            onClick={() => setSelectedMember(null)}
+          >
+            <FontAwesomeIcon
+              icon={faPeopleRoof}
+              style={{ color: "#00A6C4", fontSize: "3rem",}}
+            />
+          </li>
           {members.map((m) => (
-            <li key={m.id} className="member-item">
+            <li
+              key={m.id}
+              className={`member-item ${
+                selectedMember === m.id ? "active-member" : ""
+              }`}
+              onClick={() => setSelectedMember(m.id)}
+            >
               <img
                 src={
                   m.photoUrl ||
@@ -129,11 +160,13 @@ function Dashboard() {
             </li>
           ))}
         </ul>
+
         <InfoAPIWorldBank />
       </div>
+
       <div className="dashboard-wrapper">
         <div className="categories-container">
-          {/* TARJETA INGRESOS */}
+          {/* INGRESOS */}
           <div className="category-card">
             <h3>INGRESOS</h3>
             {ingresosTransactions.length > 0 ? (
@@ -149,7 +182,7 @@ function Dashboard() {
             )}
           </div>
 
-          {/* TARJETA GASTOS */}
+          {/* GASTOS */}
           <div className="category-card">
             <h3>GASTOS</h3>
             {gastosTotals.length > 0 ? (
@@ -167,7 +200,6 @@ function Dashboard() {
         </div>
 
         {/* Totales */}
-
         <DashboardChart
           ingresos={parseFloat(totalIngresos)}
           gastos={parseFloat(totalGastos)}

@@ -62,23 +62,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* ===============================
-   MEDIA QUERIES - MODO CLARO
-   =============================== */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
-}
 
 /* ===============================
    CONTENEDORES PRINCIPALES (ROOT + APP)
@@ -105,7 +88,7 @@ button:focus-visible {
   flex-direction: column; 
   box-sizing: border-box; /* para que el padding no aumente el tamaño total */
   flex: 1;                    /* permite que crezca */
-  margin-top: 20px;            /* espacio para el navbar */
+  margin-top: 0px;            /* espacio para el navbar, antes 20px */
   /* overflow-y: auto;  */
   z-index: 0;           /* scroll si excede la altura */
 }

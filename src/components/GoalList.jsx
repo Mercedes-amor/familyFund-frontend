@@ -1,6 +1,12 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 
+//Librería iconos
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrophy } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPiggyBank } from "@fortawesome/free-solid-svg-icons";
+
 export default function GoalList({
   goals,
   onGoalUpdated,
@@ -50,19 +56,17 @@ export default function GoalList({
   //DELETE - Borrar goal
   const handleDelete = async (goalId) => {
     //Confirmación mediante Swal
-        const result = await Swal.fire({
-          title: "¿Estás seguro?",
-          text: "Esta acción no se puede deshacer",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Sí, borrar",
-          cancelButtonText: "Cancelar",
-          reverseButtons: true,
-        });
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+    });
 
-
-
-     if (!result.isConfirmed) return;
+    if (!result.isConfirmed) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -78,39 +82,74 @@ export default function GoalList({
   };
 
   return (
-    <div className="goals_card">
-      <p className="goal-list">
-        {goals.map((goal) => (
-          <p key={goal.id} className="goal-item">
-            {editingGoalId === goal.id ? (
-              <div className="goal-edit-form">
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                />
-                <input
-                  type="number"
-                  step="0.01"
-                  value={editAmount}
-                  onChange={(e) => setEditAmount(e.target.value)}
-                />                          
-                <div className="goal-divEdit-buttons">
+    <>
+      {goals.map((goal) => (
+        <div key={goal.id}>
+          {editingGoalId === goal.id ? (
+            <div className="goal-edit-form">
+              <input
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+              <input
+                type="number"
+                step="0.01"
+                value={editAmount}
+                onChange={(e) => setEditAmount(e.target.value)}
+              />
+              <div className="goal-divEdit-buttons">
+                <button id="guardarButton" onClick={() => handleUpdate(goal)}>
+                  Guardar
+                </button>
+                <button
+                  id="cancelButton"
+                  onClick={() => setEditingGoalId(null)}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="wrapper_goals_card">
+              <div className="goal_card">
+                {goal.achieved ? (
+                  <div style={{ textAlign: "center", padding: "25px" }}>
+                    <FontAwesomeIcon
+                      icon={faTrophy}
+                      bounce
+                      style={{
+                        color: "#f1dd23ff",
+                        fontSize: "4rem",
+                      }}
+                    />
+                  </div>
+                ) : goal.month < new Date().toISOString().slice(0, 7) ? (
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      flip
+                      style={{ color: "#ca0202", fontSize: "4rem" }}
+                    />
+                  
+                ) : (
+                  <div style={{ textAlign: "center", padding: "25px" }}>
+                    <FontAwesomeIcon
+                      icon={faPiggyBank}
+                      beat
+                      style={{ color: "#e8f7faff", fontSize: "4rem" }}
+                    />
+                  </div>
+                )}
+                <h4>
+                  <strong>Objetivo: </strong>
+                  {goal.name}
+                </h4>
 
-                <button id="guardarButton" onClick={() => handleUpdate(goal)}>Guardar</button>
-                <button id="cancelButton" onClick={() => setEditingGoalId(null)}>Cancelar</button>
-              </div>
-              </div>
-            ) : (
-              <div className="goal-info">
-                {goal.achieved
-                  ? "🏆 "
-                  : goal.month < new Date().toISOString().slice(0, 7)
-                  ? "❌ "
-                  : "⏳ "}
-                <strong>{goal.name}</strong>: Ahorra <strong>{goal.amount} € </strong> en {" "}
-                 {goal.categoryName}
-                
+                <h5>
+                  <strong>Ahorrar: </strong>
+                  {goal.amount}€ en {goal.categoryName}
+                </h5>
+
                 {!readOnly && (
                   <span className="spanEdit-buttons">
                     <button onClick={() => handleEditClick(goal)}>✏️</button>
@@ -118,10 +157,10 @@ export default function GoalList({
                   </span>
                 )}
               </div>
-            )}
-          </p>
-        ))}
-      </p>
-    </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </>
   );
 }

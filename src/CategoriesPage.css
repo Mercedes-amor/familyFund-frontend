@@ -113,6 +113,7 @@
 /* BUTTONS */
 .general-AddButton {
   margin-top: 25px;
+  margin-bottom: 20px;
   padding: 10px 20px;
   background-color: #ffffff;
   color: rgb(0, 0, 0);

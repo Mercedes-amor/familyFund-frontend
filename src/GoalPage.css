@@ -7,11 +7,11 @@
   padding: 10%;
   padding: 4%;
   position: fixed;      /* fijo en la ventana */
-  /* top: 150px;               
+/* top: 150px;               
   left: 20px;             
   width: 50%;         
   z-index: 1000;        /* encima del resto del contenido */
-  /* padding: 20px;        
+/* padding: 20px;        
   overflow: auto;  
 } */
 
@@ -23,12 +23,13 @@
 /* Contenedor principal */
 .historico_goals_container {
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   flex-wrap: wrap;
   min-width: 600px;
   /* permite que las tarjetas se muevan a la siguiente línea */
   gap: 20px;
   /* separación entre tarjetas */
+  justify-content: center;
 }
 
 
@@ -37,8 +38,9 @@
   padding: 20px;
   border-radius: 10px;
 }
-.goal-listActual{
-background-color: rgba(214, 229, 230, 0.452);
+
+.goal-listActual {
+  background-color: rgba(214, 229, 230, 0.452);
   border-radius: 12px;
   padding: 20px;
   min-width: 500px;
@@ -51,7 +53,15 @@ background-color: rgba(214, 229, 230, 0.452);
   color: #242A33;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.goals_card {
+
+.wrapper_goals_card {
+  padding: 20px;
+  min-width: 500px;
+  display: flex;
+  justify-content: center;
+}
+
+.goal_card {
   background-color: rgba(214, 229, 230, 0.452);
   border-radius: 12px;
   padding: 20px;
@@ -66,23 +76,32 @@ background-color: rgba(214, 229, 230, 0.452);
   color: #242A33;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.goal-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
+
+.goal_card h4,
+h5 {
+
+  color: #0c0438;
+  text-align: center;
+
 }
+
 .goal-info button {
   background-color: transparent;
 }
-#goal_no_archieved {
-  background-color: rgba(105, 13, 48, 0.5);
-  color: #ffffff;
 
+#goal_no_archieved .goal_card {
+  background-color: #a7050571 !important;
+  align-items: center;
 }
 
-.goal-edit-form{
-    border: 1px solid #666;
+#goal_no_archieved .goal_card h4,
+#goal_no_archieved .goal_card h5 {
+  color: #ffffff;
+}
+
+
+.goal-edit-form {
+  border: 1px solid #666;
   padding: 15px;
   border-radius: 8px;
   margin-top: 10px;
@@ -112,6 +131,7 @@ background-color: rgba(214, 229, 230, 0.452);
 .goal-divEdit-buttons button:hover {
   padding: 8px;
 }
+
 .goal-edit-form button {
   padding: 6px 12px;
   margin-top: 5px;
@@ -120,4 +140,3 @@ background-color: rgba(214, 229, 230, 0.452);
   border: none;
   color: rgb(13, 79, 95);
 }
-
