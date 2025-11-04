@@ -9,9 +9,12 @@ import Swal from "sweetalert2";
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
 import "../CategoriesPage.css";
+import MaxiGoal from "../components/MaxiGoal";
+
 
 export default function CategoriasPage() {
   const { user, userLoading } = useContext(UserContext);
+  const [family, setFamily] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,55 +58,66 @@ export default function CategoriasPage() {
   const familyId = user?.family?.id; //?--> encadenamiento opcional
 
   // CARGAR DATOS
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // 1. Obtenemos la familia (incluye maxiGoal)
+      const familyRes = await fetchWithAuth(
+        `http://localhost:8080/api/families/${familyId}`,
+        { headers: { Authorization: "Bearer " + token } }
+      );
+
+      if (!familyRes.ok) throw new Error("Error al cargar familia");
+
+      const familyData = await familyRes.json();
+      setFamily(familyData); // <-- AQUÍ guardamos el maxiGoal también
+
+      // 2. Obtenemos categorías según mes
+      const endpoint =
+        selectedMonth === currentMonth
+          ? `http://localhost:8080/api/families/${familyId}/categories`
+          : `http://localhost:8080/api/families/${familyId}/categories/history`;
+
+      const categoriesRes = await fetchWithAuth(endpoint, {
+        headers: { Authorization: "Bearer " + token },
+      });
+
+      if (!categoriesRes.ok) throw new Error("Error al cargar categorías");
+
+      const categoriesData = await categoriesRes.json();
+
+      // 3. Obtenemos transacciones por categoría
+      const categoriesWithTx = await Promise.all(
+        categoriesData.map(async (cat) => {
+          const txRes = await fetchWithAuth(
+            `http://localhost:8080/api/categories/${cat.id}/transactions`,
+            { headers: { Authorization: "Bearer " + token } }
+          );
+
+          if (!txRes.ok) throw new Error("Error al cargar transacciones");
+
+          const transactions = await txRes.json();
+          return { ...cat, transactions };
+        })
+      );
+
+      setCategories(categoriesWithTx);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  //------ Fin fechData() -----
+
+  // ------ UseEffect -----
   useEffect(() => {
-    if (userLoading || !familyId) return;
+    if (!familyId || userLoading) return;
+    fetchData();
+  }, [userLoading, familyId, selectedMonth]);
 
-    //Establecemos la ruta, ya que si vemos la del mes actual no debe mostrarnos las categorías borradas
-    const endpoint =
-      selectedMonth === currentMonth
-        ? `http://localhost:8080/api/families/${familyId}/categories`
-        : `http://localhost:8080/api/families/${familyId}/categories/history`;
-
-    const fetchCategoriesWithTransactions = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        //Primero obtenemos las categorías de la familia
-        const categoriesRes = await fetchWithAuth(endpoint, {
-          headers: { Authorization: "Bearer " + token },
-        });
-
-        if (!categoriesRes.ok) throw new Error("Error al cargar categorías");
-        const categoriesData = await categoriesRes.json();
-
-        //Ahora con un map obtenemos las transacciones de cada categoría filtradas por mes
-        const categoriesWithTx = await Promise.all(
-          categoriesData.map(async (cat) => {
-            const txRes = await fetchWithAuth(
-              `http://localhost:8080/api/categories/${cat.id}/transactions`,
-              { headers: { Authorization: "Bearer " + token } }
-            );
-
-            // console.log(categoriesData);
-
-            if (!txRes.ok) throw new Error("Error al cargar transacciones");
-            const transactions = await txRes.json();
-            return { ...cat, transactions };
-          })
-        );
-
-        //En el estado cargamos las categorías con sus transacciones
-        setCategories(categoriesWithTx);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategoriesWithTransactions();
-  }, [user, userLoading, familyId, selectedMonth]);
-
+  // ----- MÉTODOS -----
   // ----- TRANSACCIONES -----
   const handleAddTransaction = (categoryId) => {
     setSelectedCategoryId(categoryId);
@@ -281,8 +295,7 @@ export default function CategoriasPage() {
         { method: "DELETE", headers: { Authorization: "Bearer " + token } }
       );
 
-
-            //Mostrar mensaje de error
+      //Mostrar mensaje de error
       let errorMessage = "Error desconocido";
 
       if (!response.ok) {
@@ -463,7 +476,10 @@ export default function CategoriasPage() {
         autoClose={4000}
         style={{ marginTop: "70px", zIndex: 9999 }}
       />
-      <h2 className="h2-title">Categorías</h2>
+      <div className="hucha-wrapper">
+        <h2 className="h2-title">Categorías</h2>
+        <MaxiGoal maxigoal={family?.maxiGoal} refreshData={fetchData} />
+      </div>
 
       <div className="selectMonth-container">
         <label>Mes: </label>
@@ -473,40 +489,43 @@ export default function CategoriasPage() {
           onChange={(e) => setSelectedMonth(e.target.value)}
         />
       </div>
+
       {/* Si el selectMonth es el mes actual renderizamos el componente 
 CatActualList mandando como props todos los estados y métodos/*} */}
       {selectedMonth === currentMonth ? (
-        <CatActualList
-          categories={categories}
-          selectedMonth={selectedMonth}
-          showTransactionForm={showTransactionForm}
-          selectedCategoryId={selectedCategoryId}
-          transactionName={transactionName}
-          transactionAmount={transactionAmount}
-          editTransactionId={editTransactionId}
-          editName={editName}
-          editAmount={editAmount}
-          editingCategoryId={editingCategoryId}
-          editCategoryName={editCategoryName}
-          editCategoryLimit={editCategoryLimit}
-          handleAddTransaction={handleAddTransaction}
-          handleSubmitTransaction={handleSubmitTransaction}
-          handleEditClick={handleEditClick}
-          handleUpdateTransaction={handleUpdateTransaction}
-          handleDeleteTransaction={handleDeleteTransaction}
-          startEditCategory={startEditCategory}
-          handleUpdateCategory={handleUpdateCategory}
-          handleDeleteCategory={handleDeleteCategory}
-          setShowTransactionForm={setShowTransactionForm}
-          setTransactionName={setTransactionName}
-          setTransactionAmount={setTransactionAmount}
-          setEditName={setEditName}
-          setEditAmount={setEditAmount}
-          setEditingCategoryId={setEditingCategoryId}
-          setEditCategoryName={setEditCategoryName}
-          setEditCategoryLimit={setEditCategoryLimit}
-          setEditTransactionId={setEditTransactionId}
-        />
+        <>
+          <CatActualList
+            categories={categories}
+            selectedMonth={selectedMonth}
+            showTransactionForm={showTransactionForm}
+            selectedCategoryId={selectedCategoryId}
+            transactionName={transactionName}
+            transactionAmount={transactionAmount}
+            editTransactionId={editTransactionId}
+            editName={editName}
+            editAmount={editAmount}
+            editingCategoryId={editingCategoryId}
+            editCategoryName={editCategoryName}
+            editCategoryLimit={editCategoryLimit}
+            handleAddTransaction={handleAddTransaction}
+            handleSubmitTransaction={handleSubmitTransaction}
+            handleEditClick={handleEditClick}
+            handleUpdateTransaction={handleUpdateTransaction}
+            handleDeleteTransaction={handleDeleteTransaction}
+            startEditCategory={startEditCategory}
+            handleUpdateCategory={handleUpdateCategory}
+            handleDeleteCategory={handleDeleteCategory}
+            setShowTransactionForm={setShowTransactionForm}
+            setTransactionName={setTransactionName}
+            setTransactionAmount={setTransactionAmount}
+            setEditName={setEditName}
+            setEditAmount={setEditAmount}
+            setEditingCategoryId={setEditingCategoryId}
+            setEditCategoryName={setEditCategoryName}
+            setEditCategoryLimit={setEditCategoryLimit}
+            setEditTransactionId={setEditTransactionId}
+          />
+        </>
       ) : (
         <CatHistorico categories={categories} selectedMonth={selectedMonth} />
       )}

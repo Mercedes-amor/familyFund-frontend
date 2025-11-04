@@ -2,6 +2,11 @@
    PÁGINA CATEGORÍAS
    =============================== */
 
+   .hucha-wrapper{
+    display: flex;
+    margin-bottom: 50px;
+    justify-content: space-around;
+   }
 
 /* Contenedor principal de todas las tarjetas */
 .categories-div {

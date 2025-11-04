@@ -1,0 +1,147 @@
+/* ===============================
+   HUCHA MAXIGOAL
+   =============================== */
+.maxigoal-container {
+  text-align: center;
+  margin-top: 12px;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.maxi-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.piggy-wrapper {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: auto;
+
+  /* Máscara de recorte */
+  -webkit-mask-image: url('/images/piggy.png');
+  mask-image: url('/images/piggy.png');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+
+  /* Imagen base del cerdito */
+  background-image: url('/images/piggy.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Barra interna */
+.piggy-bar {
+  z-index: 3;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-image: url('/images/coins.png');
+  background-size: cover;
+  opacity: 0.9;
+  transition: height 0.5s ease-out;
+}
+
+/* Capa de ojos encima de todo */
+.piggy-eyes {
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* misma escala que la hucha */
+  height: 100%;
+  pointer-events: none;
+  /* no bloquea clics en el botón */
+  z-index: 3;
+  /* aseguramos que va arriba del todo */
+}
+
+/* --- ANIMACIÓN MONEDAS CAYENDO --- */
+.coins-animation-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  /* permite que caigan hacia abajo */
+}
+
+.coin {
+  z-index: 9;
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background-image: url('/images/coin.png');
+  background-size: cover;
+  opacity: 0;
+  animation: fallCoin 2.2s ease-out forwards;
+}
+
+@keyframes fallCoin {
+  0% {
+    transform: translateY(-30px) rotateZ(0deg);
+    opacity: 0;
+  }
+
+  40% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(260px) rotateZ(520deg);
+    opacity: 0;
+  }
+}
+
+
+
+/* Botón e input */
+.maxi-stats {
+  margin-top: 6px;
+  font-size: 20px;
+}
+
+.maxi-form {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.maxi-form input {
+  width: 140px;
+  padding: 8px 8px;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  border: 1px solid #ddd;
+}
+
+.maxi-form button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #aa800b;
+  color: rgb(255, 255, 255);
+  font-size: 1.5rem;
+}
+
+.maxi-form button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.maxi-error {
+  color: #b00020;
+  margin-top: 8px;
+  font-size: 13px;
+}

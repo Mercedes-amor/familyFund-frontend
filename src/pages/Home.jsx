@@ -15,7 +15,7 @@ function Home() {
   return (
     <div className="homeContainer">
       <div className="left-panel">
-        <img id="homeLogo" src="public/logo.png" alt="Logo"></img>
+        <img id="homeLogo" src="public/images/logo.png" alt="Logo"></img>
         {/* Saludo */}
         {isLoggedIn && user.nombre && (
           <div>
