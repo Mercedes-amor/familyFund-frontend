@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import DashboardChart from "../components/DashboardChart.jsx";
 import InfoAPIWorldBank from "../components/InfoAPIWorldBank";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
+import MaxiGoal from "../components/MaxiGoal";
 
 import DayQuote from "../components/DayQuote.jsx";
 
@@ -25,55 +26,57 @@ function Dashboard() {
   useEffect(() => {
     if (!familyId) return;
 
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const [familyRes, categoriesRes, transactionsRes, membersRes] =
-          await Promise.all([
-            fetchWithAuth(`http://localhost:8080/api/families/${familyId}`, {
-              headers: { Authorization: "Bearer " + token },
-            }),
-            fetchWithAuth(
-              `http://localhost:8080/api/families/${familyId}/categories`,
-              { headers: { Authorization: "Bearer " + token } }
-            ),
-            fetchWithAuth(
-              `http://localhost:8080/api/families/${familyId}/transactions`,
-              { headers: { Authorization: "Bearer " + token } }
-            ),
-            fetchWithAuth(
-              `http://localhost:8080/api/families/${familyId}/members`,
-              { headers: { Authorization: "Bearer " + token } }
-            ),
-          ]);
-
-        if (
-          !familyRes.ok ||
-          !categoriesRes.ok ||
-          !transactionsRes.ok ||
-          !membersRes.ok
-        )
-          throw new Error("Error cargando datos");
-
-        const fetchedFamily = await familyRes.json();
-        const fetchedCategories = await categoriesRes.json();
-        const fetchedTransactions = await transactionsRes.json();
-        const fetchedMembers = await membersRes.json();
-
-        setFamily(fetchedFamily);
-        setCategories(fetchedCategories);
-        setTransactions(fetchedTransactions);
-        setMembers(fetchedMembers);
-
-        // por defecto: toda la familia
-        setSelectedMember(null);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     fetchData();
   }, [familyId]);
+
+  //------ FechData ------
+  const fetchData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const [familyRes, categoriesRes, transactionsRes, membersRes] =
+        await Promise.all([
+          fetchWithAuth(`http://localhost:8080/api/families/${familyId}`, {
+            headers: { Authorization: "Bearer " + token },
+          }),
+          fetchWithAuth(
+            `http://localhost:8080/api/families/${familyId}/categories`,
+            { headers: { Authorization: "Bearer " + token } }
+          ),
+          fetchWithAuth(
+            `http://localhost:8080/api/families/${familyId}/transactions`,
+            { headers: { Authorization: "Bearer " + token } }
+          ),
+          fetchWithAuth(
+            `http://localhost:8080/api/families/${familyId}/members`,
+            { headers: { Authorization: "Bearer " + token } }
+          ),
+        ]);
+
+      if (
+        !familyRes.ok ||
+        !categoriesRes.ok ||
+        !transactionsRes.ok ||
+        !membersRes.ok
+      )
+        throw new Error("Error cargando datos");
+
+      const fetchedFamily = await familyRes.json();
+      const fetchedCategories = await categoriesRes.json();
+      const fetchedTransactions = await transactionsRes.json();
+      const fetchedMembers = await membersRes.json();
+
+      setFamily(fetchedFamily);
+      setCategories(fetchedCategories);
+      setTransactions(fetchedTransactions);
+      setMembers(fetchedMembers);
+
+      // por defecto: toda la familia
+      setSelectedMember(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  //------ FinFechData ------
 
   if (loading) {
     return (
@@ -125,8 +128,13 @@ function Dashboard() {
         <h2>
           Familia <span>{family.name}</span>
         </h2>
+        <MaxiGoal
+          maxigoal={
+            family?.maxiGoal || { name: "", actualSave: 0, targetAmount: 0 }
+          }
+          refreshData={fetchData}
+        />
         {/* <h3>Miembros:</h3> */}
-
         <ul className="members-list">
           {/* Opción para ver toda la familia */}
           <li
@@ -137,7 +145,7 @@ function Dashboard() {
           >
             <FontAwesomeIcon
               icon={faPeopleRoof}
-              style={{ color: "#00A6C4", fontSize: "3rem",}}
+              style={{ color: "#00A6C4", fontSize: "3rem" }}
             />
           </li>
           {members.map((m) => (

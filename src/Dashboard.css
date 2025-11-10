@@ -1,12 +1,14 @@
 :root {
-  --sidebar-bg: #242A33; 
+  --sidebar-bg: #242A33;
   --sidebar-text: #000;
 }
 
 .theme-dark {
-  --sidebar-bg: #696d74; /* color oscuro */
+  --sidebar-bg: #646566;
+  /* color oscuro */
   --sidebar-text: #fff;
 }
+
 /* ===============================
    PÁGINA DASHBOARD
    =============================== */
@@ -26,6 +28,7 @@
   flex-direction: column;
   padding: 1rem 0;
   transition: background-color 0.6s ease, color 0.6s ease;
+  height: 100%;
 }
 
 .sidebar h2 {
@@ -118,8 +121,10 @@
 
 .members-list {
   list-style: none;
-  padding: 0;
-  margin: 10px 20px;
+  padding: 30px 0;
+  margin: 30px 20px 0;
+  border-top: #868080 1px solid;
+  border-bottom: #868080 1px solid;
 }
 
 

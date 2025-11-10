@@ -1,64 +1,47 @@
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
 
-export default function IngresosBar({ gastos, limite }) {
-  // Evitar valores negativos
+export default function IngresosPie({ gastos, limite }) {
   const restante = Math.max(limite - gastos, 0);
 
-  // Datos para barras apiladas
   const data = [
-    {
-      name: "Ingresos",
-      Gastado: gastos,
-      Restante: restante,
-    },
+    { name: "Gastado", value: gastos },
+    { name: "Restante", value: restante },
   ];
 
-  // Porcentaje de gasto sobre el límite
+  const COLORS = ["#610226", "#041047"]; // Gastado / Restante
+
   const porcentaje = limite > 0 ? Math.min((gastos / limite) * 100, 100) : 0;
 
   return (
-    <div style={{ marginTop: "10px" }}>
-      <ResponsiveContainer width="100%" height={40}>
-        <BarChart
-          data={data}
-          layout="vertical"
-          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-        >
-          <XAxis type="number" hide domain={[0, limite]} />
-          <YAxis type="category" dataKey="name" hide />
-          <Tooltip
-            formatter={(value, name) => `${value} €`}
-            cursor={{ fill: "rgba(65, 4, 37, 0.76)" }}
-          />
-          {/* Parte restante */}
-          <Bar
-            dataKey="Restante"
-            stackId="a"
-            fill="#041047"
+    <div style={{ marginTop: "10px", textAlign: "center" }}>
+      <ResponsiveContainer width="100%" height={120}>
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="value"
+            nameKey="name"
+            innerRadius={35} // donut
+            outerRadius={50}
+            paddingAngle={2}
             isAnimationActive={true}
-          />
-          {/* Parte gastada */}
-          <Bar
-            dataKey="Gastado"
-            stackId="a"
-            fill="#610226"
-            isAnimationActive={true}
-          />
-        </BarChart>
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value, name) => `${value.toFixed(2)} €`} />
+        </PieChart>
       </ResponsiveContainer>
 
-      {/* Etiquetas debajo */}
+      {/* Leyenda / información */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
           marginTop: "5px",
           fontSize: "0.9em",
           backgroundColor: "#097f94ff",
@@ -66,11 +49,12 @@ export default function IngresosBar({ gastos, limite }) {
           borderRadius: "6px",
           color: "#ffffff",
           fontWeight: "500",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
-        <span>Gasto: {gastos.toFixed(2)} €</span>
-        <span>Límite: {limite.toFixed(2)} €</span>
-        {/* <span>Límite: {limite} €</span> */}
+        <span>Gastos: {gastos.toFixed(2)} €</span>
+        <span>Ingresos: {limite.toFixed(2)} €</span>
         <span>%: {porcentaje.toFixed(1)}%</span>
       </div>
     </div>

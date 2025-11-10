@@ -168,7 +168,7 @@ export default function MaxiGoal({ maxigoal, refreshData }) {
               paddingRight: "15px",
             }}
           />
-          {loading ? "..." : "¡Ahorra!"}
+          {loading ? "Sumando..." : "¡ Ahorra !"}
         </button>
       </form>
 

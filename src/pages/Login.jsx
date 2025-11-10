@@ -28,7 +28,7 @@ function Login() {
       );
 
       //Comprobar estado antes de guardar
-      console.log("LOGIN RESPONSE:", response.data);
+      console.log("LOGIN RESPONSE:", response.data.family);
       console.log("Token:", response.data.accessToken);
       console.log("UserId:", response.data.id);
 
@@ -44,7 +44,11 @@ function Login() {
 
       // Actualizamos el contexto para que Profile tenga los datos inmediatamente
       setUser(response.data);
-      navigate("/profile");
+      //Si aún no tiene family lo redirijimos a /profile para que cree o se una a una
+      if(response.data.family != null){
+      navigate("/Dashboard");
+      }else
+      navigate("/Profile");
     } catch (error) {
       console.error("Error en login:", error);
       // alert("Credenciales inválidas o error del servidor.");

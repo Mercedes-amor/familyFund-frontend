@@ -7,7 +7,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: rgba(255, 255, 255, 0.87); 
   background-color: #242424;
 
   font-synthesis: none;
@@ -76,14 +76,14 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   flex: 1;
-  /* min-height: 100vh; */
+  min-height: 100vh;
 }
 
 
 /* Contenedor neutro: ocupa pantalla completa */
 .routes-container {
   width: 100%;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
   flex-direction: column; 
   box-sizing: border-box; /* para que el padding no aumente el tamaño total */

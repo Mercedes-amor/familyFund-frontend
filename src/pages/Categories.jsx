@@ -4,13 +4,14 @@ import { fetchWithAuth } from "../utils/fetchWithAuth";
 import CatActualList from "../components/CatActualList";
 import CatHistorico from "../components/CatHistorico";
 import { ToastContainer, toast } from "react-toastify";
+import MaxiGoal from "../components/MaxiGoal";
+
 import Swal from "sweetalert2";
 
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
 import "../CategoriesPage.css";
-import MaxiGoal from "../components/MaxiGoal";
-
+import IngresosCard from "../components/IngresosCard";
 
 export default function CategoriasPage() {
   const { user, userLoading } = useContext(UserContext);
@@ -457,6 +458,9 @@ export default function CategoriasPage() {
     }
   };
 
+  // Separamos categoría "Ingresos" del resto
+  const expenseCategories = categories?.filter((c) => c.name !== "INGRESOS");
+
   //Clausulas seguridad mientras no cargan los datos.
   if (loading) {
     return (
@@ -468,7 +472,7 @@ export default function CategoriasPage() {
   //Etiqueta para errores en los fetch
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-  //RENDERIZACIÓN
+  //--------------- RENDERIZACIÓN ------------------
   return (
     <div className="cat-goal-wrapper">
       <ToastContainer
@@ -478,6 +482,14 @@ export default function CategoriasPage() {
       />
       <div className="hucha-wrapper">
         <h2 className="h2-title">Categorías</h2>
+        {/* AQUÍ Tarjeta ingresos */}
+        <IngresosCard
+          categories={categories}
+          selectedMonth={selectedMonth}
+          setEditTransactionId={setEditTransactionId}
+        />
+
+        {/* Hucha cerdito*/}
         <MaxiGoal maxigoal={family?.maxiGoal} refreshData={fetchData} />
       </div>
 
@@ -495,7 +507,7 @@ CatActualList mandando como props todos los estados y métodos/*} */}
       {selectedMonth === currentMonth ? (
         <>
           <CatActualList
-            categories={categories}
+            categories={expenseCategories}
             selectedMonth={selectedMonth}
             showTransactionForm={showTransactionForm}
             selectedCategoryId={selectedCategoryId}
@@ -527,7 +539,7 @@ CatActualList mandando como props todos los estados y métodos/*} */}
           />
         </>
       ) : (
-        <CatHistorico categories={categories} selectedMonth={selectedMonth} />
+        <CatHistorico categories={expenseCategories} selectedMonth={selectedMonth} />
       )}
       {/* Si estamos en el mes actual mostramos formularios edicción y añadir */}
       {selectedMonth === currentMonth && (

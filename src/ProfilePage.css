@@ -30,6 +30,12 @@
   margin: 5px 0;
 }
 
+
+.profileFormsContainer{
+  display: flex;
+}
+
+
 /* Botones generales */
 .general-AddButton {
   padding: 8px 16px;

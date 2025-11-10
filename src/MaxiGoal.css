@@ -106,7 +106,17 @@
 /* Botón e input */
 .maxi-stats {
   margin-top: 6px;
-  font-size: 20px;
+  font-size: 23px;
+  color: #1f1702;
+  background: linear-gradient(to bottom,
+      /* dirección del gradiente */
+      rgba(170, 128, 11, 0.92),
+      /* color inicial #aa800bee */
+      rgba(180, 164, 22, 0.8)
+      /* color final */
+    );
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .maxi-form {
@@ -130,7 +140,13 @@
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  background: #aa800b;
+  background: linear-gradient(to bottom,
+      /* dirección del gradiente */
+      rgba(170, 128, 11, 0.92),
+      /* color inicial #aa800bee */
+      rgba(180, 164, 22, 0.8)
+      /* color final */
+    );
   color: rgb(255, 255, 255);
   font-size: 1.5rem;
 }

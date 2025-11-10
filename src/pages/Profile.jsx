@@ -79,7 +79,7 @@ function Profile() {
 
           {/* Mostrar botón si no tiene familia */}
           {!user.family && (
-            <div>
+            <div className="profileFormsContainer">
               <FamilyForm />
               <JoinFamilyForm />
             </div>

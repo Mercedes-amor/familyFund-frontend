@@ -53,7 +53,7 @@ export default function InfoAPIWorldBank() {
   };
 
   return (
-    <div className="flex flex-col gap-10 p-4">
+    <div className="flex flex-col p-3">
   <div style={chartStyle}>
 
     <h5 className="text-xl font-bold mb-4 text-center" style={{ color: "#1a0b42b9", paddingTop:"10px"}}>Inflación anual en España (%)</h5>
