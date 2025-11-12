@@ -13,25 +13,23 @@ export default function IngresosCard({
   editName,
   editAmount,
   editingCategoryId,
-  editCategoryName,
-  editCategoryLimit,
   handleAddTransaction,
   handleSubmitTransaction,
   handleEditClick,
   handleUpdateTransaction,
   handleDeleteTransaction,
-  startEditCategory,
   handleUpdateCategory,
-  handleDeleteCategory,
   setShowTransactionForm,
   setTransactionName,
   setTransactionAmount,
   setEditName,
   setEditAmount,
   setEditingCategoryId,
-  setEditCategoryName,
-  setEditCategoryLimit,
   setEditTransactionId,
+  totalGastosMes,
+  totalIngresosMes,
+  maxiGoal,
+  currentMonth,
 }) {
   const navigate = useNavigate();
 
@@ -47,21 +45,11 @@ export default function IngresosCard({
       (tx) => tx.date && tx.date.slice(0, 7) === selectedMonth
     ) ?? [];
 
-  // Calcular límite = suma ingresos
-  const limiteMes = filteredTransactions
-    .filter((tx) => tx.type === "INCOME")
-    .reduce((sum, tx) => sum + tx.amount, 0);
 
-  // Gastos de todas las categorías
-  const totalGastosMes = categories
-    .flatMap((cat) => cat.transactions || [])
-    .filter(
-      (tx) =>
-        tx.date &&
-        tx.date.slice(0, 7) === selectedMonth &&
-        tx.type === "EXPENSE"
-    )
-    .reduce((sum, tx) => sum + tx.amount, 0);
+  //Calcular el total de ahorros del mes
+  const ahorroMes = maxiGoal?.savings?.filter(
+    (s) => s.createAt && s.createAt.slice(0,7) === selectedMonth //comparar YYYY-MM
+  ).reduce((sum, s)=> sum + s.amount,0)|| 0;
 
   return (
     <div className="category-wrapper">
@@ -71,7 +59,8 @@ export default function IngresosCard({
         }`}
       >
         <div className="category-header">
-          {editingCategoryId === ingresosCategory.id ? (
+          {editingCategoryId === ingresosCategory.id &&
+          selectedMonth === currentMonth ? (
             <div className="categoryForm-wrapper">
               <div className="general-form">
                 <input
@@ -83,9 +72,7 @@ export default function IngresosCard({
                 <div className="category-divEdit-buttons">
                   <button
                     id="guardarButton"
-                    onClick={() =>
-                      handleUpdateCategory(ingresosCategory.id)
-                    }
+                    onClick={() => handleUpdateCategory(ingresosCategory.id)}
                   >
                     Guardar
                   </button>
@@ -108,7 +95,6 @@ export default function IngresosCard({
               >
                 {ingresosCategory.name}
               </h3>
-              <span className="category-actions"></span>
             </>
           )}
         </div>
@@ -128,7 +114,8 @@ export default function IngresosCard({
                   className="member-photo"
                 />
 
-                {editTransactionId === tx.id ? (
+                {editTransactionId === tx.id &&
+                selectedMonth === currentMonth ? (
                   <form
                     onSubmit={(e) =>
                       handleUpdateTransaction(ingresosCategory.id, tx.id, e)
@@ -164,16 +151,18 @@ export default function IngresosCard({
                 ) : (
                   <div className="transaction-item">
                     {tx.name} - {tx.amount} €
-                    <span className="spanEdit-buttons">
-                      <button onClick={() => handleEditClick(tx)}>✏️</button>
-                      <button
-                        onClick={() =>
-                          handleDeleteTransaction(ingresosCategory.id, tx.id)
-                        }
-                      >
-                        🗑️
-                      </button>
-                    </span>
+                    {selectedMonth === currentMonth && (
+                      <span className="spanEdit-buttons">
+                        <button onClick={() => handleEditClick(tx)}>✏️</button>
+                        <button
+                          onClick={() =>
+                            handleDeleteTransaction(ingresosCategory.id, tx.id)
+                          }
+                        >
+                          🗑️
+                        </button>
+                      </span>
+                    )}
                   </div>
                 )}
               </li>
@@ -181,49 +170,58 @@ export default function IngresosCard({
           )}
         </ul>
 
-        <button
-          className="add-transaction-btn"
-          onClick={() => handleAddTransaction(ingresosCategory.id)}
-        >
-          ➕ Añadir
-        </button>
+        {selectedMonth === currentMonth && (
+          <>
+            <button
+              className="add-transaction-btn"
+              onClick={() => handleAddTransaction(ingresosCategory.id)}
+            >
+              ➕ Añadir
+            </button>
 
-        {showTransactionForm && selectedCategoryId === ingresosCategory.id && (
-          <form
-            onSubmit={handleSubmitTransaction}
-            className="new-transaction-form"
-          >
-            <input
-              type="text"
-              placeholder="Nombre"
-              value={transactionName}
-              onChange={(e) => setTransactionName(e.target.value)}
-              required
-            />
-            <input
-              type="number"
-              placeholder="Importe"
-              value={transactionAmount}
-              onChange={(e) => setTransactionAmount(e.target.value)}
-              required
-            />
-            <div className="category-divEdit-buttons">
-              <button type="submit" id="guardarButton">
-                Guardar
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowTransactionForm(false)}
-                id="cancelButton"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
+            {showTransactionForm &&
+              selectedCategoryId === ingresosCategory.id && (
+                <form
+                  onSubmit={handleSubmitTransaction}
+                  className="new-transaction-form"
+                >
+                  <input
+                    type="text"
+                    placeholder="Nombre"
+                    value={transactionName}
+                    onChange={(e) => setTransactionName(e.target.value)}
+                    required
+                  />
+                  <input
+                    type="number"
+                    placeholder="Importe"
+                    value={transactionAmount}
+                    onChange={(e) => setTransactionAmount(e.target.value)}
+                    required
+                  />
+                  <div className="category-divEdit-buttons">
+                    <button type="submit" id="guardarButton">
+                      Guardar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowTransactionForm(false)}
+                      id="cancelButton"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </form>
+              )}
+          </>
         )}
 
-        {/* Barra de ingresos */}
-        <IngresosBar gastos={totalGastosMes} limite={limiteMes} />
+        {/* Gráfico circular de ingresos */}
+        <IngresosBar
+          gastos={totalGastosMes}
+          ingresos={totalIngresosMes}
+          actualSave={ahorroMes}
+        />
       </div>
     </div>
   );

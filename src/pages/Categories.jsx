@@ -49,14 +49,11 @@ export default function CategoriasPage() {
     )}`;
   });
 
-  // Calcular mes actual en formato YYYY-MM
+  // VARIABLES GLOBALES
   const currentMonth = new Date().toISOString().slice(0, 7);
-
-  //Obtenemos el id de la familia del usuario logueado
-  //User podría ser undefined o null, si user existe acceder a familia
-  //Si user.family existe acceder a id
   //Si alguno es null o undefine no lanza error, devuelve undefined
   const familyId = user?.family?.id; //?--> encadenamiento opcional
+  let maxiGoal;
 
   // CARGAR DATOS
   const fetchData = async () => {
@@ -73,6 +70,8 @@ export default function CategoriasPage() {
 
       const familyData = await familyRes.json();
       setFamily(familyData); // <-- AQUÍ guardamos el maxiGoal también
+
+      maxiGoal=familyData.maxiGoal;
 
       // 2. Obtenemos categorías según mes
       const endpoint =
@@ -411,7 +410,10 @@ export default function CategoriasPage() {
         }
       );
 
-      if (!response.ok) throw new Error("Error al actualizar categoría");
+      if (!response.ok) 
+        toast.error(
+        error.response?.data?.message || "Error al actualizar categoría"
+      );
 
       const updatedCat = await response.json();
 
@@ -459,7 +461,30 @@ export default function CategoriasPage() {
   };
 
   // Separamos categoría "Ingresos" del resto
+
   const expenseCategories = categories?.filter((c) => c.name !== "INGRESOS");
+  const ingresosCategory = categories.find(
+    (c) => c.name.toUpperCase() === "INGRESOS"
+  );
+
+  //CALCULOS TOTALES
+  // Suma ingresos mes
+  const totalIngresosMes =
+    ingresosCategory?.transactions
+      ?.filter((tx) => tx.date && tx.date.slice(0, 7) === selectedMonth)
+      .reduce((sum, tx) => sum + tx.amount, 0) || 0;
+
+  // Suma gastos mes (todas las demás categorías)
+  const totalGastosMes = categories
+    .filter((c) => c.name.toUpperCase() !== "INGRESOS")
+    .flatMap((cat) => cat.transactions || [])
+    .filter((tx) => tx.date && tx.date.slice(0, 7) === selectedMonth)
+    .reduce((sum, tx) => sum + tx.amount, 0);
+
+  //Calcular el total de ahorros del mes
+  const ahorroMes = maxiGoal?.savings?.filter(
+    (s) => s.createAt && s.createAt.slice(0,7) === selectedMonth //comparar YYYY-MM
+  ).reduce((sum, s)=> sum + s.amount,0)|| 0;
 
   //Clausulas seguridad mientras no cargan los datos.
   if (loading) {
@@ -480,19 +505,58 @@ export default function CategoriasPage() {
         autoClose={4000}
         style={{ marginTop: "70px", zIndex: 9999 }}
       />
+      <h2 className="h2-title">Categorías</h2>
+
       <div className="hucha-wrapper">
-        <h2 className="h2-title">Categorías</h2>
         {/* AQUÍ Tarjeta ingresos */}
         <IngresosCard
           categories={categories}
           selectedMonth={selectedMonth}
+          showTransactionForm={showTransactionForm}
+          selectedCategoryId={selectedCategoryId}
+          transactionName={transactionName}
+          transactionAmount={transactionAmount}
+          editTransactionId={editTransactionId}
+          editName={editName}
+          editAmount={editAmount}
+          editingCategoryId={editingCategoryId}
+          editCategoryName={editCategoryName}
+          editCategoryLimit={editCategoryLimit}
+          handleAddTransaction={handleAddTransaction}
+          handleSubmitTransaction={handleSubmitTransaction}
+          handleEditClick={handleEditClick}
+          handleUpdateTransaction={handleUpdateTransaction}
+          handleDeleteTransaction={handleDeleteTransaction}
+          startEditCategory={startEditCategory}
+          handleUpdateCategory={handleUpdateCategory}
+          handleDeleteCategory={handleDeleteCategory}
+          setShowTransactionForm={setShowTransactionForm}
+          setTransactionName={setTransactionName}
+          setTransactionAmount={setTransactionAmount}
+          setEditName={setEditName}
+          setEditAmount={setEditAmount}
+          setEditingCategoryId={setEditingCategoryId}
+          setEditCategoryName={setEditCategoryName}
+          setEditCategoryLimit={setEditCategoryLimit}
           setEditTransactionId={setEditTransactionId}
+          totalGastosMes={totalGastosMes}
+          totalIngresosMes={totalIngresosMes}
+          ahorroMes={ahorroMes}
+          maxiGoal={family?.maxiGoal}
+          currentMonth={currentMonth}
         />
 
-        {/* Hucha cerdito*/}
-        <MaxiGoal maxigoal={family?.maxiGoal} refreshData={fetchData} />
+        <div className="hucha-wrapper">
+          {/* Hucha cerdito*/}
+          <MaxiGoal
+            maxigoal={family?.maxiGoal}
+            refreshData={fetchData}
+            totalIngresosMes={totalIngresosMes}
+            totalGastosMes={totalGastosMes}
+            ahorroMes={ahorroMes}
+          />
+        </div>
       </div>
-
       <div className="selectMonth-container">
         <label>Mes: </label>
         <input
@@ -539,7 +603,10 @@ CatActualList mandando como props todos los estados y métodos/*} */}
           />
         </>
       ) : (
-        <CatHistorico categories={expenseCategories} selectedMonth={selectedMonth} />
+        <CatHistorico
+          categories={expenseCategories}
+          selectedMonth={selectedMonth}
+        />
       )}
       {/* Si estamos en el mes actual mostramos formularios edicción y añadir */}
       {selectedMonth === currentMonth && (

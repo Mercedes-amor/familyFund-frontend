@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 //Estilos
 import "../MaxiGoal.css";
@@ -25,7 +26,13 @@ const launchCoins = () => {
   }
 };
 
-export default function MaxiGoal({ maxigoal, refreshData }) {
+export default function MaxiGoal({
+  maxigoal,
+  refreshData,
+  totalGastosMes,
+  totalIngresosMes,
+  ahorroMes,
+}) {
   const [saving, setSaving] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -48,6 +55,22 @@ export default function MaxiGoal({ maxigoal, refreshData }) {
     const value = parseFloat(saving);
     if (isNaN(value) || value <= 0) {
       setError("Introduce una cantidad válida mayor que 0");
+      return;
+    }
+
+    // Fondos disponibles para ahorrar
+    const fondosDisponibles = totalIngresosMes - totalGastosMes - ahorroMes;
+
+    if (value > fondosDisponibles) {
+      setError(
+        `No puedes ahorrar más de la cantidad disponible: ${fondosDisponibles.toFixed(
+          2
+        )}€`
+      );
+      toast.error(
+        "No tienes tantos fondos disponibles"
+      );
+
       return;
     }
 

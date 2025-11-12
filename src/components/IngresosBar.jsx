@@ -1,3 +1,4 @@
+//GRÁFICO CIRCULAR INGRESOS
 import {
   PieChart,
   Pie,
@@ -6,17 +7,22 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function IngresosPie({ gastos, limite }) {
-  const restante = Math.max(limite - gastos, 0);
+export default function IngresosBar({ gastos, ingresos, actualSave }) {
+
+  // Restante = ingresos - gasto - ahorro
+  const restante = Math.max(ingresos - gastos - actualSave, 0);
 
   const data = [
     { name: "Gastado", value: gastos },
+    { name: "Ahorro", value: actualSave },
     { name: "Restante", value: restante },
   ];
 
-  const COLORS = ["#610226", "#041047"]; // Gastado / Restante
+  const COLORS = ["#610226", "#c7a719ff", "#0c7c1bff"]; // Gastado / Ahorro / Restante
 
-  const porcentaje = limite > 0 ? Math.min((gastos / limite) * 100, 100) : 0;
+  const porcentajeGastado = ingresos > 0 ? (gastos / ingresos) * 100 : 0;
+  const porcentajeAhorro = ingresos > 0 ? (actualSave / ingresos) * 100 : 0;
+  const porcentajeRestante = ingresos > 0 ? (restante / ingresos) * 100 : 0;
 
   return (
     <div style={{ marginTop: "10px", textAlign: "center" }}>
@@ -35,7 +41,9 @@ export default function IngresosPie({ gastos, limite }) {
               <Cell key={`cell-${index}`} fill={COLORS[index]} />
             ))}
           </Pie>
-          <Tooltip formatter={(value, name) => `${value.toFixed(2)} €`} />
+          <Tooltip
+            formatter={(value, name) => `${value.toFixed(2)} €`}
+          />
         </PieChart>
       </ResponsiveContainer>
 
@@ -53,9 +61,9 @@ export default function IngresosPie({ gastos, limite }) {
           justifyContent: "space-between",
         }}
       >
-        <span>Gastos: {gastos.toFixed(2)} €</span>
-        <span>Ingresos: {limite.toFixed(2)} €</span>
-        <span>%: {porcentaje.toFixed(1)}%</span>
+        <span>Gasto: {gastos.toFixed(2)} €</span>
+        <span>Ahorro: {actualSave.toFixed(2)} €</span>
+        <span>Restante: {restante.toFixed(2)} €</span>
       </div>
     </div>
   );

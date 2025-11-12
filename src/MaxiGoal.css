@@ -157,7 +157,9 @@
 }
 
 .maxi-error {
-  color: #b00020;
+  color: #770b1f;
+  background-color: #dddddd69;
+  border-radius: 8px;
   margin-top: 8px;
-  font-size: 13px;
+  font-size: 19px;
 }
