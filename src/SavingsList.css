@@ -1,0 +1,74 @@
+/* ===============================
+   SAVINGS LIST
+   =============================== */
+
+.SavingsList-container {
+  padding: 20px;
+  min-width: 100%;
+  margin: 0 auto;
+  margin-left: 20px;
+}
+
+.table-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.table-wrapper table {
+  width: 70%;
+  align-items: center;
+  text-align: center;
+  border-collapse: "collapse";
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+
+.table-wrapper table th {
+  background-color: #d4af33;
+  padding: "10px";
+  align-items: center;
+}
+
+
+.table-wrapper table tr {
+  background-color: var(--table-background);
+  height: 50px;
+}
+
+.saving-item {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #4c4d53;
+}
+
+.imgSistema {
+  background: #00A6C4;
+  color: white;
+  padding: 8px 8px;
+  border-radius: 10px;
+  color: rgb(255, 255, 255);
+  
+}
+
+.imgUsuario {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: solid 1px rgb(172, 155, 2);
+} 
+
+.btn-volver {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-volver:hover {
+  opacity: 0.8;
+}

@@ -175,7 +175,7 @@ export default function FamiliasList() {
               </td>
 
               {/* --- Acciones --- */}
-              <td>
+              <td className="td-buttons">
                 {editandoId === f.id ? (
                   <>
                     <button onClick={() => guardarEdicion(f.id)}>

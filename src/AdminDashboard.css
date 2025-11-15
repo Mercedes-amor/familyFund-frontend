@@ -15,54 +15,32 @@
   padding: 1rem 0;
 }
 
-/* Contenido principal */
-.main-content {
-  flex: 1;
-  padding: 1.5rem;
-  overflow: auto;
-  background-color: #f3f4f6;
-}
-
-
-/* Sidebar */
-.sidebar {
-  width: 16rem;
-  /* ancho fijo */
-  background-color: #000;
+.sidebarAdmin {
+  width: 18rem;
+  background-color: #0000009c;
   color: #fff;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  /* ocupa toda la altura */
   padding: 1rem 0;
 }
 
+
 /* Contenido principal */
 .main-content {
   flex: 1;
-  /* ocupa el resto del espacio */
   padding: 1.5rem;
   overflow: auto;
   background-color: #f3f4f6;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 16rem;
-  background-color: #000;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  /* height: 100vh; */
-}
 
-.sidebar h1 {
+.sidebarAdmin h1 {
   font-size: 1.5rem;
   font-weight: bold;
   padding: 1rem;
 }
 
-.sidebar button {
+.sidebarAdmin button {
   padding: 1rem;
   text-align: left;
   background: transparent;
@@ -72,21 +50,15 @@
   transition: background-color 0.3s;
 }
 
-.sidebar button:hover {
+.sidebarAdmin button:hover {
   background-color: #1f2937;
 }
 
-.sidebar button.active {
+.sidebarAdmin button.active {
   background-color: #111827;
 }
 
-/* Contenido principal */
-.main-content {
-  flex: 1;
-  padding: 1.5rem;
-  overflow: auto;
-  background-color: #f3f4f6;
-}
+
 
 
 /* Tabla general */
@@ -159,6 +131,10 @@
 }
 
 /* Botones dentro de la tabla */
+
+.td-buttons{
+min-width: 200px;
+}
 .button-edit {
   background-color: #3b82f6;
   /* azul */

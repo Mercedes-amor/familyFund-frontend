@@ -5,6 +5,7 @@ import CatActualList from "../components/CatActualList";
 import CatHistorico from "../components/CatHistorico";
 import { ToastContainer, toast } from "react-toastify";
 import MaxiGoal from "../components/MaxiGoal";
+import IngresosBar from "../components/IngresosBar";
 
 import Swal from "sweetalert2";
 
@@ -39,6 +40,9 @@ export default function CategoriasPage() {
   const [editCategoryName, setEditCategoryName] = useState("");
   const [editCategoryLimit, setEditCategoryLimit] = useState("");
 
+  // Estado MaxiGoal
+  const [maxiGoal, setMaxiGoal] = useState(null);
+
   // Estado para el mes selecionado para visualización
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const today = new Date();
@@ -53,7 +57,6 @@ export default function CategoriasPage() {
   const currentMonth = new Date().toISOString().slice(0, 7);
   //Si alguno es null o undefine no lanza error, devuelve undefined
   const familyId = user?.family?.id; //?--> encadenamiento opcional
-  let maxiGoal;
 
   // CARGAR DATOS
   const fetchData = async () => {
@@ -71,7 +74,7 @@ export default function CategoriasPage() {
       const familyData = await familyRes.json();
       setFamily(familyData); // <-- AQUÍ guardamos el maxiGoal también
 
-      maxiGoal=familyData.maxiGoal;
+      setMaxiGoal(familyData.maxiGoal);
 
       // 2. Obtenemos categorías según mes
       const endpoint =
@@ -118,6 +121,42 @@ export default function CategoriasPage() {
   }, [userLoading, familyId, selectedMonth]);
 
   // ----- MÉTODOS -----
+
+  //AHORRO DE SISTEMA
+  //METODO AÑADIR SAVING DE SISTEMA(restar de Hucha ahorro)
+  const addSystemSaving = async (maxiGoalId, amount, refreshData) => {
+    if (!maxiGoalId || !amount) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        `http://localhost:8080/api/families/maxigoal/${maxiGoalId}/system-saving`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            amount: parseFloat(amount.toFixed(2)),
+            system: true, // identificamos que es automático
+            userId: null, // no ligado a un usuario
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Error al crear saving de sistema");
+      }
+
+      // Refrescamos los datos para que se actualice actualSave y listado
+      if (typeof refreshData === "function") await refreshData();
+    } catch (err) {
+      console.error("Error addSystemSaving:", err.message);
+    }
+  };
   // ----- TRANSACCIONES -----
   const handleAddTransaction = (categoryId) => {
     setSelectedCategoryId(categoryId);
@@ -126,33 +165,25 @@ export default function CategoriasPage() {
     setTransactionAmount("");
   };
 
-  //POST: Crear transacción (Ingreso o gasto)
+  // POST TRANSACCIÓN (INGRESO-GASTO)
   const handleSubmitTransaction = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
 
-      //Parseamos el valor importe
       let amount = parseFloat(transactionAmount);
-
-      //Validación importe amount
       if (isNaN(amount) || amount < 0) {
         toast.error("El importe debe introducirse en positivo");
         return;
       }
-
-      //Redondeo a 2 decimales
       amount = parseFloat(amount.toFixed(2));
 
-      // Buscar la categoría seleccionada
       const category = categories.find((cat) => cat.id === selectedCategoryId);
       if (!category) throw new Error("Categoría no encontrada");
 
-      // Determinamos ingreso o gasto según el nombre de la categoría
       const txType =
         category.name.toUpperCase() === "INGRESOS" ? "INCOME" : "EXPENSE";
 
-      //POST - Crear transacción
       const response = await fetchWithAuth(
         `http://localhost:8080/api/transactions/new/${selectedCategoryId}`,
         {
@@ -177,7 +208,7 @@ export default function CategoriasPage() {
 
       const newTx = await response.json();
 
-      //Actualizamos el estado de la categoría después de añadirle una transacción nueva
+      // Actualizamos estado de categorías inmediatamente
       setCategories((prev) =>
         prev.map((cat) =>
           cat.id === selectedCategoryId
@@ -185,10 +216,41 @@ export default function CategoriasPage() {
             : cat
         )
       );
-      //Ocultamos el formulario al finalizar
+
+      // ----- COMPROBAR FONDOS DISPONIBLES Y DESCONTAR DE MAXIGOAL SI PROCEDE -----
+      if (newTx.type === "EXPENSE" && maxiGoal) {
+        // Gastos del mes antes de la edición
+        const totalGastosMes = categories
+          .flatMap((cat) => cat.transactions)
+          .filter(
+            (tx) =>
+              tx.date &&
+              tx.date.slice(0, 7) === selectedMonth &&
+              tx.type === "EXPENSE"
+          )
+          .reduce((sum, tx) => sum + tx.amount, 0);
+
+        // Fondos disponibles antes del incremento
+        const restanteBase = totalIngresosMes - totalGastosMes - ahorroMes;
+
+        // Incremento real del gasto
+        const incrementoGasto = newTx.amount;
+
+        // Calculamos exceso a cubrir por MaxiGoal
+        const exceso = Math.max(0, incrementoGasto - restanteBase);
+
+        if (exceso > 0) {
+          toast.error(
+            `Fondos mensuales insuficientes. Se descuenta ${exceso.toFixed(
+              2
+            )} € de tu hucha para cubrir el déficit.`
+          );
+          await addSystemSaving(maxiGoal.id, -exceso, fetchData);
+        }
+      }
+
       setShowTransactionForm(false);
     } catch (err) {
-      // alert(err.message);
       toast.error(err.message);
     }
   };
@@ -199,24 +261,20 @@ export default function CategoriasPage() {
     setEditAmount(tx.amount);
   };
 
-  //PUT - Actualizar transacción
-  const handleUpdateTransaction = async (categoryId, txId, e) => {
+  // PUT - Actualizar transacción
+  const handleUpdateTransaction = async (categoryId, txId, e, oldAmount) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
 
-      //Parseamos el valor importe
       let amount = parseFloat(editAmount);
-
-      // Validación del límite
       if (isNaN(amount) || amount < 0) {
         toast.error("El importe debe introducirse en positivo.");
         return;
       }
-
-      //Redondeo a 2 decimales
       amount = parseFloat(amount.toFixed(2));
 
+      // Actualizamos la transacción
       const response = await fetchWithAuth(
         `http://localhost:8080/api/transactions/${txId}`,
         {
@@ -234,27 +292,19 @@ export default function CategoriasPage() {
         }
       );
 
-      //Mostrar mensaje de error
-      let errorMessage = "Error desconocido";
-
       if (!response.ok) {
-        // Intentar leer el cuerpo
         const text = await response.text();
         try {
           const data = JSON.parse(text);
-          // Si el backend envía { error: "mensaje" } o { message: "mensaje" }
-          errorMessage = data.error || data.message || errorMessage;
+          throw new Error(data.error || data.message || "Error desconocido");
         } catch {
-          // Si no es JSON, usamos el texto directamente
-          errorMessage = text;
+          throw new Error(text);
         }
-        throw new Error(errorMessage);
       }
-
-      // const result = await response.json();
 
       const updatedTx = await response.json();
 
+      // Actualizamos la categoría localmente
       setCategories((prev) =>
         prev.map((cat) =>
           cat.id === categoryId
@@ -268,12 +318,44 @@ export default function CategoriasPage() {
         )
       );
 
+      // ----- COMPROBAR FONDOS DISPONIBLES Y DESCONTAR DE MAXIGOAL SI PROCEDE -----
+      if (updatedTx.type === "EXPENSE" && maxiGoal) {
+        // Gastos del mes antes de la edición
+        const totalGastosMes = categories
+          .flatMap((cat) => cat.transactions)
+          .filter(
+            (tx) =>
+              tx.date &&
+              tx.date.slice(0, 7) === selectedMonth &&
+              tx.type === "EXPENSE"
+          )
+          .reduce((sum, tx) => sum + tx.amount, 0);
+
+        // Fondos disponibles antes del incremento
+        const restanteBase = totalIngresosMes - totalGastosMes - ahorroMes;
+
+        // Incremento real del gasto
+        const incrementoGasto = amount - (oldAmount || 0);
+
+        // Calculamos exceso a cubrir por MaxiGoal
+        const exceso = Math.max(0, incrementoGasto - restanteBase);
+
+        if (exceso > 0) {
+          toast.error(
+            `Fondos mensuales insuficientes. Se descuenta ${exceso.toFixed(
+              2
+            )} € de tu hucha para cubrir el déficit.`
+          );
+          await addSystemSaving(maxiGoal.id, -exceso, fetchData);
+        }
+      }
+
       setEditTransactionId(null);
     } catch (err) {
-      // alert(err.message);
       toast.error(err.message);
     }
   };
+
   //DELETE - Borrar transacción
   const handleDeleteTransaction = async (categoryId, txId) => {
     const result = await Swal.fire({
@@ -410,10 +492,10 @@ export default function CategoriasPage() {
         }
       );
 
-      if (!response.ok) 
+      if (!response.ok)
         toast.error(
-        error.response?.data?.message || "Error al actualizar categoría"
-      );
+          error.response?.data?.message || "Error al actualizar categoría"
+        );
 
       const updatedCat = await response.json();
 
@@ -482,9 +564,12 @@ export default function CategoriasPage() {
     .reduce((sum, tx) => sum + tx.amount, 0);
 
   //Calcular el total de ahorros del mes
-  const ahorroMes = maxiGoal?.savings?.filter(
-    (s) => s.createAt && s.createAt.slice(0,7) === selectedMonth //comparar YYYY-MM
-  ).reduce((sum, s)=> sum + s.amount,0)|| 0;
+  const ahorroMes =
+    maxiGoal?.savings
+      ?.filter(
+        (s) => s.createAt && s.createAt.slice(0, 7) === selectedMonth //comparar YYYY-MM
+      )
+      .reduce((sum, s) => sum + s.amount, 0) || 0;
 
   //Clausulas seguridad mientras no cargan los datos.
   if (loading) {
@@ -507,8 +592,8 @@ export default function CategoriasPage() {
       />
       <h2 className="h2-title">Categorías</h2>
 
-      <div className="hucha-wrapper">
-        {/* AQUÍ Tarjeta ingresos */}
+      <div className="header-categoria">
+        {/* Tarjeta ingresos */}
         <IngresosCard
           categories={categories}
           selectedMonth={selectedMonth}
@@ -545,7 +630,6 @@ export default function CategoriasPage() {
           maxiGoal={family?.maxiGoal}
           currentMonth={currentMonth}
         />
-
         <div className="hucha-wrapper">
           {/* Hucha cerdito*/}
           <MaxiGoal
@@ -556,16 +640,55 @@ export default function CategoriasPage() {
             ahorroMes={ahorroMes}
           />
         </div>
-      </div>
-      <div className="selectMonth-container">
-        <label>Mes: </label>
-        <input
-          type="month"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
+        {/* Gráfico circular de ingresos */}
+        <IngresosBar
+          gastos={totalGastosMes}
+          ingresos={totalIngresosMes}
+          actualSave={ahorroMes}
         />
       </div>
+      <div className="selectMonth-wrapper">
+        <div className="selectMonth-container">
+          <label>Mes: </label>
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          />
+        </div>
 
+        {/* Si estamos en el mes actual mostramos formularios edicción y añadir */}
+        {selectedMonth === currentMonth && (
+          <>
+            {showCategoryForm ? (
+              <form onSubmit={handleAddCategory} className="categoryAdd-form">
+                <input name="name" placeholder="Nombre categoría" required />
+                <input
+                  name="limit"
+                  type="number"
+                  placeholder="Límite (€)"
+                  step="0.01"
+                  required
+                />
+                <button type="submit">Crear</button>
+                <button
+                  type="button"
+                  onClick={() => setShowCategoryForm(false)}
+                >
+                  Cancelar
+                </button>
+              </form>
+            ) : (
+              <button
+                className="general-AddButton"
+                onClick={() => setShowCategoryForm(true)}
+              >
+                ➕ Añadir categoría
+              </button>
+            )}
+          </>
+        )}
+      </div>
       {/* Si el selectMonth es el mes actual renderizamos el componente 
 CatActualList mandando como props todos los estados y métodos/*} */}
       {selectedMonth === currentMonth ? (
@@ -607,34 +730,6 @@ CatActualList mandando como props todos los estados y métodos/*} */}
           categories={expenseCategories}
           selectedMonth={selectedMonth}
         />
-      )}
-      {/* Si estamos en el mes actual mostramos formularios edicción y añadir */}
-      {selectedMonth === currentMonth && (
-        <>
-          {showCategoryForm ? (
-            <form onSubmit={handleAddCategory} className="categoryAdd-form">
-              <input name="name" placeholder="Nombre categoría" required />
-              <input
-                name="limit"
-                type="number"
-                placeholder="Límite (€)"
-                step="0.01"
-                required
-              />
-              <button type="submit">Crear</button>
-              <button type="button" onClick={() => setShowCategoryForm(false)}>
-                Cancelar
-              </button>
-            </form>
-          ) : (
-            <button
-              className="general-AddButton"
-              onClick={() => setShowCategoryForm(true)}
-            >
-              ➕ Añadir categoría
-            </button>
-          )}
-        </>
       )}
     </div>
   );

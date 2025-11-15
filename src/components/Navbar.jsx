@@ -1,6 +1,10 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { ThemeContext } from "../context/themeContext.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon } from "@fortawesome/free-solid-svg-icons";
+import { faSun } from "@fortawesome/free-solid-svg-icons";
 
 function Navbar() {
   const { user, logout } = useContext(UserContext);
@@ -8,6 +12,8 @@ function Navbar() {
 
   const checkActiveUrl = ({ isActive }) =>
     isActive ? "nav-link active" : "nav-link";
+  const { isThemeDark, handleSwitchTheme, btnThemeClassName } =
+    useContext(ThemeContext);
 
   const handleLogout = () => {
     logout();
@@ -52,7 +58,6 @@ function Navbar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             {/* Siempre visible */}
@@ -138,6 +143,17 @@ function Navbar() {
           </ul>
         </div>
       </div>
+      <button onClick={handleSwitchTheme} className={btnThemeClassName}>
+        {isThemeDark ? (
+          <FontAwesomeIcon icon={faSun} style={{ color: "#FFD43B" }} />
+        ) : (
+          <FontAwesomeIcon
+            icon={faMoon}
+            flip="horizontal"
+            style={{ color: "#FFD43B" }}
+          />
+        )}
+      </button>
     </nav>
   );
 }

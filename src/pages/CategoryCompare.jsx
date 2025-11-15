@@ -109,26 +109,27 @@ export default function CategoryCompare({ token }) {
   return (
     <div className="compare-wrapper">
       <h2 className="h2-title">{category?.name || "Categoría"}</h2>
-
-      <div className="selectMonth-container">
-        <label id="categorySelect-label" htmlFor="categorySelect">
-          Categorías:{" "}
-        </label>
-        <select
-          id="categorySelect"
-          value={selectedCategoryId || id}
-          onChange={handleCategoryChange}
-        >
-          {categories.map((cat) => (
-            <option
-              key={cat.id}
-              value={cat.id}
-              style={{ color: cat.deleted ? "red" : "black" }}
-            >
-              {cat.name}
-            </option>
-          ))}
-        </select>
+      <div className="selectMonth-wrapper">
+        <div className="selectMonth-container">
+          <label id="categorySelect-label" htmlFor="categorySelect">
+            Categorías:{" "}
+          </label>
+          <select
+            id="categorySelect"
+            value={selectedCategoryId || id}
+            onChange={handleCategoryChange}
+          >
+            {categories.map((cat) => (
+              <option
+                key={cat.id}
+                value={cat.id}
+                style={{ color: cat.deleted ? "red" : "black" }}
+              >
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="compare-div-wrapper">
         <div className="compare-div">

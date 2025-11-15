@@ -31,6 +31,7 @@ function Login() {
       console.log("LOGIN RESPONSE:", response.data.family);
       console.log("Token:", response.data.accessToken);
       console.log("UserId:", response.data.id);
+      console.log("response.data.rol: " + response.data.rol)
 
       // Guardar token y user en localStorage
       localStorage.setItem("token", String(response.data.accessToken));
@@ -45,10 +46,13 @@ function Login() {
       // Actualizamos el contexto para que Profile tenga los datos inmediatamente
       setUser(response.data);
       //Si aún no tiene family lo redirijimos a /profile para que cree o se una a una
-      if(response.data.family != null){
-      navigate("/Dashboard");
-      }else
-      navigate("/Profile");
+      if (response.data.rol === "ROLE_ADMIN") {
+        navigate("/AdminDashboard");
+      } else if (response.data.family != null && response.data.rol === "ROLE_USER") {
+        navigate("/Dashboard");
+      } else {
+        navigate("/Profile");
+      }
     } catch (error) {
       console.error("Error en login:", error);
       // alert("Credenciales inválidas o error del servidor.");

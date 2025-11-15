@@ -9,12 +9,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function DashboardChart({ ingresos, gastos }) {
+export default function DashboardChart({ ingresos, gastos, ahorro }) {
   const data = [
     {
       name: "Resumen",
       Ingresos: ingresos,
       Gastos: gastos,
+      Ahorro: ahorro,
     },
   ];
 
@@ -41,9 +42,7 @@ export default function DashboardChart({ ingresos, gastos }) {
       }}
     >
       {/* Título */}
-      <h3 style={{ color: "#041047", marginBottom: "10px" }}>
-        {monthName}
-      </h3>
+      <h3 style={{ color: "#041047", marginBottom: "10px" }}>{monthName}</h3>
 
       {/* Gráfica */}
       <div style={{ width: "100%", height: 300 }}>
@@ -55,7 +54,7 @@ export default function DashboardChart({ ingresos, gastos }) {
             <CartesianGrid stroke="#0000005e" strokeDasharray="5 5" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#041047", fontSize: 14, fontWeight: 500 }}
+              tick={{ fill: "#ffffff05", fontSize: 1, fontWeight: 0 }}
               axisLine={false}
               tickLine={false}
             />
@@ -83,6 +82,10 @@ export default function DashboardChart({ ingresos, gastos }) {
                 <stop offset="0%" stopColor="#610226" stopOpacity={0.8} />
                 <stop offset="100%" stopColor="#610226" stopOpacity={0.2} />
               </linearGradient>
+              <linearGradient id="AhorroGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ad7610ff" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#c2bf0cff" stopOpacity={0.3} />
+              </linearGradient>
             </defs>
             <Bar
               dataKey="Ingresos"
@@ -93,6 +96,11 @@ export default function DashboardChart({ ingresos, gastos }) {
               dataKey="Gastos"
               radius={[8, 8, 0, 0]}
               fill="url(#GastosGradient)"
+            />
+            <Bar
+              dataKey="Ahorro"
+              radius={[8, 8, 0, 0]}
+              fill="url(#AhorroGradient)"
             />
           </BarChart>
         </ResponsiveContainer>
@@ -130,6 +138,17 @@ export default function DashboardChart({ ingresos, gastos }) {
             }}
           ></span>
           <strong>Gastos:</strong> {gastos.toLocaleString()} €
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <span
+            style={{
+              width: "12px",
+              height: "12px",
+              background: "#967d0dff",
+              borderRadius: "50%",
+            }}
+          ></span>
+          <strong>Ahorro:</strong> {ahorro.toLocaleString()} €
         </div>
       </div>
     </div>

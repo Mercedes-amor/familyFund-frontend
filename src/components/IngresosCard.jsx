@@ -1,6 +1,7 @@
 import CategoryBar from "./CategoryBar";
 import IngresosBar from "./IngresosBar";
 import { useNavigate } from "react-router-dom";
+import "../IngresosCard.css";
 
 export default function IngresosCard({
   categories,
@@ -54,7 +55,7 @@ export default function IngresosCard({
   return (
     <div className="category-wrapper">
       <div
-        className={`category-card ${
+        className={`ingresos-card ${
           ingresosCategory.deleted ? "category-card-deleted" : ""
         }`}
       >
@@ -173,10 +174,10 @@ export default function IngresosCard({
         {selectedMonth === currentMonth && (
           <>
             <button
-              className="add-transaction-btn"
+              className="add-ingresos-btn"
               onClick={() => handleAddTransaction(ingresosCategory.id)}
             >
-              ➕ Añadir
+              ➕ Añadir ingreso
             </button>
 
             {showTransactionForm &&
@@ -215,13 +216,6 @@ export default function IngresosCard({
               )}
           </>
         )}
-
-        {/* Gráfico circular de ingresos */}
-        <IngresosBar
-          gastos={totalGastosMes}
-          ingresos={totalIngresosMes}
-          actualSave={ahorroMes}
-        />
       </div>
     </div>
   );

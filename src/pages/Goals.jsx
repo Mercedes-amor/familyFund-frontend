@@ -27,9 +27,12 @@ export default function GoalsPage() {
     const fetchData = async () => {
       try {
         const [categoriesRes, goalsRes] = await Promise.all([
-          fetchWithAuth(`http://localhost:8080/api/families/${familyId}/categories`, {
-            headers: { Authorization: "Bearer " + token },
-          }),
+          fetchWithAuth(
+            `http://localhost:8080/api/families/${familyId}/categories`,
+            {
+              headers: { Authorization: "Bearer " + token },
+            }
+          ),
           fetchWithAuth(
             `http://localhost:8080/api/goals/family/${familyId}/month/${selectedMonth}`,
             {
@@ -85,20 +88,23 @@ export default function GoalsPage() {
   return (
     <div className="cat-goal-wrapper">
       <h2 className="h2-title">Objetivos de ahorro</h2>
-
-      <div className="selectMonth-container">
-        <label>Mes: </label>
-        <input
-          type="month"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-        />
+      <div className="selectMonth-wrapper">
+        <div className="selectMonth-container">
+          <label>Mes: </label>
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          />
+        </div>
       </div>
 
       <div>
         {selectedMonth >= currentMonth ? (
           <div>
-            <h2 style={{ textAlign: "center", color:"white" }}>Objetivos actuales</h2>
+            <h2 style={{ textAlign: "center", color: "white" }}>
+              Objetivos actuales
+            </h2>
             <GoalList
               goals={activeGoals}
               onGoalUpdated={(updatedGoal) =>
@@ -126,13 +132,17 @@ export default function GoalsPage() {
           <div className="historico_goals_container">
             <div className="goals_card">
               {" "}
-              <h2 style={{ textAlign: "center", color:"white" }}>Objetivos conseguidos</h2>
+              <h2 style={{ textAlign: "center", color: "white" }}>
+                Objetivos conseguidos
+              </h2>
               <GoalList goals={achievedGoals} readOnly={true} />
             </div>
 
             <div className="goals_card" id="goal_no_archieved">
               {" "}
-              <h2 style={{ textAlign: "center", color:"white" }}>Objetivos NO alcanzados</h2>
+              <h2 style={{ textAlign: "center", color: "white" }}>
+                Objetivos NO alcanzados
+              </h2>
               <GoalList goals={failedGoals} readOnly={true} />
             </div>
           </div>

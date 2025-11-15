@@ -58,8 +58,8 @@
   /* centra wrapper horizontalmente si sobra espacio */
 }
 
-
-.category-card {
+/* INGRESOS Y GASTOS CARD */
+.dashBoard-card {
   background-color: rgba(245, 249, 251, 0.85);
   border-radius: 12px;
   padding: 20px;
@@ -151,6 +151,7 @@
   box-shadow: 0 4px 12px rgba(235, 226, 226, 0.753);
   text-align: center;
   margin: 20px auto;
+  margin-bottom: 80px;
 }
 
 .dayQuote-title {

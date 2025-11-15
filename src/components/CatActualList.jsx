@@ -163,7 +163,12 @@ export default function CatActualList({
                       {editTransactionId === tx.id ? (
                         <form
                           onSubmit={(e) =>
-                            handleUpdateTransaction(category.id, tx.id, e)
+                            handleUpdateTransaction(
+                              category.id,
+                              tx.id,
+                              e,
+                              tx.amount
+                            )
                           }
                           className="new-transaction-form"
                         >
@@ -219,7 +224,7 @@ export default function CatActualList({
                 className="add-transaction-btn"
                 onClick={() => handleAddTransaction(category.id)}
               >
-                ➕ Añadir
+                ➕ Añadir gasto
               </button>
 
               {showTransactionForm && selectedCategoryId === category.id && (

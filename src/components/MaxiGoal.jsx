@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 //Estilos
 import "../MaxiGoal.css";
@@ -33,6 +34,9 @@ export default function MaxiGoal({
   totalIngresosMes,
   ahorroMes,
 }) {
+  const navigate = useNavigate();
+  const maxiGoalId = maxigoal.id;
+  console.log(maxigoal);
   const [saving, setSaving] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -67,9 +71,7 @@ export default function MaxiGoal({
           2
         )}€`
       );
-      toast.error(
-        "No tienes tantos fondos disponibles"
-      );
+      toast.error("No tienes tantos fondos disponibles");
 
       return;
     }
@@ -159,8 +161,18 @@ export default function MaxiGoal({
         </div>
       )}
 
+      {/* Aquí onclic para navigate */}
+
       {/* Barra y monedas */}
-      <div className="piggy-wrapper">
+      <div
+        className="piggy-wrapper"
+        onClick={() => {
+          if (maxigoal?.id) {
+            navigate(`/savings-list/${maxiGoalId}`);
+          }
+        }}
+        style={{ cursor: "pointer" }}
+      >
         <div className="piggy-bar" style={{ height: `${percentage}%` }}></div>
         <div className="coins-animation-container"></div>
         <img src="/images/piggy-eyes.png" className="piggy-eyes" alt="" />

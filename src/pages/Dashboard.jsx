@@ -14,13 +14,17 @@ import { faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 import "../Dashboard.css";
 
 function Dashboard() {
-  const { user, loading } = useContext(UserContext);
+  const { user, setUserLoading } = useContext(UserContext);
   const [family, setFamily] = useState({});
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [savings, setSavings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Estado MaxiGoal
+  const [maxiGoal, setMaxiGoal] = useState(null);
   const familyId = user?.family?.id;
 
   useEffect(() => {
@@ -69,11 +73,21 @@ function Dashboard() {
       setCategories(fetchedCategories);
       setTransactions(fetchedTransactions);
       setMembers(fetchedMembers);
+      setMaxiGoal(fetchedFamily.maxiGoal);
+      setSavings(fetchedFamily.maxiGoal.savings);
+
+      console.log("fetchedFamily: " + fetchedFamily.maxiGoal.name);
+      console.log(
+        "fetchedFamily.maxiGoal.savings: " +
+          fetchedFamily.maxiGoal.savings[0].usuarioId
+      );
 
       // por defecto: toda la familia
       setSelectedMember(null);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
   //------ FinFechData ------
@@ -121,7 +135,35 @@ function Dashboard() {
     .reduce((sum, c) => sum + parseFloat(c.total), 0)
     .toFixed(2);
 
-  console.log(transactions[0]);
+  //---- AHORROS ----
+  //--filtrados por mes---
+  const ahorroMes =
+    savings
+      .filter(
+        (s) => s.createAt && s.createAt.slice(0, 7) === currentMonth //comparar YYYY-MM
+      )
+      .reduce((sum, s) => sum + s.amount, 0) || 0;
+
+  // Filtrar savings ahorro según usuario y mes
+  const filteredSavings =
+    savings
+      .filter(
+        (s) =>
+          s.createAt?.slice(0, 7) === currentMonth &&
+          (selectedMember === null || s.usuarioId === selectedMember)
+      )
+      .reduce((sum, s) => sum + s.amount, 0) || 0;
+
+  //Clausulas seguridad mientras no cargan los datos.
+  if (loading) {
+    return (
+      <div className="spinner-div">
+        <SyncLoader color="#d4e2e1ff" size={15} />
+      </div>
+    );
+  }
+
+  //----RENDER---
   return (
     <div className="dashboard-principal-container">
       <div className="sidebar">
@@ -129,10 +171,11 @@ function Dashboard() {
           Familia <span>{family.name}</span>
         </h2>
         <MaxiGoal
-          maxigoal={
-            family?.maxiGoal || { name: "", actualSave: 0, targetAmount: 0 }
-          }
+          maxigoal={family?.maxiGoal}
           refreshData={fetchData}
+          totalIngresosMes={totalIngresos}
+          totalGastosMes={totalGastos}
+          ahorroMes={ahorroMes}
         />
         {/* <h3>Miembros:</h3> */}
         <ul className="members-list">
@@ -175,7 +218,7 @@ function Dashboard() {
       <div className="dashboard-wrapper">
         <div className="categories-container">
           {/* INGRESOS */}
-          <div className="category-card">
+          <div className="dashBoard-card">
             <h3>INGRESOS</h3>
             {ingresosTransactions.length > 0 ? (
               <ul>
@@ -191,7 +234,7 @@ function Dashboard() {
           </div>
 
           {/* GASTOS */}
-          <div className="category-card">
+          <div className="dashBoard-card">
             <h3>GASTOS</h3>
             {gastosTotals.length > 0 ? (
               <ul>
@@ -211,6 +254,7 @@ function Dashboard() {
         <DashboardChart
           ingresos={parseFloat(totalIngresos)}
           gastos={parseFloat(totalGastos)}
+          ahorro={parseFloat(filteredSavings)}
         />
 
         <DayQuote />

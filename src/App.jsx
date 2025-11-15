@@ -19,6 +19,7 @@ import Servidor from "./pages/Servidor";
 import Profile from "./pages/Profile";
 import Categories from "./pages/Categories.jsx";
 import CategoryCompare from "./pages/CategoryCompare.jsx";
+import SavingsList from "./pages/SavingsList.jsx";
 import Goals from "./pages/Goals.jsx";
 import NotFound from "./pages/NotFound";
 import Error from "./pages/Error";
@@ -29,7 +30,7 @@ import Footer from "./components/Footer";
 // import { ThemeContext } from "./context/ThemeContext";
 
 function App() {
-  const { isThemeDark, handleSwitchTheme, btnThemeClassName } =
+  const { isThemeDark} =
     useContext(ThemeContext);
 
   return (
@@ -37,9 +38,7 @@ function App() {
       className={`app-container ${isThemeDark ? "theme-dark" : "theme-light"}`}
     >
       <Navbar />
-      <button onClick={handleSwitchTheme} className={btnThemeClassName}>
-        Modo oscuro/claro
-      </button>
+
       <div className="routes-container">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -88,6 +87,14 @@ function App() {
             }
           />
           <Route
+            path="/savings-list/:maxiGoalId"
+            element={
+              <ProtectedRoute>
+                <SavingsList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/goals"
             element={
               <ProtectedRoute>
@@ -113,7 +120,7 @@ function App() {
         toastClassName="custom-toast" // para personalizar CSS
         bodyClassName="custom-toast-body"
       />
-      <Footer/>
+      <Footer />
     </div>
   );
 }
