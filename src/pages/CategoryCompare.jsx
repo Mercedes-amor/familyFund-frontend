@@ -108,7 +108,14 @@ export default function CategoryCompare({ token }) {
 
   return (
     <div className="compare-wrapper">
-      <h2 className="h2-title">{category?.name || "Categoría"}</h2>
+      <div className="Title-Volver-wrapper">
+        <h2 className="h2-title">{category?.name || "Categoría"}</h2>
+        <CategoryCompareChart groupedByMonth={groupedByMonth} />
+        <button onClick={() => navigate(-1)} className="btn-volver">
+          Volver
+        </button>
+      </div>
+
       <div className="selectMonth-wrapper">
         <div className="selectMonth-container">
           <label id="categorySelect-label" htmlFor="categorySelect">
@@ -183,8 +190,6 @@ export default function CategoryCompare({ token }) {
           )}
         </div>
       </div>
-
-      <CategoryCompareChart groupedByMonth={groupedByMonth} />
     </div>
   );
 }

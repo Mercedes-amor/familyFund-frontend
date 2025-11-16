@@ -18,6 +18,7 @@ export default function CategoriasPage() {
   const { user, userLoading } = useContext(UserContext);
   const [family, setFamily] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [savings, setSavings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -104,6 +105,17 @@ export default function CategoriasPage() {
           return { ...cat, transactions };
         })
       );
+
+      // 4. Obtener todos los savings de la familia
+      const savingsRes = await fetchWithAuth(
+        `http://localhost:8080/api/families/${familyId}/savings`,
+        { headers: { Authorization: "Bearer " + token } }
+      );
+
+      if (!savingsRes.ok) throw new Error("Error al cargar savings");
+
+      const savingsData = await savingsRes.json();
+      setSavings(savingsData);
 
       setCategories(categoriesWithTx);
     } catch (err) {
@@ -565,10 +577,8 @@ export default function CategoriasPage() {
 
   //Calcular el total de ahorros del mes
   const ahorroMes =
-    maxiGoal?.savings
-      ?.filter(
-        (s) => s.createAt && s.createAt.slice(0, 7) === selectedMonth //comparar YYYY-MM
-      )
+    savings
+      ?.filter((s) => s.createAt && s.createAt.slice(0, 7) === selectedMonth) // YYYY-MM
       .reduce((sum, s) => sum + s.amount, 0) || 0;
 
   //Clausulas seguridad mientras no cargan los datos.
@@ -579,6 +589,7 @@ export default function CategoriasPage() {
       </div>
     );
   }
+  console.log("family.id" + family.id);
   //Etiqueta para errores en los fetch
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
@@ -638,6 +649,7 @@ export default function CategoriasPage() {
             totalIngresosMes={totalIngresosMes}
             totalGastosMes={totalGastosMes}
             ahorroMes={ahorroMes}
+            familyId={family?.id}
           />
         </div>
         {/* Gráfico circular de ingresos */}

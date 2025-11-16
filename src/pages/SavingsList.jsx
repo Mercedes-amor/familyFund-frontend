@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ClipLoader, SyncLoader } from "react-spinners";
 
+
 import "../SavingsList.css";
 
 export default function SavingsList() {
-  const { maxiGoalId } = useParams();
+  const { familyId } = useParams();
+
   const [savings, setSavings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,7 +19,7 @@ export default function SavingsList() {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        `http://localhost:8080/api/families/maxigoal/${maxiGoalId}/savings`,
+        `http://localhost:8080/api/families/${familyId}/savings`,
         {
           headers: { Authorization: "Bearer " + token },
         }
@@ -26,6 +28,7 @@ export default function SavingsList() {
       if (!res.ok) throw new Error("Error al cargar los ahorros");
 
       const data = await res.json();
+
       setSavings(data);
     } catch (err) {
       setError(err.message);
@@ -36,9 +39,9 @@ export default function SavingsList() {
 
   useEffect(() => {
     fetchSavings();
-  }, [maxiGoalId]);
+  }, [familyId]);
 
-    if (loading) {
+  if (loading) {
     return (
       <div className="spinner-div">
         <SyncLoader color="#d4e2e1ff" size={15} />
@@ -49,8 +52,8 @@ export default function SavingsList() {
 
   return (
     <div className="SavingsList-container">
-      <div>
-        <h2>Historial de Savings</h2>
+      <div className="Title-Volver-wrapper">
+        <h2 className="h2-savings">Historial de Savings</h2>
         <button onClick={() => navigate(-1)} className="btn-volver">
           Volver
         </button>

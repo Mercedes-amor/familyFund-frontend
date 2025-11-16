@@ -1,7 +1,27 @@
 /* ===============================
    SAVINGS LIST
    =============================== */
+.Title-Volver-wrapper{
+  display: flex;
+  justify-content: space-between;
+}
+.h2-savings{
+  color: #ebc444;
+  font-weight: bold;
+}
+.btn-volver {
+  border-radius: 8px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-right: 20px;
+}
 
+.btn-volver:hover {
+  opacity: 0.8;
+}
 .SavingsList-container {
   padding: 20px;
   min-width: 100%;
@@ -58,17 +78,3 @@
   border: solid 1px rgb(172, 155, 2);
 } 
 
-.btn-volver {
-  padding: 8px 16px;
-  border-radius: 8px;
-  background: var(--btn-bg);
-  color: var(--btn-text);
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.btn-volver:hover {
-  opacity: 0.8;
-}

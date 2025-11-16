@@ -37,30 +37,40 @@ function Dashboard() {
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
-      const [familyRes, categoriesRes, transactionsRes, membersRes] =
-        await Promise.all([
-          fetchWithAuth(`http://localhost:8080/api/families/${familyId}`, {
-            headers: { Authorization: "Bearer " + token },
-          }),
-          fetchWithAuth(
-            `http://localhost:8080/api/families/${familyId}/categories`,
-            { headers: { Authorization: "Bearer " + token } }
-          ),
-          fetchWithAuth(
-            `http://localhost:8080/api/families/${familyId}/transactions`,
-            { headers: { Authorization: "Bearer " + token } }
-          ),
-          fetchWithAuth(
-            `http://localhost:8080/api/families/${familyId}/members`,
-            { headers: { Authorization: "Bearer " + token } }
-          ),
-        ]);
+      const [
+        familyRes,
+        categoriesRes,
+        transactionsRes,
+        membersRes,
+        savingsRes,
+      ] = await Promise.all([
+        fetchWithAuth(`http://localhost:8080/api/families/${familyId}`, {
+          headers: { Authorization: "Bearer " + token },
+        }),
+        fetchWithAuth(
+          `http://localhost:8080/api/families/${familyId}/categories`,
+          { headers: { Authorization: "Bearer " + token } }
+        ),
+        fetchWithAuth(
+          `http://localhost:8080/api/families/${familyId}/transactions`,
+          { headers: { Authorization: "Bearer " + token } }
+        ),
+        fetchWithAuth(
+          `http://localhost:8080/api/families/${familyId}/members`,
+          { headers: { Authorization: "Bearer " + token } }
+        ),
+        fetchWithAuth(
+          `http://localhost:8080/api/families/${familyId}/savings`,
+          { headers: { Authorization: "Bearer " + token } }
+        ),
+      ]);
 
       if (
         !familyRes.ok ||
         !categoriesRes.ok ||
         !transactionsRes.ok ||
-        !membersRes.ok
+        !membersRes.ok ||
+        !savingsRes.ok
       )
         throw new Error("Error cargando datos");
 
@@ -68,13 +78,14 @@ function Dashboard() {
       const fetchedCategories = await categoriesRes.json();
       const fetchedTransactions = await transactionsRes.json();
       const fetchedMembers = await membersRes.json();
+      const fetchedSavings = await savingsRes.json();
 
       setFamily(fetchedFamily);
       setCategories(fetchedCategories);
       setTransactions(fetchedTransactions);
       setMembers(fetchedMembers);
       setMaxiGoal(fetchedFamily.maxiGoal);
-      setSavings(fetchedFamily.maxiGoal.savings);
+      setSavings(fetchedSavings);
 
       console.log("fetchedFamily: " + fetchedFamily.maxiGoal.name);
       console.log(

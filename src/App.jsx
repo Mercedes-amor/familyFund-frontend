@@ -87,7 +87,7 @@ function App() {
             }
           />
           <Route
-            path="/savings-list/:maxiGoalId"
+            path="/savings-list/:familyId"
             element={
               <ProtectedRoute>
                 <SavingsList />

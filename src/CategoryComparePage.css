@@ -12,28 +12,45 @@
   padding: 20px;
   overflow: auto;
   min-width: 600px;
- 
+
 }
 
 .compare-div-wrapper {
+  overflow-x: auto;
+  /* activa scroll horizontal */
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  padding: 20px;
-  justify-content: center;
-  /* flexbox para las tarjetas */
+  padding: 10px;
+  margin-bottom: 60px;
 }
 
+.Title-Volver-wrapper{
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-volver {
+  max-height: 40px;
+  border-radius: 8px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-right: 20px;
+}
+
+.btn-volver:hover {
+  opacity: 0.8;
+}
 .compare-div {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  /* permite que las tarjetas se muevan a la siguiente línea */
-  gap: 20px;
+  flex-wrap: nowrap;
+ /* No permite que las tarjetas se muevan a la siguiente línea */
   /* separación entre tarjetas */
 }
 
-#categorySelect{
+#categorySelect {
   padding: 5px 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -42,6 +59,6 @@
 
 }
 
-#categorySelect-label{
-font-size: 30px;
+#categorySelect-label {
+  font-size: 30px;
 }

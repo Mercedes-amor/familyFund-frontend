@@ -29,14 +29,14 @@ const launchCoins = () => {
 
 export default function MaxiGoal({
   maxigoal,
+  familyId,
   refreshData,
   totalGastosMes,
   totalIngresosMes,
   ahorroMes,
 }) {
   const navigate = useNavigate();
-  const maxiGoalId = maxigoal.id;
-  console.log(maxigoal);
+  console.log("familyId: " + familyId);
   const [saving, setSaving] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -167,9 +167,7 @@ export default function MaxiGoal({
       <div
         className="piggy-wrapper"
         onClick={() => {
-          if (maxigoal?.id) {
-            navigate(`/savings-list/${maxiGoalId}`);
-          }
+          navigate(`/savings-list/${familyId}`);
         }}
         style={{ cursor: "pointer" }}
       >

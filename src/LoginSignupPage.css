@@ -13,5 +13,9 @@
   /* opcional, para que haya espacio arriba y abajo */
 }
 
-
+.error-text {
+  color: red;
+  font-weight: 500;
+  margin-top: 10px;
+}
 

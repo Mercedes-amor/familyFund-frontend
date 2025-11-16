@@ -26,21 +26,19 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-
       //Calculamos la edad a partir de la fecha de nacimiento
-      const today= new Date();
+      const today = new Date();
       const birth = new Date(form.fechaNac);
       let edad = today.getFullYear() - birth.getFullYear();
       const mes = today.getMonth() - birth.getMonth();
       //Comprobación si este año ya ha cumplido o no.
-      if(mes <0 || (mes === 0 && today.getDate() < birth.getDate())){
+      if (mes < 0 || (mes === 0 && today.getDate() < birth.getDate())) {
         edad--;
       }
 
-
       //payLoad cambiar la fechaNac por edad
-      const payLoad = {...form, edad};
-      delete payLoad.fechaNac //Para no enviarla
+      const payLoad = { ...form, edad };
+      delete payLoad.fechaNac; //Para no enviarla
 
       console.log(payLoad);
 
@@ -49,8 +47,10 @@ function Signup() {
         payLoad
       );
 
-    // Mostrar toast de éxito
-    toast.success(response.data.message || "!Ya estás registrado! Ahora inicia sesión");
+      // Mostrar toast de éxito
+      toast.success(
+        response.data.message || "!Ya estás registrado! Ahora inicia sesión"
+      );
 
       setMensaje(response.data.message || "Usuario registrado correctamente");
 
@@ -60,8 +60,10 @@ function Signup() {
       }, 2000);
     } catch (error) {
       if (error.response) {
-    toast.error(err.response?.data?.message || "Error al registrarse");
+        toast.error(error.response?.data?.message || "Error al registrarse");
+        setMensaje(error.response?.data?.message);
       } else {
+        toast.error("Error de conexión");
         setMensaje("Error de conexión");
       }
     }
@@ -118,7 +120,7 @@ function Signup() {
           maxLength={40}
         />
         <button type="submit">Registrarse</button>
-        {mensaje && <p>{mensaje}</p>}
+        {mensaje && <p className="error-text">{mensaje}</p>}
       </form>
     </div>
   );
