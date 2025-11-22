@@ -6,6 +6,7 @@ import CatHistorico from "../components/CatHistorico";
 import { ToastContainer, toast } from "react-toastify";
 import MaxiGoal from "../components/MaxiGoal";
 import IngresosBar from "../components/IngresosBar";
+import ExcelBtn from "../components/ExcelBtn.jsx";
 
 import Swal from "sweetalert2";
 
@@ -58,6 +59,7 @@ export default function CategoriasPage() {
   const currentMonth = new Date().toISOString().slice(0, 7);
   //Si alguno es null o undefine no lanza error, devuelve undefined
   const familyId = user?.family?.id; //?--> encadenamiento opcional
+  const currentUserId = user?.id;
 
   // CARGAR DATOS
   const fetchData = async () => {
@@ -417,7 +419,6 @@ export default function CategoriasPage() {
         )
       );
     } catch (err) {
-      // alert(err.message);
       toast.error(err.message);
     }
   };
@@ -601,7 +602,11 @@ export default function CategoriasPage() {
         autoClose={4000}
         style={{ marginTop: "70px", zIndex: 9999 }}
       />
-      <h2 className="h2-title">Categorías</h2>
+      <div className="header-h2-Excel">
+        <h2 className="h2-title">Categorías</h2>
+        {/*Botón descarga Excel*/}
+        <ExcelBtn familyId={familyId} />
+      </div>
 
       <div className="header-categoria">
         {/* Tarjeta ingresos */}
@@ -735,6 +740,7 @@ CatActualList mandando como props todos los estados y métodos/*} */}
             setEditCategoryName={setEditCategoryName}
             setEditCategoryLimit={setEditCategoryLimit}
             setEditTransactionId={setEditTransactionId}
+            currentUserId={currentUserId}
           />
         </>
       ) : (

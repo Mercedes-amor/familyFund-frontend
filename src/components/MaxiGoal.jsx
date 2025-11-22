@@ -36,7 +36,6 @@ export default function MaxiGoal({
   ahorroMes,
 }) {
   const navigate = useNavigate();
-  console.log("familyId: " + familyId);
   const [saving, setSaving] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -152,12 +151,14 @@ export default function MaxiGoal({
             value={editTarget}
             onChange={(e) => setEditTarget(e.target.value)}
           />
-          <button type="button" onClick={handleSaveEdit}>
-            <FontAwesomeIcon icon={faCheck} />
-          </button>
-          <button type="button" onClick={() => setIsEditing(false)}>
-            <FontAwesomeIcon icon={faXmark} />
-          </button>
+          <div className="buttonMG-container">
+            <button id="buttonMG-ok" type="button" onClick={handleSaveEdit}>
+              <FontAwesomeIcon icon={faCheck} />
+            </button>
+            <button type="button" onClick={() => setIsEditing(false)}>
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+          </div>
         </div>
       )}
 

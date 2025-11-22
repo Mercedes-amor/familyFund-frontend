@@ -4,14 +4,16 @@ import DashboardChart from "../components/DashboardChart.jsx";
 import InfoAPIWorldBank from "../components/InfoAPIWorldBank";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
 import MaxiGoal from "../components/MaxiGoal";
-
 import DayQuote from "../components/DayQuote.jsx";
+import Swal from "sweetalert2";
+import { ToastContainer, toast } from "react-toastify";
 
 //Estilos
 import { ClipLoader, SyncLoader } from "react-spinners";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 import "../Dashboard.css";
+import DownloadExcelButton from "../components/ExcelBtn.jsx";
 
 function Dashboard() {
   const { user, setUserLoading } = useContext(UserContext);
@@ -174,7 +176,7 @@ function Dashboard() {
     );
   }
 
-  //----RENDER---
+  //-------RENDER------
   return (
     <div className="dashboard-principal-container">
       <div className="sidebar">
@@ -187,10 +189,11 @@ function Dashboard() {
           totalIngresosMes={totalIngresos}
           totalGastosMes={totalGastos}
           ahorroMes={ahorroMes}
+          familyId={familyId}
         />
-        {/* <h3>Miembros:</h3> */}
+        {/*Miembros:*/}
         <ul className="members-list">
-          {/* Opción para ver toda la familia */}
+          {/*Opción para ver toda la familia*/}
           <li
             className={`family-item ${
               selectedMember === null ? "active-member" : ""
@@ -222,7 +225,7 @@ function Dashboard() {
             </li>
           ))}
         </ul>
-
+        {/*Información bancaria:*/}
         <InfoAPIWorldBank />
       </div>
 

@@ -1,6 +1,32 @@
 /* ===============================
    PÁGINA CATEGORÍAS
    =============================== */
+
+.header-h2-Excel {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+/* EXCEL BTN */
+.Excel-Btn {
+  background-color: #00a7c400;
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 20px;
+  color: #043d0c;
+  font-style: italic;
+}
+
+.Excel-ico {
+  width: 40px;
+}
+
+
+/* ----BANNER CATEGORIES */
 .header-categoria {
   display: flex;
   justify-content: space-around;
@@ -145,6 +171,7 @@
 
 
 /* BUTTONS */
+
 .general-AddButton {
   margin-top: 25px;
   margin-bottom: 20px;
@@ -247,6 +274,8 @@
 #cancelButton:hover {
   color: rgb(58, 2, 2);
 }
+
+
 
 
 /* TRANSACTIONS */

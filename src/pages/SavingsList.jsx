@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ClipLoader, SyncLoader } from "react-spinners";
 
-
 import "../SavingsList.css";
 
 export default function SavingsList() {
@@ -77,7 +76,9 @@ export default function SavingsList() {
                   <td>{new Date(s.createAt).toLocaleDateString("es-ES")}</td>
 
                   <td>
-                    <strong>{s.amount.toFixed(2)} €</strong>
+                    <strong style={{ color: s.amount < 0 ? "red" : "black" }}>
+                      {s.amount.toFixed(2)} €
+                    </strong>
                   </td>
 
                   {/* Usuario o sistema */}

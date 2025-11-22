@@ -5,6 +5,15 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import IngresosBar from "./IngresosBar";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCoins,
+  faEdit,
+  faTrashArrowUp,
+  faCheck,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+
 export default function CatActualList({
   categories,
   selectedMonth,
@@ -35,6 +44,7 @@ export default function CatActualList({
   setEditCategoryName,
   setEditCategoryLimit,
   setEditTransactionId,
+  currentUserId,
 }) {
   //Enlace de redirección a category-compare
   const navigate = useNavigate();
@@ -201,18 +211,23 @@ export default function CatActualList({
                       ) : (
                         <div className="transaction-item">
                           {tx.name} - {tx.amount} €
-                          <span className="spanEdit-buttons">
-                            <button onClick={() => handleEditClick(tx)}>
-                              ✏️
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleDeleteTransaction(category.id, tx.id)
-                              }
-                            >
-                              🗑️
-                            </button>
-                          </span>
+                          {/* Mostrar botones solo si el usuario actual es el creador */}
+                          {tx.user.id === currentUserId && (
+                            <span className="spanEdit-buttons">
+                              <FontAwesomeIcon
+                                icon={faEdit}
+                                style={{ cursor: "pointer", color: "#105c53" }}
+                                onClick={() => handleEditClick(tx)}
+                              />
+                              <FontAwesomeIcon
+                                icon={faTrashArrowUp}
+                                style={{ cursor: "pointer", color: "#521005" }}
+                                onClick={() =>
+                                  handleDeleteTransaction(category.id, tx.id)
+                                }
+                              />
+                            </span>
+                          )}
                         </div>
                       )}
                     </li>

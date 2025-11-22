@@ -104,6 +104,31 @@
 
 
 /* Botón e input */
+.edit-maxigoal{
+  background-color: rgba(240, 240, 240, 0.726);
+  padding: 20px;
+  border-radius: 20px;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.buttonMG-container{
+  display: flex;
+  justify-content: space-around;
+}
+
+.buttonMG-container button{
+background-color: #770b1f;
+color: white;
+}
+
+#buttonMG-ok{
+background-color: #00A6C4;
+}
+.edit-maxigoal input{
+  padding: 5px;
+  border-radius: 5px;
+}
 .maxi-stats {
   margin-top: 6px;
   font-size: 23px;

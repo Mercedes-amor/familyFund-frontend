@@ -2,6 +2,14 @@ import CategoryBar from "./CategoryBar";
 import IngresosBar from "./IngresosBar";
 import { useNavigate } from "react-router-dom";
 import "../IngresosCard.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCoins,
+  faEdit,
+  faTrashArrowUp,
+  faCheck,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function IngresosCard({
   categories,
@@ -46,11 +54,13 @@ export default function IngresosCard({
       (tx) => tx.date && tx.date.slice(0, 7) === selectedMonth
     ) ?? [];
 
-
   //Calcular el total de ahorros del mes
-  const ahorroMes = maxiGoal?.savings?.filter(
-    (s) => s.createAt && s.createAt.slice(0,7) === selectedMonth //comparar YYYY-MM
-  ).reduce((sum, s)=> sum + s.amount,0)|| 0;
+  const ahorroMes =
+    maxiGoal?.savings
+      ?.filter(
+        (s) => s.createAt && s.createAt.slice(0, 7) === selectedMonth //comparar YYYY-MM
+      )
+      .reduce((sum, s) => sum + s.amount, 0) || 0;
 
   return (
     <div className="category-wrapper">
@@ -154,14 +164,18 @@ export default function IngresosCard({
                     {tx.name} - {tx.amount} €
                     {selectedMonth === currentMonth && (
                       <span className="spanEdit-buttons">
-                        <button onClick={() => handleEditClick(tx)}>✏️</button>
-                        <button
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          style={{ cursor: "pointer", color: "#105c53" }}
+                          onClick={() => handleEditClick(tx)}
+                        />
+                        <FontAwesomeIcon
+                          icon={faTrashArrowUp}
+                          style={{ cursor: "pointer", color: "#521005" }}
                           onClick={() =>
                             handleDeleteTransaction(ingresosCategory.id, tx.id)
                           }
-                        >
-                          🗑️
-                        </button>
+                        />
                       </span>
                     )}
                   </div>

@@ -24,6 +24,7 @@ function Navbar() {
   const isLoggedIn = !!user;
   const isAdmin = user?.rol === "ROLE_ADMIN";
   const isUser = user?.rol === "ROLE_USER";
+  const haveFamily = Boolean(user?.family);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -94,21 +95,25 @@ function Navbar() {
             {/* USER */}
             {isUser && (
               <>
-                <li className="nav-item">
-                  <NavLink className={checkActiveUrl} to="/dashboard">
-                    Dashboard
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className={checkActiveUrl} to="/categories">
-                    Categorías
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className={checkActiveUrl} to="/goals">
-                    Objetivos
-                  </NavLink>
-                </li>
+                {haveFamily && (
+                  <>
+                    <li className="nav-item">
+                      <NavLink className={checkActiveUrl} to="/dashboard">
+                        Dashboard
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink className={checkActiveUrl} to="/categories">
+                        Categorías
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink className={checkActiveUrl} to="/goals">
+                        Objetivos
+                      </NavLink>
+                    </li>
+                  </>
+                )}
                 <li className="nav-item">
                   <NavLink className={checkActiveUrl} to="/profile">
                     Perfil

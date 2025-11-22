@@ -15,6 +15,7 @@ function Profile() {
   const { user, setUser, loading, logout } = useContext(UserContext);
   const navigate = useNavigate();
   const [photoUrl, setPhotoUrl] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     if (user?.photoUrl) setPhotoUrl(user.photoUrl);
@@ -22,6 +23,36 @@ function Profile() {
 
   const goToDashboard = () => {
     navigate("/dashboard");
+  };
+  const updateName = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/auth/user/${user.id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: userName }),
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Error al actualizar usuario:", res.status);
+        return;
+      }
+
+      const updated = await res.json();
+
+      // Actualizar contexto
+      setUser(updated);
+
+      // Actualizar localStorage
+      localStorage.setItem("user", JSON.stringify(updated));
+
+      toast.success("Nombre actualizado correctamente");
+    } catch (err) {
+      console.error("Error fetch updateName:", err);
+      toast.error("Error al actualizar nombre");
+    }
   };
 
   if (loading) {
@@ -57,7 +88,14 @@ function Profile() {
 
       <p>
         <strong>Nombre:</strong> {user.nombre}
+        {/* <input
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+        />
+        <button onClick={updateName}>Cambiar nombre</button> */}
       </p>
+
       <p>
         <strong>Email:</strong> {user.email}
       </p>
@@ -86,9 +124,11 @@ function Profile() {
           )}
 
           <div className="profile_button_div">
-            <button className="general-AddButton" onClick={goToDashboard}>
-              Ir al Dashboard
-            </button>
+            {user.family && (
+              <button className="general-AddButton" onClick={goToDashboard}>
+                Ir al Dashboard
+              </button>
+            )}
             <button
               className="general-AddButton"
               id="cerrarSesion-btn"
