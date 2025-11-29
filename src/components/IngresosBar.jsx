@@ -27,7 +27,7 @@ export default function IngresosBar({ gastos, ingresos, actualSave }) {
           display: "flex",
           flexDirection: "column",
           gap: "10px",
-          minWidth: "120px",
+          minWidth: "100px",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -62,7 +62,7 @@ export default function IngresosBar({ gastos, ingresos, actualSave }) {
               borderRadius: "4px",
             }}
           ></span>
-          <span>Ahorro: {actualSave.toFixed(2)} €</span>
+          <span>Ahorro:  {actualSave.toFixed(2)} €</span>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -86,8 +86,8 @@ export default function IngresosBar({ gastos, ingresos, actualSave }) {
               data={data}
               dataKey="value"
               nameKey="name"
-              innerRadius={60} // aumentado
-              outerRadius={90} // aumentado
+              innerRadius={60}
+              outerRadius={90}
               paddingAngle={2}
               isAnimationActive={true}
             >

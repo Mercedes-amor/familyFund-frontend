@@ -202,7 +202,9 @@ export default function MaxiGoal({
               paddingRight: "15px",
             }}
           />
-          {loading ? "Sumando..." : "¡ Ahorra !"}
+          <span style={{ fontSize: loading ? "0.9em" : "1.1em" }}>
+            {loading ? "Sumando..." : "¡ Ahorra !"}
+          </span>
         </button>
       </form>
 

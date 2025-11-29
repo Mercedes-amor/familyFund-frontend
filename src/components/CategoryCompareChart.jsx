@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell
 } from "recharts";
 
 // Función para formatear "YYYY-MM" → "Septiembre 2025"
@@ -17,7 +18,10 @@ function formatMonth(monthString) {
   return `${monthName} ${year}`;
 }
 
-export default function CategoryChart({ groupedByMonth }) {
+// Paleta de colores
+const colors = ["#610226", "#097f94", "#d47d1d", "#6a1b9a", "#0288d1", "#388e3c"];
+
+export default function CategoryCompareChart({ groupedByMonth }) {
   if (!groupedByMonth || Object.keys(groupedByMonth).length === 0) return null;
 
   const chartData = Object.entries(groupedByMonth).map(([month, txs]) => ({
@@ -25,11 +29,12 @@ export default function CategoryChart({ groupedByMonth }) {
     total: txs.reduce((sum, t) => sum + t.amount, 0),
   }));
 
-  return (
+    return (
     <div
       style={{
-        width: "100%",
-        maxWidth: "500px",
+        width: "80%",
+        maxWidth: "900px",
+        maxHeight:"600px",
         margin: "20px auto",
         textAlign: "center",
         background: "#ffffffea",
@@ -40,15 +45,18 @@ export default function CategoryChart({ groupedByMonth }) {
     >
       <h3 style={{ color: "#041047", marginBottom: "10px" }}>Gastos por mes</h3>
 
-      <div style={{ width: "100%", height: 300 }}>
+      <div className="chart-responsive"  style={{ width: "100%", height: 250 }}>
         <ResponsiveContainer>
-          <BarChart data={chartData} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
+          <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 30 }}>
             <CartesianGrid stroke="#0000005e" strokeDasharray="5 5" />
             <XAxis
               dataKey="month"
               tick={{ fill: "#041047", fontSize: 14, fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
+              interval={0}
+              angle={-20}
+              textAnchor="end"
             />
             <YAxis
               tick={{ fill: "#041047", fontSize: 14 }}
@@ -65,13 +73,11 @@ export default function CategoryChart({ groupedByMonth }) {
               itemStyle={{ color: "#041047", fontWeight: 500 }}
               formatter={(value) => `${value} €`}
             />
-            <defs>
-              <linearGradient id="GastosGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#610226" stopOpacity={0.8} />
-                <stop offset="100%" stopColor="#610226" stopOpacity={0.2} />
-              </linearGradient>
-            </defs>
-            <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="url(#GastosGradient)" />
+            <Bar dataKey="total" radius={[8, 8, 0, 0]}>
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

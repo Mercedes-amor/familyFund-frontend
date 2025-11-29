@@ -1,11 +1,21 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
+
 import UploadImage from "../components/UploadImage";
 import FamilyForm from "../components/FamilyForm";
 import JoinFamilyForm from "../components/JoinFamilyForm";
-import { ToastContainer, toast } from "react-toastify";
 
+//Estoñps
+import { ToastContainer, toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCoins,
+  faEdit,
+  faTrashArrowUp,
+  faCheck,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { UserContext } from "../context/UserContext";
 
 //Estilos
@@ -15,6 +25,7 @@ function Profile() {
   const { user, setUser, loading, logout } = useContext(UserContext);
   const navigate = useNavigate();
   const [photoUrl, setPhotoUrl] = useState("");
+  const [editingName, setEditingName] = useState(false);
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
@@ -42,11 +53,11 @@ function Profile() {
 
       const updated = await res.json();
 
-      // Actualizar contexto
-      setUser(updated);
+      // Actualizamos el contexto entero
+      setUser((prev) => ({ ...prev, ...updated }));
 
-      // Actualizar localStorage
-      localStorage.setItem("user", JSON.stringify(updated));
+      // Actualizar localStorage con todos los campos, aunque solo cambiemos el nombre
+      localStorage.setItem("user", JSON.stringify({ ...user, ...updated }));
 
       toast.success("Nombre actualizado correctamente");
     } catch (err) {
@@ -86,14 +97,50 @@ function Profile() {
         }}
       />
 
-      <p>
+      {/* NOMBRE Y CAMBIAR NOMBRE FORM */}
+      <p className="nameForm">
         <strong>Nombre:</strong> {user.nombre}
-        {/* <input
-          type="text"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-        />
-        <button onClick={updateName}>Cambiar nombre</button> */}
+        {!editingName && (
+          <FontAwesomeIcon
+            icon={faEdit}
+            style={{ cursor: "pointer", color: "#105c53", fontSize: "1.1rem", marginLeft:"10px"  }}
+            onClick={() => setEditingName(true)}
+          />
+        )}
+        {editingName && (
+          <div className="nameForm">
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="Nuevo nombre"
+            />
+            <div className="nameFormBtn">
+              <FontAwesomeIcon
+                icon={faCheck}
+                style={{
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  marginLeft: "5px",
+                }}
+                onClick={() => {
+                  updateName();
+                  setEditingName(false);
+                }}
+              />
+              <FontAwesomeIcon
+                icon={faXmark}
+                style={{
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  marginLeft: "5px",
+                  color: "red",
+                }}
+                onClick={() => setEditingName(false)}
+              />
+            </div>
+          </div>
+        )}
       </p>
 
       <p>
@@ -114,7 +161,12 @@ function Profile() {
               ? user.family.name
               : "Todavía no te has unido a una familia"}
           </p>
+          <p>
+            <strong>{user.family
+              ? <p> <strong style={{color:"rgba(10, 81, 94, 1)"}}> {user.family.code}</strong></p>
+              : ""}</strong>{" "}
 
+          </p>
           {/* Mostrar botón si no tiene familia */}
           {!user.family && (
             <div className="profileFormsContainer">

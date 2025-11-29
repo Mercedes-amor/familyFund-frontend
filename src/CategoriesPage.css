@@ -5,24 +5,21 @@
 .header-h2-Excel {
   display: flex;
   justify-content: space-between;
-
 }
 
 /* EXCEL BTN */
 .Excel-Btn {
   background-color: #00a7c400;
-  width: 200px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  margin-left: 20px;
+  height: 60px;
+  margin-top: 50px;
+  margin-left: 10px;
+  gap: 8px;
   color: #043d0c;
   font-style: italic;
 }
 
 .Excel-ico {
-  width: 40px;
+  width: 50px;
 }
 
 
@@ -40,8 +37,11 @@
 
   position: relative;
   box-shadow: 0 8px 0px rgba(31, 33, 37, 0.719);
+  flex-wrap: wrap;
+  /* permite que los elementos bajen si no caben */
 
 }
+
 
 /* Separador debajo */
 .header-categoria::after {
@@ -68,8 +68,8 @@
   flex-wrap: wrap;
   justify-content: center;
   /* permite que las tarjetas se muevan a la siguiente línea */
-  gap: 20px;
-  /* separación entre tarjetas */
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 
@@ -85,8 +85,8 @@
 .categories-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  padding: 20px;
+  gap: 5px;
+  padding: 10px;
   justify-content: flex-start;
 }
 
@@ -96,20 +96,21 @@
   /* fondo claro semitransparente */
   border-radius: 12px;
   padding: 20px;
-  min-width: 500px;
-  min-height: 450px;
+  width: 400px;
+  min-height: 600px;
   /* max-width: 600px; */
   flex: 1;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   /* sombra ligera */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
   color: #242A33;
   /* texto oscuro */
   transition: transform 0.2s, box-shadow 0.2s;
   margin-right: 3.0rem;
+
 }
 
 .category-card:hover {
@@ -122,12 +123,104 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  max-width: 560px;
+  padding: 10px;
+  border-bottom: 2px solid rgb(6, 71, 63);
 }
 
 .category-header h3 {
   margin: 0;
   font-weight: 600;
   color: #242A33;
+}
+
+.category-wrapper{
+  margin: 0;
+  width: 400px;
+}
+
+/* POPUP */
+/* Fondo oscuro detrás del popup */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Caja central del popup */
+.modal-content {
+  background: #bcdfe4;
+  padding: 25px;
+  width: 400px;
+  max-width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(95, 88, 88, 0.7);
+  animation: popupFade 0.2s ease-out;
+}
+
+/* Animación suave */
+@keyframes popupFade {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-form input,
+.modal-form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: none;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-buttons button:nth-child(1) {
+  background: #00A6C4;
+  color: white;
+}
+
+.modal-buttons button:nth-child(2) {
+  background: #b74444;
+  color: white;
+}
+
+/* Botón flotante */
+.Add-goal-Button {
+  background: transparent;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.Add-goal-Button:hover {
+  background: #ffffff;
 }
 
 /* Formularios categorias */
@@ -168,7 +261,9 @@
   border: 1px solid #D9E2EC;
 }
 
-
+.div-char-container{
+  margin-top: auto;
+}
 
 /* BUTTONS */
 
@@ -275,28 +370,47 @@
   color: rgb(58, 2, 2);
 }
 
-
-
-
 /* TRANSACTIONS */
 .transaction-item {
   display: flex;
+  justify-content: space-between;
+  width: 100%;
   align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
+  border-bottom: 1px solid rgba(58, 57, 57, 0.404);
+}
+
+.tx-name {
+  flex: 1; /* ocupa todo el espacio disponible */
+}
+.spanEdit-buttons {
+  display: flex;
+  gap: 2px;
+  width: 50px;
+  justify-content: flex-end;
+}
+
+.spanEdit-buttons.empty {
+  visibility: hidden; /* mantiene el espacio sin mostrar nada */
+}
+.tx-amount {
+  font-weight: 600;
+  min-width: 80px;
+  /* evita que salte de línea */
+  text-align: right;
+  margin-right: 10px;
+  /* alineado a la derecha */
 }
 
 /* Botón Añadir en esquina inferior derecha */
 .add-transaction-btn {
-  align-self: flex-end;
-  margin-top: 10px;
+  align-self: flex-start;
+  margin-top: auto;
   padding: 6px 12px;
   cursor: pointer;
   font-size: 1rem;
   border-radius: 6px;
   border: none;
-  background-color: #4d0549;
-  /* azul principal */
+  background-color: #116074f8;
   color: white;
   transition: background 0.3s;
 }
@@ -313,7 +427,7 @@
 
 .transactions-list li {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: left;
   margin-bottom: 5px;
 }
@@ -383,4 +497,96 @@
 .transaction-form button.cancel,
 .new-transaction-form button.cancel {
   background-color: #f44336;
+}
+
+/* contenedor gráfico */
+.historico-char{
+margin-top: auto;
+}
+
+/*----MEDIA QUERYS----*/
+
+/* Contenedor principal */
+.cat-goal-wrapper .header-categoria {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  transition: all 0.2s ease;
+  /* animación para cambios generales */
+}
+
+/* Primer elemento: transición aplicada */
+.cat-goal-wrapper .header-categoria> :first-child {
+  transition: all 0.5s ease;
+  /* suaviza cambios de tamaño y posición */
+}
+
+/* Media query <= 1400px: bajar y centrar primer elemento */
+@media (max-width: 1400px) {
+  .cat-goal-wrapper .header-categoria> :first-child {
+    flex-basis: 100%;
+    /* ocupa toda la fila */
+    margin-bottom: 20px;
+    /* separación */
+    display: flex;
+    justify-content: center;
+    /* centra horizontalmente */
+    transform: translateX(0);
+  }
+}
+
+/* Media query para pantallas pequeñas <= 768px */
+@media (max-width: 768px) {
+.category-wrapper{
+width: 350px;
+}
+
+
+.header-h2-Excel {
+  display: block;
+  height: auto;
+}
+
+.header-h2-Excel h2{
+  height: 5px;
+  margin-bottom: 40px;
+}
+.Excel-Btn {
+  background-color: #00a7c400;
+  width: auto;
+  height: 60px;
+  margin-top: 0px;
+  margin-left: 0px;
+  gap: 1px;
+  color: #043d0c00;
+}
+
+.Excel-ico {
+  width: 40px;
+}
+
+  .cat-goal-wrapper .header-categoria {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cat-goal-wrapper .hucha-wrapper,
+  .cat-goal-wrapper IngresosCard,
+  .cat-goal-wrapper IngresosBar {
+    width: 100%;
+    transition: all 0.5s ease;
+    /* animación al cambiar de ancho */
+  }
+
+  /* Opcional: centrar todos los elementos */
+  .cat-goal-wrapper .header-categoria>* {
+    display: flex;
+    justify-content: center;
+  }
+
+  .category-card {
+
+  min-height: 400px;
+
+}
 }

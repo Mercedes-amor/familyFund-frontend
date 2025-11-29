@@ -67,7 +67,7 @@ body {
   top: 150px;
   z-index: 1000;
   padding: 20px;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .h2-title {
@@ -91,29 +91,26 @@ body {
   position: sticky;
   top: 0;
   width: 100%;
-  /* height: 64px; */
   z-index: 1000;
   box-shadow: 0 4px 6px rgba(255, 255, 255, 0.25);
+  position: relative;
 }
 
 .navbar-brand {
   font-weight: 700;
   font-size: 1.5rem;
   color: #00A6C4 !important;
-  /* azul principal */
   transition: color 0.3s;
 }
 
 .navbar-brand:hover {
   color: #D78CCF;
-  /* rosa degradado al pasar el mouse */
 }
 
 .navbar-nav .nav-link {
   margin-right: 15px;
   font-weight: 500;
   color: #F5F9FB;
-  /* texto neutro claro */
   transition: color 0.3s, background 0.3s;
   border-radius: 5px;
   padding: 5px 10px;
@@ -121,24 +118,49 @@ body {
 
 .navbar-nav .nav-link:hover {
   color: #242A33;
-  /* contraste sobre hover amarillo */
   background: #FFD700;
-  /* amarillo brillante */
 }
 
 .navbar-nav .nav-link.active {
   color: #00A6C4;
-  /* azul principal para link activo */
 }
 
 .navbar-toggler {
   border-color: #00A6C4;
-  /* borde azul principal */
 }
 
-/* .navbar-toggler-icon {
-background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23D78CCF' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-} */
+/* Solo en pantallas pequeñas */
+@media (max-width: 992px) {
+  #navbarNav {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 150px;           
+    background-color: #242A33;
+    padding: 10px 0;
+    border-bottom-left-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  }
+
+  #navbarNav.collapse {
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all .25s ease;
+  }
+
+  #navbarNav.collapse.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+  .chart-responsive {
+    height: 250px !important;   /* antes 450 */
+  }
+}
+
+}
+
 
 /* ===============================
    FORMULARIOS 
@@ -301,8 +323,6 @@ background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30
 }
 
 
-
-
 /*===============================
    SELECT MONTH
    =============================== */
@@ -311,7 +331,7 @@ background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 60px;
+  margin-bottom: 10px;
   font-family: Arial, sans-serif;
   font-size: 16px;
 }

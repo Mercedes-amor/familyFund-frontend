@@ -33,7 +33,7 @@ const DownloadExcelButton = ({ familyId }) => {
   return (
     <button onClick={downloadExcel} className="Excel-Btn">
       <img src="/images/Excel-ico.png" alt="Excel" className="Excel-ico" />
-      Exportar a Excel
+     
     </button>
   );
 };

@@ -109,3 +109,26 @@
   padding: 6px;
   font-size: 14px;
 }
+
+
+
+.nameForm {
+  margin: 5px 0px;
+  padding: 10px 40px;
+  border-radius: 6px;
+  width: 95%;
+  text-align: center;
+}
+
+.nameForm input{
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.nameFormBtn {
+ display: flex;
+ padding-top: 10px;
+ justify-content: space-evenly;
+ width: 200px;
+}
+

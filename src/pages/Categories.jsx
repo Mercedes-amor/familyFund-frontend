@@ -677,31 +677,56 @@ export default function CategoriasPage() {
         {/* Si estamos en el mes actual mostramos formularios edicción y añadir */}
         {selectedMonth === currentMonth && (
           <>
-            {showCategoryForm ? (
-              <form onSubmit={handleAddCategory} className="categoryAdd-form">
-                <input name="name" placeholder="Nombre categoría" required />
-                <input
-                  name="limit"
-                  type="number"
-                  placeholder="Límite (€)"
-                  step="0.01"
-                  required
-                />
-                <button type="submit">Crear</button>
-                <button
-                  type="button"
-                  onClick={() => setShowCategoryForm(false)}
-                >
-                  Cancelar
-                </button>
-              </form>
-            ) : (
-              <button
-                className="general-AddButton"
-                onClick={() => setShowCategoryForm(true)}
+            {/* Botón para abrir popup */}
+            <button
+              className="general-AddButton"
+              onClick={() => setShowCategoryForm(true)}
+            >
+              ➕ Añadir categoría
+            </button>
+
+            {/* MODAL AÑADIR CATEGORÍA */}
+            {showCategoryForm && (
+              <div
+                className="modal-overlay"
+                onClick={() => setShowCategoryForm(false)}
               >
-                ➕ Añadir categoría
-              </button>
+                <div
+                  className="modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h2 style={{ textAlign: "center", color: "white" }}>
+                    Nueva categoría
+                  </h2>
+
+                  <form onSubmit={handleAddCategory} className="modal-form">
+                    <input
+                      name="name"
+                      placeholder="Nombre categoría"
+                      required
+                    />
+
+                    <input
+                      name="limit"
+                      type="number"
+                      placeholder="Límite (€)"
+                      step="0.01"
+                      min="0"
+                      required
+                    />
+
+                    <div className="modal-buttons">
+                      <button type="submit">Crear</button>
+                      <button
+                        type="button"
+                        onClick={() => setShowCategoryForm(false)}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             )}
           </>
         )}

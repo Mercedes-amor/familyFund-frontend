@@ -1,4 +1,11 @@
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
 export default function CategoryBar({ total, limit }) {
   // Evitar división por cero
@@ -11,6 +18,16 @@ export default function CategoryBar({ total, limit }) {
       total: total,
     },
   ];
+
+  // Definir color según porcentaje
+  const getBarColor = (pct) => {
+    if (pct <= 50) return "rgba(8, 165, 157, 0.85)";
+    if (pct <= 80) return "#f1c40f";
+    if (pct < 100) return "rgba(109, 15, 73, 0.85)";
+    return "#941608ff"; // rojo
+  };
+
+  const barColor = getBarColor(percentage);
 
   return (
     <div style={{ marginTop: "10px" }}>
@@ -26,36 +43,29 @@ export default function CategoryBar({ total, limit }) {
             formatter={(value) => `${value} €`}
             cursor={{ fill: "rgba(0,0,0,0.1)" }}
           />
-          <Bar
-            dataKey="total"
-            fill={total >= limit ? "rgba(109, 15, 73, 0.85)" : "rgba(9, 90, 86, 0.85)"}
-            isAnimationActive={true}
-          />
+          <Bar dataKey="total" fill={barColor} isAnimationActive={true} background={{ fill: "#ffffffff" }} 
+/>
         </BarChart>
       </ResponsiveContainer>
 
       {/* Etiquetas debajo */}
-<div
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "5px",
-    fontSize: "0.9em",
-    backgroundColor: "#097f94ff", // fondo suave gris
-    padding: "6px 8px",
-    borderRadius: "6px",
-    color: "#ffffffff", // texto oscuro
-    fontWeight: "500",
-  }}
->
-  <span>Total: {total} €</span>
-  <span>Límite: {limit} €</span>
-  <span>%: {percentage.toFixed(1)}%</span>
-</div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "5px",
+          fontSize: "0.9em",
+          backgroundColor: "#097f94ff", // fondo suave gris
+          padding: "6px 8px",
+          borderRadius: "6px",
+          color: "#ffffffff", // texto oscuro
+          fontWeight: "500",
+        }}
+      >
+        <span>Total: {total} €</span>
+        <span>Límite: {limit} €</span>
+        <span>%: {percentage.toFixed(1)}%</span>
+      </div>
     </div>
   );
 }
-
-
-
-

@@ -75,11 +75,14 @@
 }
 
 .category-card-deleted {
-  background: #860505;
-  color: #860505;
-  opacity: 0.4;
-  box-shadow: 0 0 8px rgba(70, 5, 5, 0.651);
-  margin: 20px;
+  opacity: 0.8;
+
+}
+
+
+.category-card-deleted div h3{
+  color: #cc0606;
+
 }
 
 /* LISTADO MIEMBROS */

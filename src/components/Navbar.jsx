@@ -146,9 +146,7 @@ function Navbar() {
               </>
             )}
           </ul>
-        </div>
-      </div>
-      <button onClick={handleSwitchTheme} className={btnThemeClassName}>
+           <button onClick={handleSwitchTheme} className={btnThemeClassName}>
         {isThemeDark ? (
           <FontAwesomeIcon icon={faSun} style={{ color: "#FFD43B" }} />
         ) : (
@@ -159,6 +157,10 @@ function Navbar() {
           />
         )}
       </button>
+        </div>
+       
+      </div>
+      
     </nav>
   );
 }

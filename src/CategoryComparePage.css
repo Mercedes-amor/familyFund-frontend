@@ -2,6 +2,12 @@
    PÁGINA CATEGORY COMPARE
    =============================== */
 
+.charCompare {
+  width: 50%;
+  /* ocupa la mitad de la tarjeta */
+  max-width: 100%;
+  /* no se pase del contenedor */
+}
 
 .compare-wrapper {
   /* padding: 4%; */
@@ -10,22 +16,57 @@
   top: 150px;
   /* z-index: 1000; */
   padding: 20px;
-  overflow: auto;
-  min-width: 600px;
+  overflow: hidden;
+  min-width: 00px;
 
 }
 
-.compare-div-wrapper {
-  overflow-x: auto;
-  /* activa scroll horizontal */
-  display: flex;
-  padding: 10px;
-  margin-bottom: 60px;
-}
-
-.Title-Volver-wrapper{
+.categoryCompare-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  max-width: 260px;
+  padding: 10px;
+  border-bottom: 2px solid rgb(6, 71, 63);
+}
+
+.compare-div {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  min-width: max-content;  }
+
+.compare-div-wrapper {
+  display: flex;
+  overflow-x: auto;          /* scroll horizontal cuando sea necesario */
+  padding: 10px;
+  gap: 20px;                
+  justify-content: space-around;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+
+.compare-div-wrapper div {
+  width: 300px;
+  margin-right: 5px;
+}
+
+.charCompare {
+  margin-top: auto;
+}
+
+.charCompare div {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* BOTÓN VOLVER */
+.Title-Volver-wrapper h2{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
 }
 
 .btn-volver {
@@ -42,13 +83,6 @@
 .btn-volver:hover {
   opacity: 0.8;
 }
-.compare-div {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
- /* No permite que las tarjetas se muevan a la siguiente línea */
-  /* separación entre tarjetas */
-}
 
 #categorySelect {
   padding: 5px 10px;
@@ -61,4 +95,38 @@
 
 #categorySelect-label {
   font-size: 30px;
+}
+
+
+/* Media query para pantallas pequeñas <= 768px */
+@media (max-width: 768px) {
+
+  .compare-div-wrapper {
+    display: flex;
+    flex-direction: column; 
+    overflow-x: visible;     
+    gap: 20px;
+    align-items: center;    
+  }
+
+  .compare-div {
+    display: flex;
+    flex-direction: column;  
+    flex-wrap: nowrap;
+    gap: 20px;
+    min-width: 0 !important; /* evita el ancho forzado */
+        align-items: center;
+
+  }
+
+ .compare-div > div {
+  width: 100% !important;
+  margin-right: 0;
+}
+
+
+  .category-card {
+    width: 100%;
+    max-width: 350px;
+  }
 }

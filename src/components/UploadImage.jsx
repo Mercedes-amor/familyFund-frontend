@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
+//Iconos
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCoins,
+  faEdit,
+  faTrashArrowUp,
+  faCheck,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+
 export default function UploadImage({ currentUrl, onUpload }) {
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState(currentUrl || "");
@@ -39,7 +49,7 @@ export default function UploadImage({ currentUrl, onUpload }) {
     } catch (error) {
       console.error("Error al subir la imagen:", error);
       // alert("No se pudo subir la imagen");
-      toast.error("No se pudo subir la imagen")
+      toast.error("No se pudo subir la imagen");
     }
   };
 
@@ -53,13 +63,11 @@ export default function UploadImage({ currentUrl, onUpload }) {
             width="200"
             className="profile-img"
           />
-          <button
-            type="button"
-            className="general-AddButton"
+          <FontAwesomeIcon
+            icon={faEdit}
+            style={{ cursor: "pointer", color: "#105c53", fontSize: "1.1rem"}}
             onClick={() => setShowForm(true)}
-          >
-            Cambiar foto
-          </button>
+          />
         </div>
       )}
 
@@ -70,9 +78,35 @@ export default function UploadImage({ currentUrl, onUpload }) {
             accept="image/*"
             onChange={(e) => setFile(e.target.files[0])}
           />
-          <button type="submit" className="general-AddButton">
-            Subir
-          </button>
+          <div className="nameFormBtn">
+            {/* ICONO CONFIRMAR */}
+            <FontAwesomeIcon
+              icon={faCheck}
+              style={{
+                cursor: "pointer",
+                fontSize: "1.5rem",
+                marginLeft: "8px",
+              }}
+              onClick={() => {
+                // Disparar submit como si fuera el botón
+                handleUpload(new Event("submit"));
+              }}
+            />
+            {/* ICONO CANCELAR */}
+            <FontAwesomeIcon
+              icon={faXmark}
+              style={{
+                cursor: "pointer",
+                fontSize: "1.5rem",
+                marginLeft: "8px",
+                color: "red",
+              }}
+              onClick={() => {
+                setFile(null); // vaciar archivo
+                setShowForm(false); // cerrar formulario
+              }}
+            />
+          </div>
         </form>
       )}
     </div>

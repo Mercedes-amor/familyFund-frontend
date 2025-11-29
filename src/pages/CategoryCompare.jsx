@@ -110,10 +110,13 @@ export default function CategoryCompare({ token }) {
     <div className="compare-wrapper">
       <div className="Title-Volver-wrapper">
         <h2 className="h2-title">{category?.name || "Categoría"}</h2>
-        <CategoryCompareChart groupedByMonth={groupedByMonth} />
         <button onClick={() => navigate(-1)} className="btn-volver">
           Volver
         </button>
+      </div>
+
+      <div className="Title-Volver-wrapper">
+        <CategoryCompareChart groupedByMonth={groupedByMonth} />
       </div>
 
       <div className="selectMonth-wrapper">
@@ -141,51 +144,62 @@ export default function CategoryCompare({ token }) {
       <div className="compare-div-wrapper">
         <div className="compare-div">
           {Object.keys(groupedByMonth).length > 0 ? (
-            Object.entries(groupedByMonth).map(([month, txs]) => (
-              <div key={month}>
-                <div
-                  className={`category-card ${
-                    category?.deleted ? "category-card-deleted" : ""
-                  }`}
-                >
-                  <div className="category-header">
-                    <h3>{formatMonth(month)}</h3>
+            Object.entries(groupedByMonth)
+              .sort(
+                ([monthA], [monthB]) =>
+                  Number(monthB.replace("-", "")) -
+                  Number(monthA.replace("-", ""))
+              ) // de más reciente a más antiguo
+              .map(([month, txs]) => (
+                <div key={month}>
+                  <div
+                    className={`category-card ${
+                      category?.deleted ? "category-card-deleted" : ""
+                    }`}
+                  >
+                    <div className="categoryCompare-header">
+                      <h3>{formatMonth(month)}</h3>
+                    </div>
+
+                    <ul className="transactions-list">
+                      {txs.length > 0 ? (
+                        txs.map((tx) => (
+                          <li key={tx.id}>
+                            <div className="transaction-item">
+                              <span className="tx-name">{tx.name}</span>
+                              <span className="tx-amount">{tx.amount} €</span>
+                            </div>
+                          </li>
+                        ))
+                      ) : (
+                        <li>No hay transacciones</li>
+                      )}
+                    </ul>
+                    <div className="charCompare">
+                      <CategoryBar
+                        total={txs.reduce((sum, t) => sum + t.amount, 0)}
+                        limit={category?.limit || 0}
+                      />
+                    </div>
                   </div>
-
-                  <ul className="transactions-list">
-                    {txs.length > 0 ? (
-                      txs.map((tx) => (
-                        <li key={tx.id}>
-                          {tx.name} — {tx.amount} €
-                        </li>
-                      ))
-                    ) : (
-                      <li>No hay transacciones</li>
-                    )}
-                  </ul>
-
-                  <CategoryBar
-                    total={txs.reduce((sum, t) => sum + t.amount, 0)}
-                    limit={category?.limit || 0}
-                  />
                 </div>
-              </div>
-            ))
+              ))
           ) : (
             <div
               className={`category-card ${
                 category?.deleted ? "category-card-deleted" : ""
               }`}
             >
-              <div className="category-header">
+              <div className="categoryCompare-header">
                 <h3>{category?.name}</h3>
               </div>
 
               <ul className="transactions-list">
                 <li>No hay transacciones</li>
               </ul>
-
-              <CategoryBar total={0} limit={category?.limit || 0} />
+              <div className="charCompare">
+                <CategoryBar total={0} limit={category?.limit || 0} />
+              </div>
             </div>
           )}
         </div>

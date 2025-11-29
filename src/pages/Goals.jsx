@@ -33,12 +33,9 @@ export default function GoalsPage() {
               headers: { Authorization: "Bearer " + token },
             }
           ),
-          fetchWithAuth(
-            `http://localhost:8080/api/goals/family/${familyId}/month/${selectedMonth}`,
-            {
-              headers: { Authorization: "Bearer " + token },
-            }
-          ),
+          fetchWithAuth(`http://localhost:8080/api/goals/family/${familyId}`, {
+            headers: { Authorization: "Bearer " + token },
+          }),
         ]);
 
         const categoriesData = await categoriesRes.json();
@@ -69,84 +66,72 @@ export default function GoalsPage() {
   // Calcular mes actual en formato YYYY-MM
   const currentMonth = new Date().toISOString().slice(0, 7);
 
-  // Dividimos objetivos en:
+  // Objetivos por mes:
 
-  // Objetivos activos: del mes seleccionado o futuros, no conseguidos
-  const activeGoals = goals.filter(
-    (g) => !g.achieved && g.month >= currentMonth
+  //Obtenemos los objetivos por mes
+  const goalsByMonth = goals.reduce((acc, goal) => {
+    if (!acc[goal.month]) acc[goal.month] = [];
+    acc[goal.month].push(goal);
+    return acc;
+  }, {});
+  //Objetivos ordenados por mes
+  const sortedMonths = Object.keys(goalsByMonth).sort((a, b) =>
+    b.localeCompare(a)
   );
 
-  // Objetivos conseguidos
-  const achievedGoals = goals.filter((g) => g.achieved);
+  //Objetivos pasados
+  const historicalMonths = sortedMonths.filter((m) => m !== currentMonth);
 
-  // Objetivos pasados NO conseguidos
-  const failedGoals = goals.filter(
-    (g) => !g.achieved && g.month < currentMonth
-  );
+  //Objetivos actuales
+  const activeGoals = goals.filter((g) => g.month === currentMonth);
 
   //RENDERIZACIÓN
   return (
     <div className="cat-goal-wrapper">
-      <h2 className="h2-title">Objetivos de ahorro</h2>
-      <div className="selectMonth-wrapper">
-        <div className="selectMonth-container">
-          <label>Mes: </label>
-          <input
-            type="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
+      <h2 className="h2-goal-title">Objetivos de ahorro</h2>
+
+          <GoalForm
+            familyId={familyId}
+            categories={categories}
+            onGoalCreated={(newGoal) => setGoals((prev) => [...prev, newGoal])}
+            token={token}
+            selectedMonth={currentMonth}
           />
+      <div className="goals-columns">
+        {/* COLUMNA IZQUIERDA: HISTÓRICO DE MESES */}
+        <div className="goals-card-col">
+          <h2 style={{ color: "white", textAlign: "center" }}>
+            Historial por meses
+          </h2>
+
+          {historicalMonths.map((month) => (
+            <div key={month} className="month-block">
+              <h3 style={{ color: "white" }}>{month}</h3>
+              <GoalList goals={goalsByMonth[month]} readOnly />
+            </div>
+          ))}
         </div>
-      </div>
 
-      <div>
-        {selectedMonth >= currentMonth ? (
-          <div>
-            <h2 style={{ textAlign: "center", color: "white" }}>
-              Objetivos actuales
-            </h2>
-            <GoalList
-              goals={activeGoals}
-              onGoalUpdated={(updatedGoal) =>
-                setGoals((prev) =>
-                  prev.map((g) => (g.id === updatedGoal.id ? updatedGoal : g))
-                )
-              }
-              onGoalDeleted={(id) =>
-                setGoals((prev) => prev.filter((g) => g.id !== id))
-              }
-              token={token}
-            />
+        {/* COLUMNA DERECHA: OBJETIVOS ACTUALES */}
+        <div className="goals-card-col">
+          <h2 style={{ textAlign: "center", color: "white" }}>
+            Objetivos actuales 
+          </h2>
+          <h3 style={{ color: "white", textAlign:"center"}}>({currentMonth})</h3>
+          <GoalList
+            goals={activeGoals}
+            onGoalUpdated={(updatedGoal) =>
+              setGoals((prev) =>
+                prev.map((g) => (g.id === updatedGoal.id ? updatedGoal : g))
+              )
+            }
+            onGoalDeleted={(id) =>
+              setGoals((prev) => prev.filter((g) => g.id !== id))
+            }
+            token={token}
+          />
 
-            <GoalForm
-              familyId={familyId}
-              categories={categories} // pasamos las categorías
-              onGoalCreated={(newGoal) =>
-                setGoals((prev) => [...prev, newGoal])
-              }
-              token={token}
-              selectedMonth={selectedMonth}
-            />
-          </div>
-        ) : (
-          <div className="historico_goals_container">
-            <div className="goals_card">
-              {" "}
-              <h2 style={{ textAlign: "center", color: "white" }}>
-                Objetivos conseguidos
-              </h2>
-              <GoalList goals={achievedGoals} readOnly={true} />
-            </div>
-
-            <div className="goals_card" id="goal_no_archieved">
-              {" "}
-              <h2 style={{ textAlign: "center", color: "white" }}>
-                Objetivos NO alcanzados
-              </h2>
-              <GoalList goals={failedGoals} readOnly={true} />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

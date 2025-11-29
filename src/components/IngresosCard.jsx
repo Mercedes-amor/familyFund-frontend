@@ -63,7 +63,7 @@ export default function IngresosCard({
       .reduce((sum, s) => sum + s.amount, 0) || 0;
 
   return (
-    <div className="category-wrapper">
+    <div className="categoryIngresos-wrapper">
       <div
         className={`ingresos-card ${
           ingresosCategory.deleted ? "category-card-deleted" : ""
@@ -161,7 +161,8 @@ export default function IngresosCard({
                   </form>
                 ) : (
                   <div className="transaction-item">
-                    {tx.name} - {tx.amount} €
+                    <span className="tx-name">{tx.name}</span>
+                    <span className="tx-amount">{tx.amount} €</span>
                     {selectedMonth === currentMonth && (
                       <span className="spanEdit-buttons">
                         <FontAwesomeIcon
@@ -187,12 +188,14 @@ export default function IngresosCard({
 
         {selectedMonth === currentMonth && (
           <>
-            <button
-              className="add-ingresos-btn"
-              onClick={() => handleAddTransaction(ingresosCategory.id)}
-            >
-              ➕ Añadir ingreso
-            </button>
+            {!showTransactionForm && (
+              <button
+                className="add-ingresos-btn"
+                onClick={() => handleAddTransaction(ingresosCategory.id)}
+              >
+                ➕ Añadir ingreso
+              </button>
+            )}
 
             {showTransactionForm &&
               selectedCategoryId === ingresosCategory.id && (

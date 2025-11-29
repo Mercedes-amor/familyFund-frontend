@@ -210,9 +210,11 @@ export default function CatActualList({
                         </form>
                       ) : (
                         <div className="transaction-item">
-                          {tx.name} - {tx.amount} €
-                          {/* Mostrar botones solo si el usuario actual es el creador */}
-                          {tx.user.id === currentUserId && (
+                          <span className="tx-name">{tx.name}</span>
+
+                          <span className="tx-amount">{tx.amount} €</span>
+
+                          {tx.user.id === currentUserId ? (
                             <span className="spanEdit-buttons">
                               <FontAwesomeIcon
                                 icon={faEdit}
@@ -227,6 +229,8 @@ export default function CatActualList({
                                 }
                               />
                             </span>
+                          ) : (
+                            <span className="spanEdit-buttons empty"></span>
                           )}
                         </div>
                       )}
@@ -234,64 +238,69 @@ export default function CatActualList({
                   ))
                 )}
               </ul>
+              <div className="div-char-container">
+                {!(
+                  showTransactionForm && selectedCategoryId === category.id
+                ) && (
+                  <button
+                    className="add-transaction-btn"
+                    onClick={() => handleAddTransaction(category.id)}
+                  >
+                    ➕ Añadir gasto
+                  </button>
+                )}
 
-              <button
-                className="add-transaction-btn"
-                onClick={() => handleAddTransaction(category.id)}
-              >
-                ➕ Añadir gasto
-              </button>
+                {showTransactionForm && selectedCategoryId === category.id && (
+                  <form
+                    onSubmit={handleSubmitTransaction}
+                    className="new-transaction-form"
+                    style={{ marginTop: "10px" }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Nombre"
+                      value={transactionName}
+                      onChange={(e) => setTransactionName(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="number"
+                      placeholder="Importe"
+                      value={transactionAmount}
+                      onChange={(e) => setTransactionAmount(e.target.value)}
+                      required
+                    />
+                    <div className="category-divEdit-buttons">
+                      <button type="submit" id="guardarButton">
+                        Guardar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowTransactionForm(false)}
+                        id="cancelButton"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                )}
 
-              {showTransactionForm && selectedCategoryId === category.id && (
-                <form
-                  onSubmit={handleSubmitTransaction}
-                  className="new-transaction-form"
-                  style={{ marginTop: "10px" }}
-                >
-                  <input
-                    type="text"
-                    placeholder="Nombre"
-                    value={transactionName}
-                    onChange={(e) => setTransactionName(e.target.value)}
-                    required
+                {/* Mostrar IngresosBar solo para la categoría "INGRESOS" */}
+                {showIngresosBar && (
+                  <IngresosBar gastos={totalGastosMes} limite={limiteMes} />
+                )}
+
+                {/* CategoryBar normal para otras categorías */}
+                {category.name !== "INGRESOS" && (
+                  <CategoryBar
+                    total={filteredTransactions.reduce(
+                      (sum, t) => sum + t.amount,
+                      0
+                    )}
+                    limit={category.limit}
                   />
-                  <input
-                    type="number"
-                    placeholder="Importe"
-                    value={transactionAmount}
-                    onChange={(e) => setTransactionAmount(e.target.value)}
-                    required
-                  />
-                  <div className="category-divEdit-buttons">
-                    <button type="submit" id="guardarButton">
-                      Guardar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowTransactionForm(false)}
-                      id="cancelButton"
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {/* Mostrar IngresosBar solo para la categoría "INGRESOS" */}
-              {showIngresosBar && (
-                <IngresosBar gastos={totalGastosMes} limite={limiteMes} />
-              )}
-
-              {/* CategoryBar normal para otras categorías */}
-              {category.name !== "INGRESOS" && (
-                <CategoryBar
-                  total={filteredTransactions.reduce(
-                    (sum, t) => sum + t.amount,
-                    0
-                  )}
-                  limit={category.limit}
-                />
-              )}
+                )}
+              </div>
             </div>
           </div>
         );

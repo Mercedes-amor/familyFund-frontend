@@ -125,12 +125,11 @@ export default function GoalList({
                     />
                   </div>
                 ) : goal.month < new Date().toISOString().slice(0, 7) ? (
-                    <FontAwesomeIcon
-                      icon={faXmark}
-                      flip
-                      style={{ color: "#ca0202", fontSize: "4rem" }}
-                    />
-                  
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    flip
+                    style={{ color: "#ca0202", fontSize: "4rem" }}
+                  />
                 ) : (
                   <div style={{ textAlign: "center", padding: "25px" }}>
                     <FontAwesomeIcon
@@ -140,22 +139,24 @@ export default function GoalList({
                     />
                   </div>
                 )}
-                <h4>
-                  <strong>Objetivo: </strong>
-                  {goal.name}
-                </h4>
+                <div className="goal_card_columRight">
+                  <h4>
+                    <strong>Objetivo: </strong>
+                    {goal.name}
+                  </h4>
 
-                <h5>
-                  <strong>Ahorrar: </strong>
-                  {goal.amount}€ en {goal.categoryName}
-                </h5>
+                  <h5>
+                    <strong>Ahorrar: </strong>
+                    {goal.amount}€ en {goal.categoryName}
+                  </h5>
 
-                {!readOnly && (
-                  <span className="spanEdit-buttons">
-                    <button onClick={() => handleEditClick(goal)}>✏️</button>
-                    <button onClick={() => handleDelete(goal.id)}>🗑️</button>
-                  </span>
-                )}
+                  {!readOnly && (
+                    <span className="spanEdit-buttons">
+                      <button onClick={() => handleEditClick(goal)}>✏️</button>
+                      <button onClick={() => handleDelete(goal.id)}>🗑️</button>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           )}

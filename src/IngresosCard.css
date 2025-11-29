@@ -1,7 +1,10 @@
 /* ===============================
    INGRESOS CARD
    =============================== */
-
+.categoryIngresos-wrapper{
+  /* display: flex;
+  justify-content: center; */
+}
 
 .ingresos-card {
   background-color: rgba(233, 237, 238, 0.85);
@@ -15,12 +18,12 @@
   /* sombra ligera */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   position: relative;
   color: #242A33;
   /* texto oscuro */
   transition: transform 0.2s, box-shadow 0.2s;
-  margin-right: 20px;
+  /* margin-right: 20px; */
 }
 
 .ingresos-card:hover {
@@ -55,4 +58,15 @@
   /* azul principal */
   color: white;
   transition: background 0.3s;
+}
+
+/* Media query para pantallas pequeñas <= 768px */
+@media (max-width: 768px) {
+  .ingresos-card {
+    min-width: 400px;
+  /* texto oscuro */
+  transition: transform 0.2s, box-shadow 0.2s;
+
+}
+  
 }

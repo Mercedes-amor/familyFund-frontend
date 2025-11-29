@@ -6,6 +6,8 @@ import { ThemeContext } from "./context/themeContext.jsx";
 //Estilos
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
