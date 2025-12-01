@@ -13,7 +13,7 @@ export default function CatHistorico({ categories, selectedMonth }) {
         console.log("filteredTransactions: ", filteredTransactions);
 
         const handleCardClick = () => {
-          navigate(`/category-compare/${category.id}`); //Lo invocamos dentro del map
+          navigate(`/category-compare/${category.id}`);
         };
 
         if (filteredTransactions.length === 0) return null;
@@ -34,22 +34,31 @@ export default function CatHistorico({ categories, selectedMonth }) {
               <ul className="transactions-list">
                 {filteredTransactions.map((tx) => (
                   <li key={tx.id}>
-                    <img
-                      src={
-                        tx.user.photoUrl ||
-                        "https://res.cloudinary.com/dz2owkkwa/image/upload/v1760687036/Familyfund/Dise%C3%B1o_sin_t%C3%ADtulo-removebg-preview_vqqzhb.png"
-                      }
-                      alt={tx.nombre}
-                      className="member-photo"
-                    />
+                    {/* Usuario o sistema */}
+                    {tx.user == null ? (
+                      <span className="imgSistema">Auto</span>
+                    ) : (
+                      <div className="tx-user-data">
+                        <img
+                          className="member-photo"
+                          src={
+                            tx.user.photoUrl ||
+                            "https://res.cloudinary.com/dz2owkkwa/image/upload/v1760687036/Familyfund/Dise%C3%B1o_sin_t%C3%ADtulo-removebg-preview_vqqzhb.png"
+                          }
+                          alt={tx.user.name}
+                        />
+                        <span>{tx.user.name}</span>
+                      </div>
+                    )}
+
                     <div className="transaction-item">
                       <span className="tx-name">{tx.name}</span>
-
                       <span className="tx-amount">{tx.amount} €</span>
                     </div>
                   </li>
                 ))}
               </ul>
+
               <div className="historico-char">
                 <CategoryBar
                   total={filteredTransactions.reduce(

@@ -128,41 +128,47 @@ export default function MaxiGoal({
   return (
     <div className="maxigoal-container">
       {/* Título */}
-      {!isEditing ? (
-        <h3 className="maxi-title">
-          {maxigoal.name ?? "MaxiGoal"}{" "}
-          <FontAwesomeIcon
-            icon={faEdit}
-            style={{ cursor: "pointer", fontSize: "0.8rem", marginLeft: "5px" }}
-            onClick={() => setIsEditing(true)}
-          />
-        </h3>
-      ) : (
-        <div className="edit-maxigoal">
-          <input
-            type="text"
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-          />
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            value={editTarget}
-            onChange={(e) => setEditTarget(e.target.value)}
-          />
-          <div className="buttonMG-container">
-            <button id="buttonMG-ok" type="button" onClick={handleSaveEdit}>
-              <FontAwesomeIcon icon={faCheck} />
-            </button>
-            <button type="button" onClick={() => setIsEditing(false)}>
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
+      <h3 className="maxi-title">
+        {maxigoal.name ?? "MaxiGoal"}{" "}
+        <FontAwesomeIcon
+          icon={faEdit}
+          style={{ cursor: "pointer", fontSize: "0.8rem", marginLeft: "5px" }}
+          onClick={() => setIsEditing(true)}
+        />
+      </h3>
+
+      {/* Modal de edición */}
+      {isEditing && (
+        <div className="modal-overlay" onClick={() => setIsEditing(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h4>Editar MaxiGoal</h4>
+            <form className="modal-form">
+              <input
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Nombre del MaxiGoal"
+              />
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={editTarget}
+                onChange={(e) => setEditTarget(e.target.value)}
+                placeholder="Objetivo (€)"
+              />
+              <div className="modal-buttons">
+                <button type="button" onClick={handleSaveEdit}>
+                  Guardar
+                </button>
+                <button type="button" onClick={() => setIsEditing(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
-
-      {/* Aquí onclic para navigate */}
 
       {/* Barra y monedas */}
       <div

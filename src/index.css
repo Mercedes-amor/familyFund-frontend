@@ -113,3 +113,88 @@ button:focus-visible {
   z-index: 0;
   /* scroll si excede la altura */
 }
+
+
+/* POPUP */
+/* Fondo oscuro detrás del popup */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Caja central del popup */
+.modal-content {
+  background: #bcdfe4;
+  padding: 25px;
+  width: 400px;
+  max-width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(95, 88, 88, 0.7);
+  animation: popupFade 0.2s ease-out;
+}
+
+/* Animación suave */
+@keyframes popupFade {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-form input,
+.modal-form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: none;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-buttons button:nth-child(1) {
+  background: #00A6C4;
+  color: white;
+}
+
+.modal-buttons button:nth-child(2) {
+  background: #b74444;
+  color: white;
+}
+
+/* Botón flotante */
+.Add-goal-Button {
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.Add-goal-Button:hover {
+  background: #ffffff;
+}

@@ -24,10 +24,10 @@
 }
 .SavingsList-container {
   padding: 20px;
-  min-width: 100%;
-  margin: 0 auto;
-  margin-left: 20px;
+  width: 100%;
+  margin: 0 auto; 
 }
+
 
 .table-wrapper {
   width: 100%;

@@ -590,7 +590,8 @@ export default function CategoriasPage() {
       </div>
     );
   }
-  console.log("family.id" + family.id);
+  console.log("family.id: " + family.id);
+  console.log("currentUserId: " + currentUserId);
   //Etiqueta para errores en los fetch
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
