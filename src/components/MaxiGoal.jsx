@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
+import Swal from "sweetalert2";
 
 //Estilos
 import "../MaxiGoal.css";
@@ -92,7 +94,16 @@ export default function MaxiGoal({
 
       launchCoins();
       setSaving("");
-      if (typeof refreshData === "function") await refreshData();
+      // Si el objetivo se cumple, animación y esperar antes de refrescar
+      if (actual + value >= target) {
+        triggerGoalAchievedAnimation();
+        setTimeout(async () => {
+          if (typeof refreshData === "function") await refreshData();
+        }, 1500); // tiempo de la animación
+      } else {
+        // Si no se cumple, refresh normal
+        if (typeof refreshData === "function") await refreshData();
+      }
     } catch (err) {
       setError(err.message || "Error");
     } finally {
@@ -124,6 +135,56 @@ export default function MaxiGoal({
       setError(err.message || "Error al guardar cambios");
     }
   };
+
+  //Animación al alcanzar objetivo
+  const triggerGoalAchievedAnimation = () => {
+    const piggy = document.querySelector(".piggy-wrapper");
+    const bar = document.querySelector(".piggy-bar");
+
+    if (piggy) {
+      piggy.classList.add("goal-achieved-shake");
+      setTimeout(() => piggy.classList.remove("goal-achieved-shake"), 1200);
+    }
+    if (bar) {
+      bar.classList.add("goal-achieved-glow");
+      setTimeout(() => bar.classList.remove("goal-achieved-glow"), 1500);
+    }
+
+    // Popup de ENHORABUENA con SweetAlert2
+    Swal.fire({
+      title: "🎉 ¡Objetivo alcanzado! 🎉",
+      text: "Has logrado el máximo objetivo. ¡Sigue así!",
+      icon: "success",
+      confirmButtonText: "¡Genial!",
+      timer: 3500,
+      timerProgressBar: true,
+      backdrop: `
+      rgba(0,0,0,0.4)
+      left top
+      no-repeat
+    `,
+    });
+    // Confetti
+    for (let i = 0; i < 25; i++) {
+      const confetti = document.createElement("div");
+      confetti.classList.add("confetti-piece");
+      confetti.style.left = `${10 + Math.random() * 80}%`;
+      confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+      confetti.style.animationDelay = `${Math.random() * 0.4}s`;
+
+      document.body.appendChild(confetti);
+
+      setTimeout(() => confetti.remove(), 1500);
+    }
+  };
+
+  useEffect(() => {
+    if (actual >= target) {
+      triggerGoalAchievedAnimation();
+    }
+  }, [actual, target]);
+
+  console.log("actual:", actual, "target:", target);
 
   return (
     <div className="maxigoal-container">

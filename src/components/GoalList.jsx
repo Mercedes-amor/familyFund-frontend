@@ -3,9 +3,15 @@ import Swal from "sweetalert2";
 
 //Librería iconos
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrophy } from "@fortawesome/free-solid-svg-icons";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faPiggyBank } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCoins,
+  faEdit,
+  faCheck,
+  faXmark,
+  faTrophy,
+  faPiggyBank,
+  faTrashArrowUp,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function GoalList({
   goals,
@@ -152,8 +158,19 @@ export default function GoalList({
 
                   {!readOnly && (
                     <span className="spanEdit-buttons">
-                      <button onClick={() => handleEditClick(goal)}>✏️</button>
-                      <button onClick={() => handleDelete(goal.id)}>🗑️</button>
+                      <FontAwesomeIcon
+                        icon={faEdit}
+                        style={{
+                          cursor: "pointer",
+                          marginLeft: "5px",
+                        }}
+                        onClick={() => handleEditClick(goal)}
+                      />
+                      <FontAwesomeIcon
+                        icon={faTrashArrowUp}
+                        style={{ cursor: "pointer", color: "#521005" }}
+                        onClick={() => handleDelete(goal.id)}
+                      />
                     </span>
                   )}
                 </div>

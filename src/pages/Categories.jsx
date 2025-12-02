@@ -306,15 +306,22 @@ export default function CategoriasPage() {
         }
       );
 
+      //Mostrar mensaje de error
+      let errorMessage = "Error desconocido";
+
       if (!response.ok) {
         const text = await response.text();
         try {
           const data = JSON.parse(text);
-          throw new Error(data.error || data.message || "Error desconocido");
+          // Si el backend envía { error: "mensaje" } o { message: "mensaje" }
+          errorMessage = data.error || data.message || errorMessage;
         } catch {
-          throw new Error(text);
+          // Si no es JSON, usamos el texto directamente
+          errorMessage = text;
         }
+        throw new Error(errorMessage);
       }
+      ç;
 
       const updatedTx = await response.json();
 

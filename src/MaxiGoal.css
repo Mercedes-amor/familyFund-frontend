@@ -101,7 +101,43 @@
   }
 }
 
+/* -----ANIMACIÓN ALCANZAR OBJETIVO---- */
+/* Temblor cerdito */
+.goal-achieved-shake {
+  animation: shakePiggy 0.6s ease-in-out;
+}
 
+@keyframes shakePiggy {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
+
+/* Brillo dorado */
+.goal-achieved-glow {
+  box-shadow: 0px 0px 20px 5px gold;
+  transition: box-shadow 0.3s ease-out;
+}
+
+/* Confetti */
+.confetti-piece {
+  position: fixed;
+  top: -10px;
+  width: 10px;
+  height: 14px;
+  opacity: 0.9;
+  border-radius: 2px;
+  animation: confettiFall 2.3s linear forwards;
+  z-index: 9999;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(120vh) rotate(360deg); }
+}
 
 /* Botón e input */
 .edit-maxigoal{

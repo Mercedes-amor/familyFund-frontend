@@ -147,8 +147,8 @@ export default function CategoryCompare({ token }) {
             Object.entries(groupedByMonth)
               .sort(
                 ([monthA], [monthB]) =>
-                  Number(monthB.replace("-", "")) -
-                  Number(monthA.replace("-", ""))
+                  Number(monthA.replace("-", "")) -
+                  Number(monthB.replace("-", ""))
               ) // de más reciente a más antiguo
               .map(([month, txs]) => (
                 <div key={month}>
