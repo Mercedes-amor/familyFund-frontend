@@ -53,7 +53,10 @@ function Signup() {
         response.data.message || "!Ya estás registrado! Ahora inicia sesión"
       );
 
-      setMensajeInfo(response.data.message || "Usuario registrado correctamente");
+      setMensajeInfo(
+        response.data.message || "Usuario registrado correctamente"
+      );
+      setMensaje(""); // ← limpiar mensaje de Error
 
       // redirigir al login en 3s para que se vea el toast
       setTimeout(() => {
@@ -63,9 +66,11 @@ function Signup() {
       if (error.response) {
         toast.error(error.response?.data?.message || "Error al registrarse");
         setMensaje(error.response?.data?.message);
+        setMensajeInfo(""); // limpiar mensaje info
       } else {
         toast.error("Error de conexión");
         setMensaje("Error de conexión");
+        setMensajeInfo(""); // limpiar mensaje de info
       }
     }
   };
@@ -121,8 +126,9 @@ function Signup() {
           maxLength={40}
         />
         <button type="submit">Registrarse</button>
+        {/* Mensjes de error/éxito */}
         {mensaje && <p className="error-text">{mensaje}</p>}
-        {mensajeInfo && <p className="info-text">{mensaje}</p>}
+        {mensajeInfo && <p className="info-text">{mensajeInfo}</p>}
       </form>
     </div>
   );
