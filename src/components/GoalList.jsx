@@ -52,6 +52,7 @@ export default function GoalList({
       });
 
       const data = await res.json();
+      console.log("data: " + data)
       onGoalUpdated(data);
       setEditingGoalId(null);
     } catch (err) {

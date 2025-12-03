@@ -28,6 +28,8 @@ export default function SavingsList() {
 
       const data = await res.json();
 
+      data.sort((a, b) => new Date(b.createAt) - new Date(a.createAt));
+
       setSavings(data);
     } catch (err) {
       setError(err.message);

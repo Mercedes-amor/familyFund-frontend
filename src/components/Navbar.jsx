@@ -62,11 +62,11 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             {/* Siempre visible */}
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink className={checkActiveUrl} to="/about">
                 Servidor
               </NavLink>
-            </li>
+            </li> */}
 
             {/* ADMIN */}
             {isAdmin && (

@@ -17,6 +17,7 @@ function Signup() {
   });
 
   const [mensaje, setMensaje] = useState("");
+  const [mensajeInfo, setMensajeInfo] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +53,7 @@ function Signup() {
         response.data.message || "!Ya estás registrado! Ahora inicia sesión"
       );
 
-      setMensaje(response.data.message || "Usuario registrado correctamente");
+      setMensajeInfo(response.data.message || "Usuario registrado correctamente");
 
       // redirigir al login en 3s para que se vea el toast
       setTimeout(() => {
@@ -121,6 +122,7 @@ function Signup() {
         />
         <button type="submit">Registrarse</button>
         {mensaje && <p className="error-text">{mensaje}</p>}
+        {mensajeInfo && <p className="info-text">{mensaje}</p>}
       </form>
     </div>
   );

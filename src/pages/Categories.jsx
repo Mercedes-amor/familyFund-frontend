@@ -320,8 +320,7 @@ export default function CategoriasPage() {
           errorMessage = text;
         }
         throw new Error(errorMessage);
-      }
-      ç;
+      };
 
       const updatedTx = await response.json();
 

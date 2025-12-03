@@ -1,14 +1,21 @@
-# familyfund-frontend/Dockerfile.dev
+# familyfund-frontend/Dockerfile
 
 FROM node:20
+
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
+# Copiar archivos de configuración primero para aprovechar el cache de Docker
 COPY package*.json ./
+
+# Instalar dependencias
 RUN npm install
 
+# Copiar el resto del código de la app
 COPY . .
 
+# Exponer el puerto donde Vite corre
 EXPOSE 5173
 
+# Comando para levantar el servidor de desarrollo
 CMD ["npm", "run", "dev", "--", "--host"]
-
